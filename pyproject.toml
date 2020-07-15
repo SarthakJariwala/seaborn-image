@@ -12,6 +12,7 @@ repository = "https://github.com/SarthakJariwala/seaborn-image"
 python = "^3.6"
 matplotlib = "^3.2.2"
 scikit-image = "^0.17.2"
+matplotlib-scalebar = "^0.6.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.3"

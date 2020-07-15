@@ -303,6 +303,17 @@ pyparsing = ">=2.0.1,<2.0.4 || >2.0.4,<2.1.2 || >2.1.2,<2.1.6 || >2.1.6"
 python-dateutil = ">=2.1"
 
 [[package]]
+category = "main"
+description = "Artist for matplotlib to display a scale bar"
+name = "matplotlib-scalebar"
+optional = false
+python-versions = "*"
+version = "0.6.2"
+
+[package.dependencies]
+matplotlib = "*"
+
+[[package]]
 category = "dev"
 description = "McCabe checker, plugin for flake8"
 name = "mccabe"
@@ -676,7 +687,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6838cfec4f6264dd57f27e0c390a24b154272f8331ea12c9cd200f2f08069cd8"
+content-hash = "2c7b200467c7aea008d417cd6a705e9dc25f6de13037d9329485558d50ef5126"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -840,6 +851,10 @@ matplotlib = [
     {file = "matplotlib-3.2.2-cp39-cp39-win_amd64.whl", hash = "sha256:31d32c83bb2b617377c6156f75e88b9ec2ded289e47ad4ff0f263dc1019d88b1"},
     {file = "matplotlib-3.2.2-pp36-pypy36_pp73-win32.whl", hash = "sha256:67065d938df34478451af62fbd0670d2b51c4d859fb66673064eb5de8660dd7c"},
     {file = "matplotlib-3.2.2.tar.gz", hash = "sha256:3d77a6630d093d74cbbfebaa0571d00790966be1ed204e4a8239f5cbd6835c5d"},
+]
+matplotlib-scalebar = [
+    {file = "matplotlib-scalebar-0.6.2.tar.gz", hash = "sha256:b0aa1a732c961e1fa50c59b45d0e067977b912d9be3378233081db2a1bd75c20"},
+    {file = "matplotlib_scalebar-0.6.2-py2.py3-none-any.whl", hash = "sha256:33642cd995f85e08845dd6395c0d8c5400d9683cd00360071e25d5adf7877f4a"},
 ]
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
