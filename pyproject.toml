@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "seaborn-image"
+version = "0.1.0"
+description = "seaborn-image: image data visualization like seaborrn using matplotlib and scikit-image"
+authors = ["Sarthak Jariwala <jariwala@uw.edu>"]
+license = "MIT"
+readme = "README.rst"
+homepage = "https://github.com/SarthakJariwala/seaborn-image"
+repository = "https://github.com/SarthakJariwala/seaborn-image"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+matplotlib = "^3.2.2"
+scikit-image = "^0.17.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.4.3"
+black = "^19.10b0"
+flake8 = "^3.8.3"
+flake8-bandit = "^2.1.2"
+flake8-black = "^0.2.0"
+flake8-bugbear = "^20.1.4"
+safety = "^1.9.0"
+coverage = {extras = ["toml"], version = "^5.2"}
+pytest-cov = "^2.10.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
