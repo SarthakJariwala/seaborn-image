@@ -152,3 +152,5 @@ class _SetupImage(object):
             ax.get_xaxis().set_visible(False)
 
         f.tight_layout()
+
+        return f, ax

@@ -37,4 +37,6 @@ def imgplot(
         fontdict=title_fontdict,
     )
 
-    img_plotter.plot()
+    f, ax = img_plotter.plot()
+
+    return f, ax, data
