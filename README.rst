@@ -15,11 +15,13 @@ with addons such as scalebar, title, colorbars, etc. with a single line of code.
 
 
 .. code-block:: python
-    import seaborn_image as isns
 
+    import seaborn_image as isns
+    
     isns.imgplot(data)
 
 Note
 ====
 
 This project was started because I was looking for a seaborn like library for images but couldn't find any.
+The project is still a work in progress...
