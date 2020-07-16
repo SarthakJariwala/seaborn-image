@@ -1,19 +1,25 @@
-=============
-seaborn-image
-=============
+=======================================
+seaborn-image: image data visualization
+=======================================
 
 
-Add a short description here!
+Seaborn like image data visualization using matplotlib, scikit-image and scipy.
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Seaborn-image is a seaborn like python **image** visualization library based on matplotlib.
+The aim of seaborn-image is to provide a high-level API to **plot attractive images quickly**
+with addons such as scalebar, title, colorbars, etc. with a single line of code.
 
+
+.. code:: python
+    import seaborn_image as isns
+
+    isns.imgplot(data)
 
 Note
 ====
 
-This project has been set up using PyScaffold 3.2.3. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+This project was started because I was looking for a seaborn like library for images but couldn't find any.

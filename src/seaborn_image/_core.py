@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib_scalebar.scalebar import ScaleBar
+from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
+
+from ._colormap import _CMAP_QUAL
 
 
 def _check_dict(dictionary):
@@ -12,6 +15,7 @@ class _SetupImage(object):
         self,
         data,
         ax=None,
+        cmap=None,
         title=None,
         fontdict=None,
         scalebar=None,
@@ -27,6 +31,7 @@ class _SetupImage(object):
         # self.figsize = None
         self.data = data
         self.ax = ax
+        self.cmap = cmap
         self.title = title
         self.fontdict = fontdict
         self.scalebar = scalebar
@@ -42,10 +47,9 @@ class _SetupImage(object):
         """Wrapper to setup image with the desired parameters
         """
         if self.ax is None:
-            f = plt.gcf()
-            ax = plt.gca()
+            f, ax = plt.subplots()
         else:
-            f = plt.gcf()  # need to test
+            f = plt.gcf()
             ax = self.ax
 
         if self.fontdict is None:
@@ -57,11 +61,11 @@ class _SetupImage(object):
         self.fontdict.setdefault("fontweight", "bold")
 
         if self.title is not None:
-            ax.set_title(self.title, fontdict=self.fontdict)
+            self.ax.set_title(self.title, fontdict=self.fontdict)
 
         return f, ax
 
-    def _setup_scalebar(self):
+    def _setup_scalebar(self, ax):
         """Setup scalebar for the image
         """
 
@@ -105,19 +109,28 @@ class _SetupImage(object):
             font_properties=dict(size="x-large", weight="bold"),
         )
 
-        plt.gca().add_artist(scalebar)
+        ax.add_artist(scalebar)
 
     def plot(self):
         f, ax = self._setup_figure()
 
-        _map = ax.imshow(self.data)
+        if self.cmap is None:
+            self.cmap = _CMAP_QUAL.get("deep").mpl_colormap
+        elif self.cmap in _CMAP_QUAL.keys():
+            self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
+
+        _map = ax.imshow(self.data, cmap=self.cmap)
 
         if self.scalebar:
-            self._setup_scalebar()
+            self._setup_scalebar(ax)
 
         if self.cbar:
+            divider = make_axes_locatable(ax)
+            width = axes_size.AxesY(ax, aspect=1.0 / 20)
+            pad = axes_size.Fraction(0.5, width)
+            cax = divider.append_axes("right", size=width, pad=pad)
 
-            cb = f.colorbar(_map, ax=ax)
+            cb = f.colorbar(_map, cax=cax)
 
             if self.cbar_fontdict is None:
                 self.cbar_fontdict = {}
@@ -131,35 +144,7 @@ class _SetupImage(object):
                 cb.set_label(self.cbar_label, fontdict=self.cbar_fontdict)
 
         if not self.showticks:
-            plt.gca().axes.get_yaxis().set_visible(False)
-            plt.gca().axes.get_xaxis().set_visible(False)
+            ax.get_yaxis().set_visible(False)
+            ax.get_xaxis().set_visible(False)
 
-
-def plot_image(
-    data,
-    scalebar=True,
-    dx=0.4,
-    units="um",
-    scalebar_params=None,
-    cbar=True,
-    cbar_label=None,
-    cbar_fontdict=None,
-    showticks=False,
-    title=None,
-    title_fontdict=None,
-):
-
-    img_plotter = _SetupImage(
-        data=data,
-        scalebar=scalebar,
-        dx=dx,
-        units=units,
-        scalebar_params=scalebar_params,
-        cbar=cbar,
-        cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
-        showticks=showticks,
-        title=title,
-        fontdict=title_fontdict,
-    )
-    img_plotter.plot()
+        f.tight_layout()
