@@ -14,7 +14,7 @@ The aim of seaborn-image is to provide a high-level API to **plot attractive ima
 with addons such as scalebar, title, colorbars, etc. with a single line of code.
 
 
-.. code::python
+.. code-block:: python
     import seaborn_image as isns
 
     isns.imgplot(data)
