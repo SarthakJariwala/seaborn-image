@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib_scalebar.scalebar import ScaleBar
 from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
 
@@ -16,6 +17,8 @@ class _SetupImage(object):
         data,
         ax=None,
         cmap=None,
+        vmin=None,
+        vmax=None,
         title=None,
         fontdict=None,
         scalebar=None,
@@ -27,11 +30,12 @@ class _SetupImage(object):
         cbar_label=None,
         showticks=False,
     ):
-        # self.new_fig = True
-        # self.figsize = None
+
         self.data = data
         self.ax = ax
         self.cmap = cmap
+        self.vmin = vmin
+        self.vmax = vmax
         self.title = title
         self.fontdict = fontdict
         self.scalebar = scalebar
@@ -52,16 +56,11 @@ class _SetupImage(object):
             f = plt.gcf()
             ax = self.ax
 
-        if self.fontdict is None:
-            self.fontdict = {}
-
-        _check_dict(self.fontdict)
-
-        self.fontdict.setdefault("fontsize", 30)
-        self.fontdict.setdefault("fontweight", "bold")
+        if self.fontdict is not None:
+            _check_dict(self.fontdict)
 
         if self.title is not None:
-            self.ax.set_title(self.title, fontdict=self.fontdict)
+            ax.set_title(self.title, fontdict=self.fontdict)
 
         return f, ax
 
@@ -119,7 +118,7 @@ class _SetupImage(object):
         elif self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
-        _map = ax.imshow(self.data, cmap=self.cmap)
+        _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
 
         if self.scalebar:
             self._setup_scalebar(ax)
@@ -131,14 +130,19 @@ class _SetupImage(object):
             cax = divider.append_axes("right", size=width, pad=pad)
 
             cb = f.colorbar(_map, cax=cax)
+            if self.vmin is not None:
+                _min = self.vmin
+            else:
+                _min = np.min(self.data)
+            if self.vmax is not None:
+                _max = self.vmax
+            else:
+                _max = np.max(self.data)
 
-            if self.cbar_fontdict is None:
-                self.cbar_fontdict = {}
+            cb.set_ticks([_min, (_min + _max) / 2, _max])  # min, middle, max for colorbar ticks
 
-            _check_dict(self.cbar_fontdict)
-
-            self.cbar_fontdict.setdefault("fontsize", 25)
-            self.cbar_fontdict.setdefault("fontweight", "bold")
+            if self.cbar_fontdict is not None:
+                _check_dict(self.cbar_fontdict)
 
             if self.cbar_label is not None:
                 cb.set_label(self.cbar_label, fontdict=self.cbar_fontdict)
