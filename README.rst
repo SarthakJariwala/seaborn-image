@@ -28,13 +28,13 @@ Simple usage
     import seaborn_image as isns
 
     """Set context like seaborn"""
-    isns.set_context("notbook")
+    isns.set_context("notebook")
 
     """Plot publishable quality image in one line"""
     isns.imgplot(data)
 
     """Add a scalebar"""
-    isns.imgplot(data, scalebar=True, dx=1, units="um")
+    isns.imgplot(data, dx=1, units="um")
 
 Apply image filters and plot
 
