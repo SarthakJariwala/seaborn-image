@@ -23,10 +23,10 @@ class _SetupImage(object):
         fontdict=None,
         dx=None,
         units=None,
-        scalebar_params=None,
         cbar=None,
         cbar_fontdict=None,
         cbar_label=None,
+        cbar_ticks=None,
         showticks=False,
     ):
 
@@ -39,10 +39,10 @@ class _SetupImage(object):
         self.fontdict = fontdict
         self.dx = dx
         self.units = units
-        self.scalebar_params = scalebar_params
         self.cbar = cbar
         self.cbar_fontdict = cbar_fontdict
         self.cbar_label = cbar_label
+        self.cbar_ticks = cbar_ticks
         self.showticks = showticks
 
     def _setup_figure(self):
@@ -75,36 +75,9 @@ class _SetupImage(object):
                     "'units' must be specified when 'dx' (scalebar) is used"
                 )
 
-        if self.scalebar_params is None:
-            self.scalebar_params = {}
-
-        self.scalebar_params.setdefault("color", "white")
-        self.scalebar_params.setdefault("height_fraction", 0.05)
-        self.scalebar_params.setdefault("length_fraction", 0.3)
-        self.scalebar_params.setdefault("scale_loc", "top")
-        self.scalebar_params.setdefault("location", "lower right")
-        self.scalebar_params.setdefault("box_alpha", 0)
-
-        _check_dict(self.scalebar_params)
-
-        color = self.scalebar_params.get("color")
-        height_fraction = self.scalebar_params.get("height_fraction")
-        length_fraction = self.scalebar_params.get("length_fraction")
-        scale_loc = self.scalebar_params.get("scale_loc")
-        location = self.scalebar_params.get("location")
-        box_alpha = self.scalebar_params.get("box_alpha")
-
         scalebar = ScaleBar(
             dx=dx,
-            units=units,
-            color=color,
-            height_fraction=height_fraction,
-            length_fraction=length_fraction,
-            scale_loc=scale_loc,
-            location=location,
-            box_alpha=box_alpha,
-            font_properties=dict(size="x-large", weight="bold"),
-        )
+            units=units)
 
         ax.add_artist(scalebar)
 
@@ -137,7 +110,10 @@ class _SetupImage(object):
             else:
                 _max = np.max(self.data)
 
-            cb.set_ticks([_min, (_min + _max) / 2, _max])  # min, middle, max for colorbar ticks
+            if self.cbar_ticks is None:
+                cb.set_ticks([_min, (_min + _max) / 2, _max])  # min, middle, max for colorbar ticks
+            else:
+                cb.set_ticks(self.cbar_ticks)
 
             if self.cbar_fontdict is not None:
                 _check_dict(self.cbar_fontdict)
