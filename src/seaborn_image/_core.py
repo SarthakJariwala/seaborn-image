@@ -21,7 +21,6 @@ class _SetupImage(object):
         vmax=None,
         title=None,
         fontdict=None,
-        scalebar=None,
         dx=None,
         units=None,
         scalebar_params=None,
@@ -38,7 +37,6 @@ class _SetupImage(object):
         self.vmax = vmax
         self.title = title
         self.fontdict = fontdict
-        self.scalebar = scalebar
         self.dx = dx
         self.units = units
         self.scalebar_params = scalebar_params
@@ -68,13 +66,13 @@ class _SetupImage(object):
         """Setup scalebar for the image
         """
 
-        if self.scalebar is not None:
-            if self.dx is not None and self.units is not None:
-                dx = self.dx
+        if self.dx:
+            dx = self.dx
+            if self.units:
                 units = self.units
             else:
                 raise AttributeError(
-                    "'dx' and 'units' must be assigned when scalebar is True"
+                    "'units' must be specified when 'dx' (scalebar) is used"
                 )
 
         if self.scalebar_params is None:
@@ -120,7 +118,7 @@ class _SetupImage(object):
 
         _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
 
-        if self.scalebar:
+        if self.dx:
             self._setup_scalebar(ax)
 
         if self.cbar:
