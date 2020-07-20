@@ -75,16 +75,14 @@ class _SetupImage(object):
                     "'units' must be specified when 'dx' (scalebar) is used"
                 )
 
-        scalebar = ScaleBar(
-            dx=dx,
-            units=units)
+        scalebar = ScaleBar(dx=dx, units=units)
 
         ax.add_artist(scalebar)
 
     def plot(self):
         f, ax = self._setup_figure()
 
-        if self.cmap is None:
+        if self.cmap is None:  # TODO move default to _context
             self.cmap = _CMAP_QUAL.get("deep").mpl_colormap
         elif self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
@@ -111,7 +109,9 @@ class _SetupImage(object):
                 _max = np.max(self.data)
 
             if self.cbar_ticks is None:
-                cb.set_ticks([_min, (_min + _max) / 2, _max])  # min, middle, max for colorbar ticks
+                cb.set_ticks(
+                    [_min, (_min + _max) / 2, _max]
+                )  # min, middle, max for colorbar ticks
             else:
                 cb.set_ticks(self.cbar_ticks)
 
