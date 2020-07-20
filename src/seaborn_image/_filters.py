@@ -34,23 +34,29 @@ def filterplot(
     order = kwargs.get("order", 0)
     truncate = kwargs.get("truncate", 4.0)
 
-    if filter == "sobel":
-        filtered_data = ndi.sobel(data, axis=axis, mode=mode, cval=cval)
+    _implemented_filters = ["sobel", "gaussian", "median", "max"]
 
-    elif filter == "gaussian":
-        filtered_data = ndi.gaussian_filter(
-            data, sigma=sigma, order=order, mode=mode, cval=cval, truncate=truncate
-        )
+    if filter not in _implemented_filters:
+        raise NotImplementedError(f"'{filter}' is not implemented")
 
-    elif filter == "median":
-        filtered_data = ndi.median_filter(
-            data, size=size, mode=mode, cval=cval, origin=origin
-        )
+    else:
+        if filter == "sobel":
+            filtered_data = ndi.sobel(data, axis=axis, mode=mode, cval=cval)
 
-    elif filter == "max":
-        filtered_data = ndi.maximum_filter(
-            data, size=size, footprint=footprint, mode=mode, cval=cval, origin=origin
-        )
+        elif filter == "gaussian":
+            filtered_data = ndi.gaussian_filter(
+                data, sigma=sigma, order=order, mode=mode, cval=cval, truncate=truncate
+            )
+
+        elif filter == "median":
+            filtered_data = ndi.median_filter(
+                data, size=size, mode=mode, cval=cval, origin=origin
+            )
+
+        elif filter == "max":
+            filtered_data = ndi.maximum_filter(
+                data, size=size, footprint=footprint, mode=mode, cval=cval, origin=origin
+            )
 
     f, ax = plt.subplots(1, 2)
 
