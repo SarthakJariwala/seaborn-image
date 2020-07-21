@@ -12,12 +12,12 @@ def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
 
     Args:
         mode (str, optional): context mode. Options are 'paper', 'notebook',
-        'presentation', 'talk' and 'poster'. Defaults to "talk".
+            'presentation', 'talk' and 'poster'. Defaults to "talk".
         fontfamily (str, optional): font-family to use. Defaults to "arial".
         fontweight (str, optional): font-weight to use. Options include 'normal'
-        and 'bold'. Defaults to "bold".
+            and 'bold'. Defaults to "bold".
         rc (dict, optional): additional rc params to be passed to matplotlib.
-        Defaults to None.
+            Defaults to None.
     """
     # plt.rc("axes.spines", left=False, right=False, top=False, bottom=False)
     if mode == "paper":
@@ -80,12 +80,11 @@ def set_scalebar(rc=None):
 
     Args:
         rc (dict, optional): dictionary of scalebar properties to be set.
-        Defaults to None.
+            Defaults to None.
 
-    Examples
-    --------
-    >>> isns.set_scalebar({"color":"red"})
-    >>> isns.set_scalebar({"scale_loc":"bottom"})
+    Example:
+        >>> isns.set_scalebar({"color":"red"})
+        >>> isns.set_scalebar({"scale_loc":"bottom"})
     """
     mpl.rcParams.update({"scalebar.color": "white"})
     mpl.rcParams.update({"scalebar.height_fraction": 0.05})

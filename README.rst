@@ -14,7 +14,7 @@ seaborn-image: image data visualization
             :scale: 20 %
 
 .. list-table::
-    
+
     * - .. image:: examples/image_3.png
             :width: 270px
             :height: 135px
@@ -30,7 +30,7 @@ Description
 Seaborn-image is a seaborn like python **image** visualization and processing library
 based on matplotlib.
 
-The aim of seaborn-image is to provide a high-level API to **plot attractive images quickly**
+The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly**
 **and effectively**.
 
 

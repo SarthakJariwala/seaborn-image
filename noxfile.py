@@ -1,12 +1,14 @@
+"""Nox Sessions."""
 import tempfile
 
 import nox
 
-locations = "src", "tests", "noxfile.py"
+locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = "lint", "safety", "tests"
 
 
 def install_with_constraints(session, *args, **kwargs):
+    """Install packages constrained by Poetry's lock file."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
             "poetry",
@@ -21,6 +23,7 @@ def install_with_constraints(session, *args, **kwargs):
 
 @nox.session()
 def tests(session):
+    """Run the test suite."""
     args = session.posargs or ["--cov"]
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
@@ -28,15 +31,22 @@ def tests(session):
 
 @nox.session()
 def lint(session):
+    """Lint using flake8."""
     args = session.posargs or locations
     install_with_constraints(
-        session, "flake8", "flake8-black", "flake8-bugbear", "flake8-bandit"
+        session,
+        "flake8",
+        "flake8-black",
+        "flake8-bugbear",
+        "flake8-bandit",
+        "flake8-docstrings"
     )
     session.run("flake8", *args)
 
 
 @nox.session()
 def black(session):
+    """Run black code formatter."""
     args = session.posargs or locations
     install_with_constraints(session, "black")
     session.run("black", *args)
@@ -44,6 +54,7 @@ def black(session):
 
 @nox.session()
 def safety(session):
+    """Scan dependencies for insecure packages."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
             "poetry",
@@ -56,3 +67,10 @@ def safety(session):
         )
         install_with_constraints(session, "safety")
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
+
+
+@nox.session()
+def docs(session):
+    """Build the documentation."""
+    install_with_constraints(session, "sphinx")
+    session.run("sphinx-build", "docs", "docs/_build")
