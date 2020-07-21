@@ -2,6 +2,15 @@
 seaborn-image: image data visualization
 =======================================
 
+.. image:: examples/image_0.png
+    :height: 200px
+    :width: 200 px
+    :scale: 50 %
+.. image:: examples/image_1.png
+    :height: 200px
+    :width: 200 px
+    :scale: 50 %
+
 
 Seaborn like image data visualization using matplotlib, scikit-image and scipy.
 

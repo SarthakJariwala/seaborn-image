@@ -37,7 +37,7 @@ def filterplot(
     _implemented_filters = ["sobel", "gaussian", "median", "max"]
 
     if filter not in _implemented_filters:
-        raise NotImplementedError(f"'{filter}' is not implemented")
+        raise NotImplementedError(f"'{filter}' filter is not implemented")
 
     else:
         if filter == "sobel":
