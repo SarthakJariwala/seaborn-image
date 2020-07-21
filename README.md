@@ -3,15 +3,15 @@
 <div class="row">
 
 <a>
-<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_0.png" height="135" width="135">
+<img src="./examples/image_0.png" height="135" width="145">
 </a>
 
 <a>
-<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_1.png" height="135" width="135">
+<img src="./examples/image_1.png" height="135" width="145">
 </a>
 
 <a>
-<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_3.png" height="135" width="270">
+<img src="./examples/image_3.png" height="135" width="300">
 </a>
 
 </div>
