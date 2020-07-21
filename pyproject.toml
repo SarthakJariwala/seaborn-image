@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "seaborn-image: image data visualization and processing like seaborrn using matplotlib, scipy and scikit-image"
 authors = ["Sarthak Jariwala <jariwala@uw.edu>"]
 license = "MIT"
-readme = "README.rst"
+readme = "README.md"
 homepage = "https://github.com/SarthakJariwala/seaborn-image"
 repository = "https://github.com/SarthakJariwala/seaborn-image"
 
