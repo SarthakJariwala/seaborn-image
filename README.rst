@@ -2,25 +2,14 @@
 seaborn-image: image data visualization
 =======================================
 
-.. raw:: html
-<embed>
-<div class="row">
-
-<a>
-<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_0.png" height="135" width="135">
-</a>
-
-<a>
-<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_1.png" height="135" width="135">
-</a>
-
-</div>
-</embed>
-
 .. image:: examples/image_0.png
-    :scale: 20 %
+    :width: 135px
+    :height: 135px
+    :scale: 50 %
 .. image:: examples/image_1.png
-    :scale: 20 %
+    :width: 135px
+    :height: 135px
+    :scale: 50 %
 
 
 Seaborn like image data visualization using matplotlib, scikit-image and scipy.
