@@ -2,6 +2,21 @@
 seaborn-image: image data visualization
 =======================================
 
+.. raw:: html
+<embed>
+<div class="row">
+
+<a>
+<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_0.png" height="135" width="135">
+</a>
+
+<a>
+<img src="https://github.com/SarthakJariwala/seaborn-image/tree/master/examples/image_1.png" height="135" width="135">
+</a>
+
+</div>
+</embed>
+
 .. image:: examples/image_0.png
     :scale: 20 %
 .. image:: examples/image_1.png
