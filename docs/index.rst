@@ -4,19 +4,17 @@ seaborn-image: image data visualization
 
 .. list-table::
 
-    * - .. image:: examples/image_0.png
-            :width: 135px
-            :height: 135px
+    * - .. image:: ../examples/image_0.png
+            :width: 150px
+            :height: 140px
 
-      - .. image:: examples/image_1.png
-            :width: 135px
-            :height: 135px
+        .. image:: ../examples/image_1.png
+            :width: 150px
+            :height: 140px
 
-.. list-table::
-
-    * - .. image:: examples/image_3.png
-            :width: 270px
-            :height: 135px
+        .. image:: ../examples/image_3.png
+            :width: 320px
+            :height: 150px
 
 
 Seaborn like image data visualization using matplotlib, scikit-image and scipy.
