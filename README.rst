@@ -12,8 +12,8 @@ seaborn-image: image data visualization
             :width: 135px
             :height: 135px
             :scale: 50 %
-    - .. image:: examples/image_3.png
-            :width: 135px
+      - .. image:: examples/image_3.png
+            :width: 270px
             :height: 135px
             :scale: 50 %
 
