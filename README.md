@@ -17,6 +17,7 @@
 </div>
 
 [![Tests](https://github.com/SarthakJariwala/seaborn-image/workflows/Tests/badge.svg)](https://github.com/SarthakJariwala/seaborn-image/actions?workflow=Tests)
+[![Codecov](https://codecov.io/gh/SarthakJariwala>/seaborn-image/branch/master/graph/badge.svg)](https://codecov.io/gh/SarthakJariwala>/seaborn-image)
 
 Seaborn like image data visualization using matplotlib, scikit-image and scipy.
 
