@@ -1,3 +1,8 @@
+try:
+    from importlib.metadata import version, PackageNotFoundError  # type: ignore
+except ImportError:  # pragma: no cover
+    from importlib_metadata import version, PackageNotFoundError  # type: ignore
+
 from ._context import *
 from ._general import *
 from ._filters import *
@@ -8,4 +13,7 @@ set_scalebar()
 set_image()
 set_save_context(dpi=300)
 
-__version__ = "0.1.0"
+try:
+    __version__ = version(__name__)
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"

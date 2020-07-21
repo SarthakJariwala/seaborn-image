@@ -26,9 +26,7 @@ def tests(session):
     """Run the test suite."""
     args = session.posargs or ["--cov", "-m", "not e2e"]
     session.run("poetry", "install", "--no-dev", external=True)
-    install_with_constraints(
-        session, "coverage[toml]", "pytest", "pytest-cov"
-    )
+    install_with_constraints(session, "coverage[toml]", "pytest", "pytest-cov")
     session.run("pytest", *args)
 
 
@@ -50,7 +48,7 @@ def lint(session):
         "flake8-black",
         "flake8-bugbear",
         "flake8-bandit",
-        "flake8-docstrings"
+        "flake8-docstrings",
     )
     session.run("flake8", *args)
 
