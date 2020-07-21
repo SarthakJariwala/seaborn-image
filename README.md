@@ -18,6 +18,7 @@
 
 [![Tests](https://github.com/SarthakJariwala/seaborn-image/workflows/Tests/badge.svg)](https://github.com/SarthakJariwala/seaborn-image/actions?workflow=Tests)
 [![Codecov](https://codecov.io/gh/SarthakJariwala/seaborn-image/branch/master/graph/badge.svg)](https://codecov.io/gh/SarthakJariwala/seaborn-image)
+[![PyPI](https://img.shields.io/pypi/v/seaborn-image.svg)](https://pypi.org/project/seaborn-image/)
 
 Seaborn like image data visualization using matplotlib, scikit-image and scipy.
 
@@ -26,7 +27,7 @@ Seaborn like image data visualization using matplotlib, scikit-image and scipy.
 Seaborn-image is a seaborn like python **image** visualization and processing library
 based on matplotlib.
 
-The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly****and effectively**.
+The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly and effectively**.
 
 
 ## Installation
