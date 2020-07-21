@@ -20,7 +20,7 @@ def filterplot(
     title1=None,
     title2=None,
     title_fontdict=None,
-    **kwargs
+    **kwargs,
 ):
 
     # kwargs across filters
@@ -55,7 +55,12 @@ def filterplot(
 
         elif filter == "max":
             filtered_data = ndi.maximum_filter(
-                data, size=size, footprint=footprint, mode=mode, cval=cval, origin=origin
+                data,
+                size=size,
+                footprint=footprint,
+                mode=mode,
+                cval=cval,
+                origin=origin,
             )
 
     f, ax = plt.subplots(1, 2)

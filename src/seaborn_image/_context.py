@@ -41,7 +41,7 @@ def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
     plt.rc("font", **font)
 
     if rc is not None:
-        assert type(rc) == dict, "'rc' must be a dict"
+        assert isinstance(rc, dict), "'rc' must be a dict"
         mpl.rcParams.update(rc)
 
 
@@ -95,6 +95,6 @@ def set_scalebar(rc=None):
     mpl.rcParams.update({"scalebar.box_alpha": 0})
 
     if rc is not None:
-        assert type(rc) == dict, "'rc' must be a dict"
+        assert isinstance(rc, dict), "'rc' must be a dict"
         for key, value in rc.items():
             mpl.rcParams.update({f"scalebar.{key}": value})
