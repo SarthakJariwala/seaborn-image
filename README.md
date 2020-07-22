@@ -19,49 +19,55 @@
 [![Tests](https://github.com/SarthakJariwala/seaborn-image/workflows/Tests/badge.svg)](https://github.com/SarthakJariwala/seaborn-image/actions?workflow=Tests)
 [![Codecov](https://codecov.io/gh/SarthakJariwala/seaborn-image/branch/master/graph/badge.svg)](https://codecov.io/gh/SarthakJariwala/seaborn-image)
 [![PyPI](https://img.shields.io/pypi/v/seaborn-image.svg)](https://pypi.org/project/seaborn-image/)
+[![Documentation Status](https://readthedocs.org/projects/seaborn-image/badge/?version=latest)](https://seaborn-image.readthedocs.io/en/latest/?badge=latest)
 
-Seaborn like image data visualization using matplotlib, scikit-image and scipy.
+Seaborn-like image data visualization using matplotlib, scikit-image and scipy.
 
 ## Description
 
 Seaborn-image is a seaborn like python **image** visualization and processing library
-based on matplotlib.
+based on matplotlib, scipy and scikit-image.
 
 The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly and effectively**.
 
 
 ## Installation
 
-``pip install seaborn-image``
+```bash
+pip install seaborn-image
+```
 
 ## Usage
 ### Simple usage
 
 ```python
 
-    import seaborn_image as isns
+import seaborn_image as isns
 
-    """Plot image"""
-    isns.imgplot(data)
+"""Plot image"""
+isns.imgplot(data)
 
-    """Plot image with scalebar"""
-    isns.imgplot(data, dx=1, units="um")
+"""Plot image with scalebar"""
+isns.imgplot(data, dx=1, units="um")
 ```
 
 ### Set context like seaborn
 
 ```python
 
-    import seaborn_image as isns
+import seaborn_image as isns
 
-    isns.set_context("notebook") # Other options include paper, talk, presentation, poster
+isns.set_context("notebook") # Other options include paper, talk, presentation, poster
 ```
 
 ### Apply image filters (from scipy and skimage) and plot
 
 ```python
 
-    import seaborn_image as isns
+import seaborn_image as isns
 
-    isns.filterplot(data, filter="gaussian")
+isns.filterplot(data, filter="gaussian")
 ```
+
+## Documentation
+Check out the docs [here](https://seaborn-image.readthedocs.io/)
