@@ -1,18 +1,27 @@
 name: Tests
-on: push
+on:
+  - push
+  - pull_request
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
-    name: Python ${{ matrix.python-version }}
+        include:
+          - { python-version: 3.8, os: ubuntu-latest }
+          - { python-version: 3.7, os: ubuntu-latest }
+          - { python-version: 3.6, os: ubuntu-latest }
+          - { python-version: 3.8, os: windows-latest }
+          - { python-version: 3.8, os: macos-latest }
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v2.3.1
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: x64
+          # architecture: x64
       - run: pip install nox==2020.5.24
       - run: pip install poetry==1.0.9
       - run: nox
