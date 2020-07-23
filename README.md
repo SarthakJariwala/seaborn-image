@@ -1,5 +1,10 @@
 # seaborn-image: image data visualization
 
+[![Tests](https://github.com/SarthakJariwala/seaborn-image/workflows/Tests/badge.svg)](https://github.com/SarthakJariwala/seaborn-image/actions?workflow=Tests)
+[![Codecov](https://codecov.io/gh/SarthakJariwala/seaborn-image/branch/master/graph/badge.svg)](https://codecov.io/gh/SarthakJariwala/seaborn-image)
+[![PyPI](https://img.shields.io/pypi/v/seaborn-image.svg)](https://pypi.org/project/seaborn-image/)
+[![Documentation Status](https://readthedocs.org/projects/seaborn-image/badge/?version=latest)](https://seaborn-image.readthedocs.io/en/latest/?badge=latest)
+
 <div class="row">
 
 <a>
@@ -10,16 +15,15 @@
 <img src="./examples/image_1.png" height="135" width="145">
 </a>
 
+</div>
+
+<div class="row">
+
 <a>
-<img src="./examples/image_2.png" height="135" width="300">
+<img src="./examples/image_2.png" height="300" width="300">
 </a>
 
 </div>
-
-[![Tests](https://github.com/SarthakJariwala/seaborn-image/workflows/Tests/badge.svg)](https://github.com/SarthakJariwala/seaborn-image/actions?workflow=Tests)
-[![Codecov](https://codecov.io/gh/SarthakJariwala/seaborn-image/branch/master/graph/badge.svg)](https://codecov.io/gh/SarthakJariwala/seaborn-image)
-[![PyPI](https://img.shields.io/pypi/v/seaborn-image.svg)](https://pypi.org/project/seaborn-image/)
-[![Documentation Status](https://readthedocs.org/projects/seaborn-image/badge/?version=latest)](https://seaborn-image.readthedocs.io/en/latest/?badge=latest)
 
 Seaborn-like image data visualization using matplotlib, scikit-image and scipy.
 
