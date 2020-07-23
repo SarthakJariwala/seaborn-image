@@ -23,7 +23,7 @@ def imgplot(
 
     # add vmin, vmax, dx, units to checks
     if cmap is not None:
-        if not isinstance(cmap, str) or not isinstance(cmap, Colormap):
+        if not isinstance(cmap, (str, Colormap)):
             raise TypeError
     if ax is not None:
         if not isinstance(ax, Axes):
