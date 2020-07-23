@@ -11,7 +11,7 @@
 </a>
 
 <a>
-<img src="./examples/image_3.png" height="135" width="300">
+<img src="./examples/image_2.png" height="135" width="300">
 </a>
 
 </div>
