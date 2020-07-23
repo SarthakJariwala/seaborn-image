@@ -35,7 +35,7 @@ def test_set_save_context(dpi):
 
 @pytest.mark.parametrize(
     "cmap,origin,interpolation",
-    [("viridis", "lower", "nearest"), ("afmhot", "upper", "cubic")],
+    [("viridis", "lower", "nearest"), ("afmhot", "upper", "bicubic")],
 )
 def test_set_image(cmap, origin, interpolation):
     isns.set_image(cmap, origin, interpolation)
