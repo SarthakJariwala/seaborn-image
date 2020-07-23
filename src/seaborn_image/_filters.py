@@ -27,6 +27,11 @@ def filterplot(
     **kwargs,
 ):
 
+    if not isinstance(filter, str):
+        raise TypeError
+    if not isinstance(fft, bool):
+        raise TypeError
+
     # kwargs across filters
     axis = kwargs.get("axis", -1)
     mode = kwargs.get("mode", "reflect")
@@ -44,7 +49,9 @@ def filterplot(
     _implemented_filters = ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
 
     if filter not in _implemented_filters:
-        raise NotImplementedError(f"'{filter}' filter is not implemented. Following are implented: {_implemented_filters}")
+        raise NotImplementedError(
+            f"'{filter}' filter is not implemented. Following are implented: {_implemented_filters}"
+        )
 
     else:
         if filter == "sobel":
