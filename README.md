@@ -78,8 +78,12 @@ isns.set_context("notebook") # Other options include paper, talk, presentation, 
 
 import seaborn_image as isns
 
-isns.filterplot(data, filter="gaussian")
+isns.filterplot(data, filter="gaussian", sigma=5)
 ```
+
+<a>
+<img src="./examples/image_3.png" height="180" width="400">
+</a>
 
 ## Documentation
 Check out the docs [here](https://seaborn-image.readthedocs.io/)
