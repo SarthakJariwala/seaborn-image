@@ -39,7 +39,7 @@ def test_plot_check_cbar_dict():
         f, ax = img_setup.plot()
 
 
-@pytest.mark.parametrize("cmap", [None, "acton", "viridis"])
+@pytest.mark.parametrize("cmap", [None, "acton"])
 @pytest.mark.parametrize("vmin", [None])
 @pytest.mark.parametrize("vmax", [None])
 @pytest.mark.parametrize("title", [None, "My Title"])
