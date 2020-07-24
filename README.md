@@ -8,11 +8,15 @@
 <div class="row">
 
 <a>
-<img src="./examples/image_0.png" height="135" width="145">
+<img src="./examples/image_0.png" height="200" width="200">
 </a>
 
 <a>
-<img src="./examples/image_1.png" height="135" width="145">
+<img src="./examples/image_1.png" height="200" width="200">
+</a>
+
+<a>
+<img src="./examples/image_3.png" height="200" width="400">
 </a>
 
 </div>
@@ -20,7 +24,11 @@
 <div class="row">
 
 <a>
-<img src="./examples/image_2.png" height="300" width="300">
+<img src="./examples/image_4.png" height="400" width="400">
+</a>
+
+<a>
+<img src="./examples/image_2.png" height="400" width="400">
 </a>
 
 </div>
