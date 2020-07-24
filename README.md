@@ -8,15 +8,15 @@
 <div class="row">
 
 <a>
-<img src="./examples/image_0.png" height="200" width="200">
+<img src="./examples/image_0.png" height="180" width="200">
 </a>
 
 <a>
-<img src="./examples/image_1.png" height="200" width="200">
+<img src="./examples/image_1.png" height="180" width="200">
 </a>
 
 <a>
-<img src="./examples/image_3.png" height="200" width="400">
+<img src="./examples/image_3.png" height="180" width="400">
 </a>
 
 </div>
