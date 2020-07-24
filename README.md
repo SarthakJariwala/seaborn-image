@@ -8,11 +8,15 @@
 <div class="row">
 
 <a>
-<img src="./examples/image_0.png" height="135" width="145">
+<img src="./examples/image_0.png" height="180" width="200">
 </a>
 
 <a>
-<img src="./examples/image_1.png" height="135" width="145">
+<img src="./examples/image_1.png" height="180" width="200">
+</a>
+
+<a>
+<img src="./examples/image_3.png" height="165" width="400">
 </a>
 
 </div>
@@ -20,7 +24,11 @@
 <div class="row">
 
 <a>
-<img src="./examples/image_2.png" height="300" width="300">
+<img src="./examples/image_4.png" height="400" width="400">
+</a>
+
+<a>
+<img src="./examples/image_2.png" height="400" width="400">
 </a>
 
 </div>
@@ -52,8 +60,14 @@ import seaborn_image as isns
 isns.imgplot(data)
 
 """Plot image with scalebar"""
-isns.imgplot(data, dx=1, units="um")
+isns.imgplot(data, dx=0.01, units="um")
+
+"""Add colorbar label"""
+isns.imgplot(data, dx=0.01, units="um", cbar_label="Height (nm)")
 ```
+<a>
+<img src="./examples/image_0.png" height="275" width="300">
+</a>
 
 ### Set context like seaborn
 
@@ -70,8 +84,12 @@ isns.set_context("notebook") # Other options include paper, talk, presentation, 
 
 import seaborn_image as isns
 
-isns.filterplot(data, filter="gaussian")
+isns.filterplot(data, filter="gaussian", sigma=5, cbar_label="Height (nm)")
 ```
+
+<a>
+<img src="./examples/image_3.png" height="260" width="600">
+</a>
 
 ## Documentation
 Check out the docs [here](https://seaborn-image.readthedocs.io/)
