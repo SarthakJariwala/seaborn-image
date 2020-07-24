@@ -16,7 +16,7 @@
 </a>
 
 <a>
-<img src="./examples/image_3.png" height="180" width="400">
+<img src="./examples/image_3.png" height="165" width="400">
 </a>
 
 </div>
@@ -60,8 +60,14 @@ import seaborn_image as isns
 isns.imgplot(data)
 
 """Plot image with scalebar"""
-isns.imgplot(data, dx=1, units="um")
+isns.imgplot(data, dx=0.01, units="um")
+
+"""Add colorbar label"""
+isns.imgplot(data, dx=0.01, units="um", cbar_label="Height (nm)")
 ```
+<a>
+<img src="./examples/image_0.png" height="275" width="300">
+</a>
 
 ### Set context like seaborn
 
@@ -78,11 +84,11 @@ isns.set_context("notebook") # Other options include paper, talk, presentation, 
 
 import seaborn_image as isns
 
-isns.filterplot(data, filter="gaussian", sigma=5)
+isns.filterplot(data, filter="gaussian", sigma=5, cbar_label="Height (nm)")
 ```
 
 <a>
-<img src="./examples/image_3.png" height="180" width="400">
+<img src="./examples/image_3.png" height="260" width="600">
 </a>
 
 ## Documentation
