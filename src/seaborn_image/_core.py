@@ -8,7 +8,7 @@ from ._colormap import _CMAP_QUAL
 
 def _check_dict(dictionary):
     if not isinstance(dictionary, dict):
-        raise ValueError(f"{dictionary} must be a dictionary")
+        raise TypeError(f"{dictionary} must be a dictionary")
 
 
 class _SetupImage(object):
