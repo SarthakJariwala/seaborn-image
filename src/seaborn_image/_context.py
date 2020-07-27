@@ -7,7 +7,8 @@ from ._colormap import _CMAP_QUAL
 
 
 def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
-    """Set context for images with mode, fontfamily and fontweight. Additional,
+    """
+    Set context for images with mode, fontfamily and fontweight. Additional,
     rc params can also be passed as dict
 
     Args:
@@ -18,6 +19,12 @@ def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
             and 'bold'. Defaults to "bold".
         rc (dict, optional): additional rc params to be passed to matplotlib.
             Defaults to None.
+
+    Example:
+        >>> import seaborn_image as isns
+        >>> isns.set_context(mode="poster", fontfamily="sans-serif")
+        >>> isns.set_context(rc={"axes.edgecolor": "red"})
+
     """
     # plt.rc("axes.spines", left=False, right=False, top=False, bottom=False)
     if mode == "paper":
@@ -46,27 +53,48 @@ def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
 
 
 def set_save_context(dpi=300):
-    """Set dpi for saving figures to disk
+    """
+    Set dpi for saving figures to disk
 
     Args:
         dpi (int, optional): image dpi. Defaults to 300.
+
+    Example:
+        >>> import seaborn_image as isns
+        >>> isns.set_save_context(dpi=200)
+
     """
     plt.rc("savefig", dpi=dpi, bbox="tight")
 
 
 def reset_defaults():
-    """Reset rcParams to matplotlib defaults
+    """
+    Reset rcParams to matplotlib defaults
+
+    Example:
+        >>> import seaborn_image as isns
+        >>> isns.reset_deafults()
+
     """
     mpl.rcParams.update(mpl.rcParamsDefault)
 
 
 def set_image(cmap="viridis", origin="lower", interpolation="nearest"):
-    """Set deaults for plotting images
+    """
+    Set deaults for plotting images
 
     Args:
-        cmap (str, optional): Colormap to use accross images. Defaults to "viridis".
-        origin (str, optional): image origin - same as in matplotlib imshow. Defaults to "lower".
-        interpolation (str, optional): image interpolation - same as in matplotlib imshow. Defaults to "nearest".
+        cmap (str, optional): Colormap to use accross images.
+            Defaults to "viridis".
+        origin (str, optional): image origin - same as in matplotlib imshow.
+            Defaults to "lower".
+        interpolation (str, optional): image interpolation - same as in matplotlib imshow.
+            Defaults to "nearest".
+
+    Example:
+        >>> import seaborn_image as isns
+        >>> isns.set_image(cmap="inferno", interpolation="bicubic")
+
     """
 
     if cmap in _CMAP_QUAL.keys():  # doesn't work currently
@@ -83,8 +111,10 @@ def set_scalebar(rc=None):
             Defaults to None.
 
     Example:
+        >>> import seaborn_image as isns
         >>> isns.set_scalebar({"color":"red"})
         >>> isns.set_scalebar({"scale_loc":"bottom"})
+
     """
     mpl.rcParams.update({"scalebar.color": "white"})
     mpl.rcParams.update({"scalebar.height_fraction": 0.05})
