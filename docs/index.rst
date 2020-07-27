@@ -67,7 +67,7 @@ Contents
 
    License <license>
    Authors <authors>
-   Changelog <changelog>
+   Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>
    Reference <reference>
 
 

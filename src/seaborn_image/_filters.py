@@ -26,6 +26,59 @@ def filterplot(
     title_fontdict=None,
     **kwargs,
 ):
+    """
+    Plot original and filterd data as 2-D image with option to view the
+    fast-fourier transform. Scalebar, colorbar, titles can be added and
+    configured similar to `imgplot`
+
+    Args:
+        data: Image data (array-like). Supported array shapes are all
+            `matplotlib.pyplot.imshow` array shapes
+        filter (str, optional): Image filter to be used for processing.
+            Defaults to "gaussian".
+            Options include: "sobel", "gaussian", "median", "max", "diff_of_gaussians"
+        fft (bool, optional): If True, fast-fourier transform of the original image and
+            the filtered image is displayed. Defaults to False.
+        cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
+            Can be a seaborn-image colormap or default matplotlib colormaps or
+            any other colormap converted to a matplotlib colormap. Defaults to None.
+        vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
+        vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
+        dx (float, optional): Size per pixel of the image data. If scalebar
+            is required, `dx` and `units` must be sepcified. Defaults to None.
+        units (str, optional): Units of `dx`. Defaults to None.
+        cbar (bool, optional): Specify if a colorbar is required or not.
+            Defaults to True.
+        cbar_label (str, optional): Colorbar label. Defaults to None.
+        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
+            Defaults to None.
+        cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
+            the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
+            are used for colorbar ticks. Defaults to None.
+        showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
+        title (str, optional): Image title. Defaults to None.
+        title1 (str, optional): Original image title. Defaults to "Original Image".
+        title2 (str, optional): Filtered image title. Defaults to "Filtered Image".
+        title_fontdict (dict, optional): Font specifications for `title`. Defaults to None.
+
+    Raises:
+        TypeError: if `filter` is not a string type
+        TypeError: if `fft` is not a bool type
+        NotImplementedError: if a `filter` that is not implemented is specified
+
+    Returns:
+        (tuple): tuple containing:
+
+            (`matplotlib.figure.Figure`): Matplotlib figure.
+            (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
+            (`numpy.array`): Filtered image data
+
+    Example:
+        >>> import seaborn_image as isns
+        >>> isns.filterplot(data) # use default gaussian filter
+        >>> isns.filterplot(data, filter="sobel", fft=True) # specify a filter and view fft
+        >>> isns.filterplot(data, dx=3, units="um") # specify scalebar for the filterplot
+    """
 
     if not isinstance(filter, str):
         raise TypeError
