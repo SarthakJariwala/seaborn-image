@@ -7,29 +7,33 @@
 
 <div class="row">
 
-<a>
-<img src="./examples/image_0.png" height="180" width="200">
-</a>
+  <a>
+  <img src="./examples/image_0.png" height="180" width="200">
+  </a>
 
-<a>
-<img src="./examples/image_1.png" height="180" width="200">
-</a>
+  <a>
+  <img src="./examples/image_1.png" height="180" width="200">
+  </a>
 
-<a>
-<img src="./examples/image_3.png" height="165" width="400">
-</a>
+  <a>
+  <img src="./examples/image_3.png" height="165" width="400">
+  </a>
+
+</div>
+
+<div class="row">
+  
+  <a>
+  <img src="./examples/image_5.png" height="250" width="375">
+  </a>
 
 </div>
 
 <div class="row">
 
-<a>
-<img src="./examples/image_4.png" height="400" width="400">
-</a>
-
-<a>
-<img src="./examples/image_2.png" height="400" width="400">
-</a>
+  <a>
+  <img src="./examples/image_4.png" height="600" width="600">
+  </a>
 
 </div>
 
@@ -74,11 +78,11 @@ isns.imgplot(data, dx=0.01, units="um", cbar_label="Height (nm)")
 ```python
 import seaborn_image as isns
 
-isns.imghist(data, dx=150, units="nm", cbar_label="Height (nm)")
+isns.imghist(data, dx=150, units="nm", cbar_label="Height (nm)", cmap="ice")
 ```
 
 <a>
-<img src="./examples/image_5.png" height="400" width="500">
+<img src="./examples/image_5.png" height="300" width="450">
 </a>
 
 ### Set context like seaborn
@@ -104,4 +108,5 @@ isns.filterplot(data, filter="gaussian", sigma=5, cbar_label="Height (nm)")
 </a>
 
 ## Documentation
+
 Check out the docs [here](https://seaborn-image.readthedocs.io/)
