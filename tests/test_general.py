@@ -51,27 +51,72 @@ def test_title_fontdict_type():
 
 
 def test_imgplot_return():
-    f, ax, d = isns.imgplot(data)
+    f, ax, cax = isns.imgplot(data)
 
     assert isinstance(f, Figure)
     assert isinstance(ax, Axes)
-    assert d.all() == data.all()
+    assert isinstance(cax, Axes)
 
 
-@pytest.mark.parametrize("cmap", ["acton"])
+@pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
 @pytest.mark.parametrize("cbar", [True, False])
 @pytest.mark.parametrize("cbar_label", ["My title", None])
-@pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}])
+@pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("title", ["My title", None])
-@pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}])
-def test_all_valid_inputs(
+@pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
+def test_imgplot_w_all_valid_inputs(
     cmap, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
 ):
     isns.imgplot(
         data,
         ax=None,
         cmap=cmap,
+        cbar=cbar,
+        cbar_label=cbar_label,
+        cbar_fontdict=cbar_fontdict,
+        showticks=showticks,
+        title=title,
+        title_fontdict=title_fontdict,
+    )
+
+
+@pytest.mark.parametrize("bins", [None, 200.0, -400.13])
+def test_imghist_bins_type(bins):
+    with pytest.raises(TypeError):
+        isns.imghist(data, bins=bins)
+
+
+@pytest.mark.parametrize("bins", [-100, 0])
+def test_imghist_bins_value(bins):
+    with pytest.raises(ValueError):
+        isns.imghist(data, bins=bins)
+
+
+def test_imghist_return():
+    f, axes, cax = isns.imghist(data)
+
+    assert isinstance(f, Figure)
+    assert isinstance(axes[0], Axes)
+    assert isinstance(axes[1], Axes)
+    assert isinstance(cax, Axes)
+
+
+@pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
+@pytest.mark.parametrize("bins", [500, 10])
+@pytest.mark.parametrize("cbar", [True, False])
+@pytest.mark.parametrize("cbar_label", ["My title", None])
+@pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
+@pytest.mark.parametrize("showticks", [True, False])
+@pytest.mark.parametrize("title", ["My title", None])
+@pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
+def test_imghist_w_all_valid_inputs(
+    cmap, bins, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
+):
+    isns.imghist(
+        data,
+        cmap=cmap,
+        bins=bins,
         cbar=cbar,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,
