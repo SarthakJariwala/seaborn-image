@@ -36,7 +36,7 @@ def test_plot_check_cbar_dict():
         img_setup = isns._core._SetupImage(
             data, cbar=True, cbar_fontdict=[{"fontsize": 20}]
         )
-        f, ax = img_setup.plot()
+        f, ax, cax = img_setup.plot()
 
 
 @pytest.mark.parametrize("cmap", [None, "acton"])
@@ -82,7 +82,11 @@ def test_plot_w_all_inputs(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
     )
-    f, ax = img_setup.plot()
+    f, ax, cax = img_setup.plot()
 
     assert isinstance(f, Figure)
     assert isinstance(ax, Axes)
+    if cbar is True:
+        assert isinstance(cax, Axes)
+    else:
+        assert cax is None

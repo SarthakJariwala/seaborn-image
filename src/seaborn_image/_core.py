@@ -121,10 +121,13 @@ class _SetupImage(object):
             if self.cbar_label is not None:
                 cb.set_label(self.cbar_label, fontdict=self.cbar_fontdict)
 
+        else:
+            cax = None
+
         if not self.showticks:
             ax.get_yaxis().set_visible(False)
             ax.get_xaxis().set_visible(False)
 
         f.tight_layout()
 
-        return f, ax
+        return f, ax, cax

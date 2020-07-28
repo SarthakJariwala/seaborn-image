@@ -69,6 +69,18 @@ isns.imgplot(data, dx=0.01, units="um", cbar_label="Height (nm)")
 <img src="./examples/image_0.png" height="275" width="300">
 </a>
 
+### Plot image with a histogram
+
+```python
+import seaborn_image as isns
+
+isns.imghist(data, dx=150, units="nm", cbar_label="Height (nm)")
+```
+
+<a>
+<img src="./examples/image_5.png" height="400" width="500">
+</a>
+
 ### Set context like seaborn
 
 ```python
