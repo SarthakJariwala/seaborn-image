@@ -1,10 +1,11 @@
 from datetime import datetime
+import sphinx_bootstrap_theme
 
 
 project = "seaborn-image"
 author = "Sarthak Jariwala"
 copyright = f"{datetime.now().year}, {author}"
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinxcontrib.images"]
 html_static_path = ["_static"]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,12 +52,26 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = "alabaster"
+html_theme = "bootstrap"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-# html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
+html_theme_options = {
+    "source_link_position": "footer",
+    "bootswatch_theme": "united",  # paper, simplex
+    "navbar_sidebarrel": False,
+    "bootstrap_version": "3",
+    "navbar_links": [
+        ("Quickstart", "quickstart"),
+        ("How-to?", "how_to"),
+        ("Gallery", "gallery"),
+        ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
+        ("Reference", "reference"),
+    ],
+}
+
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -172,14 +187,11 @@ html_static_path = ["_static"]
 # # If false, no module index is generated.
 # # latex_domain_indices = True
 
-# # -- External mapping ------------------------------------------------------------
-# python_version = '.'.join(map(str, sys.version_info[0:2]))
-# intersphinx_mapping = {
-#     'sphinx': ('http://www.sphinx-doc.org/en/stable', None),
-#     'python': ('https://docs.python.org/' + python_version, None),
-#     'matplotlib': ('https://matplotlib.org', None),
-#     'numpy': ('https://docs.scipy.org/doc/numpy', None),
-#     'sklearn': ('http://scikit-learn.org/stable', None),
-#     'pandas': ('http://pandas.pydata.org/pandas-docs/stable', None),
-#     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
-# }
+# -- External mapping ------------------------------------------------------------
+intersphinx_mapping = {
+    "sphinx": ("http://www.sphinx-doc.org/en/stable", None),
+    "matplotlib": ("https://matplotlib.org", None),
+    "numpy": ("https://docs.scipy.org/doc/numpy", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
+    "scikit-image": ("https://scikit-image.org/", None),
+}

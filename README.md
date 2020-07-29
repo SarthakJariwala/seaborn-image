@@ -22,7 +22,7 @@
 </div>
 
 <div class="row">
-  
+
   <a>
   <img src="./examples/image_5.png" height="250" width="375">
   </a>
@@ -45,6 +45,10 @@ Seaborn-image is a seaborn like python **image** visualization and processing li
 based on matplotlib, scipy and scikit-image.
 
 The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly and effectively**.
+
+## Documentation
+
+Check out the docs [here](https://seaborn-image.readthedocs.io/)
 
 
 ## Installation
@@ -107,6 +111,4 @@ isns.filterplot(data, filter="gaussian", sigma=5, cbar_label="Height (nm)")
 <img src="./examples/image_3.png" height="260" width="600">
 </a>
 
-## Documentation
-
-Check out the docs [here](https://seaborn-image.readthedocs.io/)
+Check out the more information [here](https://seaborn-image.readthedocs.io/)
