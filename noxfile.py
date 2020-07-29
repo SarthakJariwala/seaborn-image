@@ -81,6 +81,6 @@ def safety(session):
 @nox.session()
 def docs(session):
     """Build the documentation."""
-    session.run("poetry", "install", "--no-dev", external=True)
+    session.run("poetry", "install", external=True)
     install_with_constraints(session, "sphinx")
     session.run("sphinx-build", "docs", "docs/_build")
