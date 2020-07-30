@@ -16,7 +16,7 @@ def test_filter_not_implemented():
 
 
 @pytest.mark.parametrize(
-    "filter,fft", [(["gaussian"], True), ("gaussian", "True"), (["gaussian"], "True")]
+    "filter,fft", [(["gaussian"], True), ("gaussian", "True"), (["gaussian"], None)]
 )
 def test_filter_types(filter, fft):
     with pytest.raises(TypeError):
