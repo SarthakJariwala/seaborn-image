@@ -102,3 +102,5 @@ def test_plot_w_all_inputs(
         assert isinstance(cax, Axes)
     else:
         assert cax is None
+
+    plt.close("all")
