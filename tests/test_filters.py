@@ -1,5 +1,6 @@
 import pytest
 
+import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -16,7 +17,7 @@ def test_filter_not_implemented():
 
 
 @pytest.mark.parametrize(
-    "filter,fft", [(["gaussian"], True), ("gaussian", "True"), (["gaussian"], "True")]
+    "filter,fft", [(["gaussian"], True), ("gaussian", "True"), (["gaussian"], None)]
 )
 def test_filter_types(filter, fft):
     with pytest.raises(TypeError):
@@ -34,3 +35,5 @@ def test_filters(filter, fft):
     assert isinstance(ax, np.ndarray)
     assert isinstance(ax.ravel().all(), Axes)
     assert filt_data.all() == data.all()
+
+    plt.close("all")

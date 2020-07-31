@@ -68,7 +68,7 @@ def test_imgplot_return():
 def test_imgplot_w_all_valid_inputs(
     cmap, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
 ):
-    isns.imgplot(
+    f, ax, cax = isns.imgplot(
         data,
         ax=None,
         cmap=cmap,
@@ -79,6 +79,7 @@ def test_imgplot_w_all_valid_inputs(
         title=title,
         title_fontdict=title_fontdict,
     )
+    plt.close("all")
 
 
 @pytest.mark.parametrize("bins", [None, 200.0, -400.13])
@@ -113,7 +114,7 @@ def test_imghist_return():
 def test_imghist_w_all_valid_inputs(
     cmap, bins, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
 ):
-    isns.imghist(
+    f, axes, cax = isns.imghist(
         data,
         cmap=cmap,
         bins=bins,
@@ -124,3 +125,5 @@ def test_imghist_w_all_valid_inputs(
         title=title,
         title_fontdict=title_fontdict,
     )
+
+    plt.close("all")

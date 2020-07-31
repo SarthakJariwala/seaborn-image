@@ -31,6 +31,15 @@ def test_setup_scalebar():
         img_setup._setup_scalebar(ax)
 
 
+def test_setup_scalebar_dimension():
+    with pytest.raises(ValueError):
+        img_setup = isns._core._SetupImage(
+            data, dx=1, units="nm", dimension="imperial-reciprocal"
+        )
+        f, ax = img_setup._setup_figure()
+        img_setup._setup_scalebar(ax)
+
+
 def test_plot_check_cbar_dict():
     with pytest.raises(TypeError):
         img_setup = isns._core._SetupImage(
@@ -48,6 +57,7 @@ def test_plot_check_cbar_dict():
 @pytest.mark.parametrize(
     "units", ["m", "um"]
 )  # units can't be None when dx is not None
+@pytest.mark.parametrize("dimension", [None, "si"])
 @pytest.mark.parametrize("cbar", [None, True, False])
 @pytest.mark.parametrize("cbar_fontdict", [None, {"fontsize": 20}])
 @pytest.mark.parametrize("cbar_label", [None, "Cbar Label"])
@@ -61,6 +71,7 @@ def test_plot_w_all_inputs(
     fontdict,
     dx,
     units,
+    dimension,
     cbar,
     cbar_fontdict,
     cbar_label,
@@ -76,6 +87,7 @@ def test_plot_w_all_inputs(
         fontdict=fontdict,
         dx=dx,
         units=units,
+        dimension=dimension,
         cbar=cbar,
         cbar_fontdict=cbar_fontdict,
         cbar_label=cbar_label,
@@ -90,3 +102,5 @@ def test_plot_w_all_inputs(
         assert isinstance(cax, Axes)
     else:
         assert cax is None
+
+    plt.close("all")

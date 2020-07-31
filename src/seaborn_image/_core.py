@@ -5,6 +5,15 @@ from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
 
 from ._colormap import _CMAP_QUAL
 
+# dimensions for scalebar
+_DIMENSIONS = {
+    "si": "si-length",
+    "si-reciprocal": "si-length-reciprocal",
+    "imperial": "imperial-length",
+    "angle": "angle",
+    "pixel": "pixel-length",
+}
+
 
 def _check_dict(dictionary):
     if not isinstance(dictionary, dict):
@@ -23,6 +32,7 @@ class _SetupImage(object):
         fontdict=None,
         dx=None,
         units=None,
+        dimension=None,
         cbar=None,
         cbar_fontdict=None,
         cbar_label=None,
@@ -39,6 +49,7 @@ class _SetupImage(object):
         self.fontdict = fontdict
         self.dx = dx
         self.units = units
+        self.dimension = dimension
         self.cbar = cbar
         self.cbar_fontdict = cbar_fontdict
         self.cbar_label = cbar_label
@@ -75,7 +86,16 @@ class _SetupImage(object):
                     "'units' must be specified when 'dx' (scalebar) is used"
                 )
 
-        scalebar = ScaleBar(dx=dx, units=units)
+        if self.dimension is None:
+            _dimension = _DIMENSIONS.get("si")
+        elif self.dimension in _DIMENSIONS.keys():
+            _dimension = _DIMENSIONS.get(self.dimension)
+        else:
+            raise ValueError(
+                f"Unsupported dimension. Supported dimensions are : {_DIMENSIONS.keys()}"
+            )
+
+        scalebar = ScaleBar(dx=dx, units=units, dimension=_dimension)
 
         ax.add_artist(scalebar)
 

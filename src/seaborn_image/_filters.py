@@ -16,6 +16,7 @@ def filterplot(
     vmax=None,
     dx=None,
     units=None,
+    dimension=None,
     cbar=True,
     cbar_label=None,
     cbar_fontdict=None,
@@ -47,6 +48,14 @@ def filterplot(
         dx (float, optional): Size per pixel of the image data. If scalebar
             is required, `dx` and `units` must be sepcified. Defaults to None.
         units (str, optional): Units of `dx`. Defaults to None.
+        dimension (str, optional): dimension of `dx` and `units`.
+            Options include :
+                - "si" : scale bar showing km, m, cm, etc.
+                - "imperial" : scale bar showing in, ft, yd, mi, etc.
+                - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+                - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
+                - "pixel" : scale bar showing px, kpx, Mpx, etc.
+            Defaults to None.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
         cbar_label (str, optional): Colorbar label. Defaults to None.
@@ -160,6 +169,7 @@ def filterplot(
             vmax=vmax,
             dx=dx,
             units=units,
+            dimension=dimension,
             cbar=cbar,
             cbar_label=cbar_label,
             cbar_fontdict=cbar_fontdict,
@@ -176,6 +186,7 @@ def filterplot(
             vmax=vmax,
             dx=dx,
             units=units,
+            dimension=dimension,
             cbar=cbar,
             cbar_label=cbar_label,
             cbar_fontdict=cbar_fontdict,
@@ -214,6 +225,7 @@ def filterplot(
             vmax=vmax,
             dx=dx,
             units=units,
+            dimension=dimension,
             cbar=cbar,
             cbar_label=cbar_label,
             cbar_fontdict=cbar_fontdict,
@@ -230,6 +242,7 @@ def filterplot(
             vmax=vmax,
             dx=dx,
             units=units,
+            dimension=dimension,
             cbar=cbar,
             cbar_label=cbar_label,
             cbar_fontdict=cbar_fontdict,
