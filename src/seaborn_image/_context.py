@@ -1,5 +1,6 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.cm import register_cmap
 
 from ._colormap import _CMAP_QUAL
 
@@ -82,7 +83,7 @@ def reset_defaults():
     mpl.rcParams.update(mpl.rcParamsDefault)
 
 
-def set_image(cmap="viridis", origin="lower", interpolation="nearest"):
+def set_image(cmap="ice", origin="lower", interpolation="nearest"):
     """
     Set deaults for plotting images
 
@@ -101,7 +102,9 @@ def set_image(cmap="viridis", origin="lower", interpolation="nearest"):
     """
 
     if cmap in _CMAP_QUAL.keys():  # doesn't work currently
-        cmap = _CMAP_QUAL.get(cmap).mpl_colormap
+        cmap_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
+        register_cmap(name=cmap, cmap=cmap_mpl)
+
     plt.rc("image", cmap=cmap, origin=origin, interpolation=interpolation)
 
 
