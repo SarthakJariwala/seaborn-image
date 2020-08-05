@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import gridspec
 from matplotlib.axes import Axes
+from matplotlib.cm import get_cmap
 from matplotlib.colors import Colormap
 
 from ._colormap import _CMAP_QUAL
@@ -244,7 +245,8 @@ def imghist(
     ax2.set_frame_on(False)
 
     if cmap is None:
-        cm = _CMAP_QUAL.get("deep").mpl_colormap
+        # cm = _CMAP_QUAL.get("deep").mpl_colormap
+        cm = get_cmap()
     else:
         if cmap in _CMAP_QUAL.keys():
             cm = _CMAP_QUAL.get(cmap).mpl_colormap

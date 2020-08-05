@@ -102,9 +102,7 @@ class _SetupImage(object):
     def plot(self):
         f, ax = self._setup_figure()
 
-        if self.cmap is None:  # TODO move default to _context
-            self.cmap = _CMAP_QUAL.get("deep").mpl_colormap
-        elif self.cmap in _CMAP_QUAL.keys():
+        if self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
         _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
