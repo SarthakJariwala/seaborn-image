@@ -138,7 +138,7 @@ def imgplot(
 def imghist(
     data,
     cmap=None,
-    bins=500,
+    bins=None,
     vmin=None,
     vmax=None,
     dx=None,
@@ -161,7 +161,8 @@ def imghist(
         cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
             Can be a seaborn-image colormap or default matplotlib colormaps or
             any other colormap converted to a matplotlib colormap. Defaults to None.
-        bins (int, optional): Number of histogram bins. Defaults to 500.
+        bins (int, optional): Number of histogram bins. Defaults to None. If None, 'auto'
+            is used.
         vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
         vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
         dx (float, optional): Size per pixel of the image data. If scalebar
@@ -206,10 +207,13 @@ def imghist(
         >>> isns.imghist(data, cmap="deep") # specify a colormap
     """
 
-    if not isinstance(bins, int):
-        raise TypeError("'bins' must be a positive integer")
-    if not bins > 0:
-        raise ValueError("'bins' must be a positive integer")
+    if bins is None:
+        bins = "auto"
+    else:
+        if not isinstance(bins, int):
+            raise TypeError("'bins' must be a positive integer")
+        if not bins > 0:
+            raise ValueError("'bins' must be a positive integer")
 
     f = plt.figure(figsize=(10, 6))  # TODO make figsize user defined
     gs = gridspec.GridSpec(1, 2, width_ratios=[5, 1], figure=f)

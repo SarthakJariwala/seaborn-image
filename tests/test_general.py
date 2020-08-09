@@ -82,7 +82,7 @@ def test_imgplot_w_all_valid_inputs(
     plt.close("all")
 
 
-@pytest.mark.parametrize("bins", [None, 200.0, -400.13])
+@pytest.mark.parametrize("bins", ["random", 200.0, -400.13])
 def test_imghist_bins_type(bins):
     with pytest.raises(TypeError):
         isns.imghist(data, bins=bins)
@@ -104,7 +104,7 @@ def test_imghist_return():
 
 
 @pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
-@pytest.mark.parametrize("bins", [500, 10])
+@pytest.mark.parametrize("bins", [None, 500, 10])
 @pytest.mark.parametrize("cbar", [True, False])
 @pytest.mark.parametrize("cbar_label", ["My title", None])
 @pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
