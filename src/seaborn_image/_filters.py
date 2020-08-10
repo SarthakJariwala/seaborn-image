@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndi
+import scipy.stats as ss
 from scipy.fftpack import fftn, fftshift
 from skimage.filters import difference_of_gaussians, window
 
@@ -17,6 +18,7 @@ def filterplot(
     dx=None,
     units=None,
     dimension=None,
+    describe=False,
     cbar=True,
     cbar_label=None,
     cbar_fontdict=None,
@@ -56,6 +58,8 @@ def filterplot(
                 - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
                 - "pixel" : scale bar showing px, kpx, Mpx, etc.
             Defaults to None.
+        describe (bool, optional): Brief statistical description of the original and filterd
+            image. Defaults to False.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
         cbar_label (str, optional): Colorbar label. Defaults to None.
@@ -92,6 +96,8 @@ def filterplot(
     if not isinstance(filter, str):
         raise TypeError
     if not isinstance(fft, bool):
+        raise TypeError
+    if not isinstance(describe, bool):
         raise TypeError
 
     # kwargs across filters
@@ -150,7 +156,7 @@ def filterplot(
                 truncate=truncate,
             )
 
-    if fft:
+    if fft:  # move to FacetGrid like in seaborn (?) TODO
         # window image to improve fft
         w_data = data * window("hann", data.shape)
         w_filtered_data = filtered_data * window("hann", data.shape)
@@ -251,5 +257,24 @@ def filterplot(
             title=title2,
             title_fontdict=title_fontdict,
         )
+
+    if describe:
+        result_1 = ss.describe(data.flatten())
+        print("Original Image")
+        print(f"No. of Obs. : {result_1.nobs}")
+        print(f"Min. Value : {result_1.minmax[0]}")
+        print(f"Max. Value : {result_1.minmax[1]}")
+        print(f"Mean : {result_1.mean}")
+        print(f"Variance : {result_1.variance}")
+        print(f"Skewness : {result_1.skewness}")
+
+        result_2 = ss.describe(data.flatten())
+        print("Flitered Image")
+        print(f"No. of Obs. : {result_2.nobs}")
+        print(f"Min. Value : {result_2.minmax[0]}")
+        print(f"Max. Value : {result_2.minmax[1]}")
+        print(f"Mean : {result_2.mean}")
+        print(f"Variance : {result_2.variance}")
+        print(f"Skewness : {result_2.skewness}")
 
     return f, ax, filtered_data

@@ -20,6 +20,11 @@ def test_cmap_type():
         isns.imgplot(data, cmap=["r", "b", "g"])
 
 
+def test_describe_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, describe=["True"])
+
+
 def test_cbar_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, cbar="True")
@@ -65,13 +70,15 @@ def test_imgplot_return():
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("title", ["My title", None])
 @pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
+@pytest.mark.parametrize("describe", [True, False])
 def test_imgplot_w_all_valid_inputs(
-    cmap, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
+    cmap, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict, describe
 ):
     f, ax, cax = isns.imgplot(
         data,
         ax=None,
         cmap=cmap,
+        describe=describe,
         cbar=cbar,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,
@@ -111,13 +118,15 @@ def test_imghist_return():
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("title", ["My title", None])
 @pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
+@pytest.mark.parametrize("describe", [True, False])
 def test_imghist_w_all_valid_inputs(
-    cmap, bins, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict
+    cmap, bins, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict, describe
 ):
     f, axes, cax = isns.imghist(
         data,
         cmap=cmap,
         bins=bins,
+        describe=describe,
         cbar=cbar,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,

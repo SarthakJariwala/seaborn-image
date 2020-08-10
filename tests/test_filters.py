@@ -24,12 +24,18 @@ def test_filter_types(filter, fft):
         isns.filterplot(data, filter=filter, fft=fft)
 
 
+def test_describe_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, describe=["True"])
+
+
 @pytest.mark.parametrize("fft", [True, False])
 @pytest.mark.parametrize(
     "filter", ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
 )
-def test_filters(filter, fft):
-    f, ax, filt_data = isns.filterplot(data, filter=filter, fft=fft)
+@pytest.mark.parametrize("describe", [True, False])
+def test_filters(filter, fft, describe):
+    f, ax, filt_data = isns.filterplot(data, filter=filter, fft=fft, describe=describe)
 
     assert isinstance(f, Figure)
     assert isinstance(ax, np.ndarray)
