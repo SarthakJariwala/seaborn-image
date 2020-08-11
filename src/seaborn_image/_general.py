@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.stats as ss
 from matplotlib import gridspec
 from matplotlib.axes import Axes
 from matplotlib.cm import get_cmap
@@ -18,6 +19,7 @@ def imgplot(
     dx=None,
     units=None,
     dimension=None,
+    describe=True,
     cbar=True,
     cbar_label=None,
     cbar_fontdict=None,
@@ -51,6 +53,8 @@ def imgplot(
                 - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
                 - "pixel" : scale bar showing px, kpx, Mpx, etc.
             Defaults to None.
+        describe (bool, optional): Brief statistical description of the data.
+            Defaults to True.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
         cbar_label (str, optional): Colorbar label. Defaults to None.
@@ -95,6 +99,8 @@ def imgplot(
     if ax is not None:
         if not isinstance(ax, Axes):
             raise TypeError
+    if not isinstance(describe, bool):
+        raise TypeError
     if not isinstance(cbar, bool):
         raise TypeError
     if cbar_label is not None:
@@ -132,6 +138,15 @@ def imgplot(
 
     f, ax, cax = img_plotter.plot()
 
+    if describe:
+        result = ss.describe(data.flatten())
+        print(f"No. of Obs. : {result.nobs}")
+        print(f"Min. Value : {result.minmax[0]}")
+        print(f"Max. Value : {result.minmax[1]}")
+        print(f"Mean : {result.mean}")
+        print(f"Variance : {result.variance}")
+        print(f"Skewness : {result.skewness}")
+
     return f, ax, cax
 
 
@@ -144,6 +159,7 @@ def imghist(
     dx=None,
     units=None,
     dimension=None,
+    describe=True,
     cbar=True,
     cbar_label=None,
     cbar_fontdict=None,
@@ -176,6 +192,8 @@ def imghist(
                 - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
                 - "pixel" : scale bar showing px, kpx, Mpx, etc.
             Defaults to None.
+        describe (bool, optional): Brief statistical description of the data.
+            Defaults to True.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
         cbar_label (str, optional): Colorbar label. Defaults to None.
@@ -229,6 +247,7 @@ def imghist(
         dx=dx,
         units=units,
         dimension=dimension,
+        describe=describe,
         cbar=cbar,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,

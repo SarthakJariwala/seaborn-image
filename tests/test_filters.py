@@ -2,6 +2,7 @@ import pytest
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.ndimage as ndi
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
@@ -17,19 +18,32 @@ def test_filter_not_implemented():
 
 
 @pytest.mark.parametrize(
-    "filter,fft", [(["gaussian"], True), ("gaussian", "True"), (["gaussian"], None)]
+    "filter", [["gaussian"], ndi.gaussian_filter, None]
 )
-def test_filter_types(filter, fft):
+def test_filter_types(filter):
     with pytest.raises(TypeError):
-        isns.filterplot(data, filter=filter, fft=fft)
+        isns.filterplot(data, filter=filter)
+
+
+@pytest.mark.parametrize("fft", ["True", "False", None, 1])
+def test_fft_type(fft):
+    with pytest.raises(TypeError):
+        isns.filterplot(data, fft=fft)
+
+
+@pytest.mark.parametrize("describe", ["True", "False", None, 1])
+def test_describe_type(describe):
+    with pytest.raises(TypeError):
+        isns.imgplot(data, describe=describe)
 
 
 @pytest.mark.parametrize("fft", [True, False])
 @pytest.mark.parametrize(
     "filter", ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
 )
-def test_filters(filter, fft):
-    f, ax, filt_data = isns.filterplot(data, filter=filter, fft=fft)
+@pytest.mark.parametrize("describe", [True, False])
+def test_filters(filter, fft, describe):
+    f, ax, filt_data = isns.filterplot(data, filter=filter, fft=fft, describe=describe)
 
     assert isinstance(f, Figure)
     assert isinstance(ax, np.ndarray)
