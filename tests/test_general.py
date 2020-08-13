@@ -1,11 +1,15 @@
 import pytest
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 import seaborn_image as isns
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 
 data = np.random.random(2500).reshape((50, 50))
 
@@ -120,7 +124,15 @@ def test_imghist_return():
 @pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
 @pytest.mark.parametrize("describe", [True, False])
 def test_imghist_w_all_valid_inputs(
-    cmap, bins, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict, describe
+    cmap,
+    bins,
+    cbar,
+    cbar_label,
+    cbar_fontdict,
+    showticks,
+    title,
+    title_fontdict,
+    describe,
 ):
     f, axes, cax = isns.imghist(
         data,

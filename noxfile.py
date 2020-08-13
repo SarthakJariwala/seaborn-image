@@ -1,5 +1,6 @@
 """Nox Sessions."""
 import tempfile
+from pathlib import Path
 
 import nox
 
@@ -9,23 +10,24 @@ nox.options.sessions = "safety", "tests"
 
 def install_with_constraints(session, *args, **kwargs):
     """Install packages constrained by Poetry's lock file."""
-    with tempfile.NamedTemporaryFile() as requirements:
+    with tempfile.TemporaryDirectory() as directory:
+        requirements = Path(directory) / "requirements.txt"
         session.run(
             "poetry",
             "export",
             "--dev",
             "--format=requirements.txt",
-            f"--output={requirements.name}",
+            f"--output={requirements}",
             external=True,
         )
-        session.install(f"--constraint={requirements.name}", *args, **kwargs)
+        session.install(f"--constraint={requirements}", *args, **kwargs)
 
 
 @nox.session()
 def tests(session):
     """Run the test suite."""
     args = session.posargs or ["--cov", "-m", "not e2e"]
-    session.run("poetry", "install", "--no-dev", external=True)
+    session.run("poetry", "install", external=True)
     install_with_constraints(session, "coverage[toml]", "pytest", "pytest-cov")
     session.run("pytest", *args)
 
@@ -64,18 +66,18 @@ def black(session):
 @nox.session()
 def safety(session):
     """Scan dependencies for insecure packages."""
-    with tempfile.NamedTemporaryFile() as requirements:
+    with tempfile.TemporaryDirectory() as directory:
+        requirements = Path(directory) / "requirements.txt"
         session.run(
             "poetry",
             "export",
             "--dev",
             "--format=requirements.txt",
-            "--without-hashes",
-            f"--output={requirements.name}",
+            f"--output={requirements}",
             external=True,
         )
         install_with_constraints(session, "safety")
-        session.run("safety", "check", f"--file={requirements.name}", "--full-report")
+        session.run("safety", "check", f"--file={requirements}", "--full-report")
 
 
 @nox.session()

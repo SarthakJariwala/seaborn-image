@@ -13,7 +13,7 @@ jobs:
           - { python-version: 3.8, os: ubuntu-latest }
           - { python-version: 3.7, os: ubuntu-latest }
           - { python-version: 3.6, os: ubuntu-latest }
-          # - { python-version: 3.8, os: windows-latest }
+          - { python-version: 3.8, os: windows-latest }
           - { python-version: 3.8, os: macos-latest }
 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v2.1.1
         with:
           python-version: ${{ matrix.python-version }}
-          # architecture: x64
+          architecture: x64
       - run: pip install nox==2020.5.24
       - run: pip install poetry==1.0.9
       - run: nox
