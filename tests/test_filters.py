@@ -1,5 +1,6 @@
 import pytest
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndi
@@ -7,6 +8,9 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 import seaborn_image as isns
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 
 data = np.random.random(2500).reshape((50, 50))
 filter_list = ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
@@ -17,9 +21,7 @@ def test_filter_not_implemented():
         isns.filterplot(data, filter="not-implemented-filter")
 
 
-@pytest.mark.parametrize(
-    "filter", [["gaussian"], ndi.gaussian_filter, None]
-)
+@pytest.mark.parametrize("filter", [["gaussian"], ndi.gaussian_filter, None])
 def test_filter_types(filter):
     with pytest.raises(TypeError):
         isns.filterplot(data, filter=filter)
