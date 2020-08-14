@@ -44,6 +44,12 @@ def test_setup_scalebar_dimension():
         img_setup._setup_scalebar(ax)
 
 
+def test_cbar_orientation():
+    with pytest.raises(ValueError):
+        img_setup = isns._core._SetupImage(data, cbar=True, orientation="right")
+        f, ax, cax = img_setup.plot()
+
+
 def test_plot_check_cbar_dict():
     with pytest.raises(TypeError):
         img_setup = isns._core._SetupImage(
@@ -63,10 +69,12 @@ def test_plot_check_cbar_dict():
 )  # units can't be None when dx is not None
 @pytest.mark.parametrize("dimension", [None, "si"])
 @pytest.mark.parametrize("cbar", [None, True, False])
+@pytest.mark.parametrize("orientation", ["h", "v"])
 @pytest.mark.parametrize("cbar_fontdict", [None, {"fontsize": 20}])
 @pytest.mark.parametrize("cbar_label", [None, "Cbar Label"])
 @pytest.mark.parametrize("cbar_ticks", [None, [0, 1, 2]])
 @pytest.mark.parametrize("showticks", [None, True, False])
+@pytest.mark.parametrize("despine", [None, True, False])
 def test_plot_w_all_inputs(
     cmap,
     vmin,
@@ -77,10 +85,12 @@ def test_plot_w_all_inputs(
     units,
     dimension,
     cbar,
+    orientation,
     cbar_fontdict,
     cbar_label,
     cbar_ticks,
     showticks,
+    despine,
 ):
     img_setup = isns._core._SetupImage(
         data,
@@ -93,10 +103,12 @@ def test_plot_w_all_inputs(
         units=units,
         dimension=dimension,
         cbar=cbar,
+        orientation=orientation,
         cbar_fontdict=cbar_fontdict,
         cbar_label=cbar_label,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
+        despine=despine,
     )
     f, ax, cax = img_setup.plot()
 

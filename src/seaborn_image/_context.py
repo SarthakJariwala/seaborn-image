@@ -4,6 +4,14 @@ from matplotlib.cm import register_cmap
 
 from ._colormap import _CMAP_QUAL
 
+__all__ = [
+    "set_context",
+    "set_save_context",
+    "reset_defaults",
+    "set_image",
+    "set_scalebar",
+]
+
 # TODO implement a set() fuction for all underlying set_*
 
 
@@ -108,7 +116,7 @@ def set_image(cmap="ice", origin="lower", interpolation="nearest"):
     plt.rc("image", cmap=cmap, origin=origin, interpolation=interpolation)
 
 
-def set_scalebar(rc=None):
+def set_scalebar(rc=None):  # TODO re-write input as individual kwargs instead of dict
     """Set scalebar properties such as color, scale_loc,
     height_fraction, length_fraction, box_alpha, etc
 

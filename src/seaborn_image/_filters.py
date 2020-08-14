@@ -7,6 +7,8 @@ from skimage.filters import difference_of_gaussians, window
 
 from ._general import imgplot
 
+__all__ = ["filterplot"]
+
 
 def filterplot(
     data,

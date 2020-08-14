@@ -34,6 +34,11 @@ def test_cbar_type():
         isns.imgplot(data, cbar="True")
 
 
+def test_orientation_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, orientation=1)
+
+
 def test_cbar_label_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, cbar_label=["Title"])
@@ -47,6 +52,11 @@ def test_cbar_fontdict_type():
 def test_showticks_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, showticks="True")
+
+
+def test_despine_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, despine="True")
 
 
 def test_title_type():
@@ -105,6 +115,11 @@ def test_imghist_bins_value(bins):
         isns.imghist(data, bins=bins)
 
 
+def test_imghist_orientation_value():
+    with pytest.raises(ValueError):
+        isns.imghist(data, orientation="right")
+
+
 def test_imghist_return():
     f, axes, cax = isns.imghist(data)
 
@@ -117,6 +132,9 @@ def test_imghist_return():
 @pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
 @pytest.mark.parametrize("bins", [None, 500, 10])
 @pytest.mark.parametrize("cbar", [True, False])
+@pytest.mark.parametrize(
+    "orientation", ["h", "v"]
+)  # options can also be horizontal or vertical
 @pytest.mark.parametrize("cbar_label", ["My title", None])
 @pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
 @pytest.mark.parametrize("showticks", [True, False])
@@ -127,6 +145,7 @@ def test_imghist_w_all_valid_inputs(
     cmap,
     bins,
     cbar,
+    orientation,
     cbar_label,
     cbar_fontdict,
     showticks,
@@ -140,6 +159,7 @@ def test_imghist_w_all_valid_inputs(
         bins=bins,
         describe=describe,
         cbar=cbar,
+        orientation=orientation,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,
         showticks=showticks,
