@@ -44,6 +44,12 @@ def test_setup_scalebar_dimension():
         img_setup._setup_scalebar(ax)
 
 
+def test_cbar_orientation():
+    with pytest.raises(ValueError):
+        img_setup = isns._core._SetupImage(data, cbar=True, orientation="right")
+        f, ax, cax = img_setup.plot()
+
+
 def test_plot_check_cbar_dict():
     with pytest.raises(TypeError):
         img_setup = isns._core._SetupImage(
@@ -52,51 +58,47 @@ def test_plot_check_cbar_dict():
         f, ax, cax = img_setup.plot()
 
 
-@pytest.mark.parametrize("cmap", [None, "acton"])
-@pytest.mark.parametrize("vmin", [None])
-@pytest.mark.parametrize("vmax", [None])
-@pytest.mark.parametrize("title", [None, "My Title"])
-@pytest.mark.parametrize("fontdict", [None, {"fontsize": 20}])
-@pytest.mark.parametrize("dx", [None, 1])
+def test_data_plotted_is_same_as_input():
+    img_setup = isns._core._SetupImage(data)
+    f, ax, cax = img_setup.plot()
+
+    # check if data iput is what was plotted
+    np.testing.assert_array_equal(ax.images[0].get_array().data, data)
+
+    plt.close("all")
+
+
 @pytest.mark.parametrize(
-    "units", ["m", "um"]
-)  # units can't be None when dx is not None
-@pytest.mark.parametrize("dimension", [None, "si"])
-@pytest.mark.parametrize("cbar", [None, True, False])
-@pytest.mark.parametrize("cbar_fontdict", [None, {"fontsize": 20}])
-@pytest.mark.parametrize("cbar_label", [None, "Cbar Label"])
-@pytest.mark.parametrize("cbar_ticks", [None, [0, 1, 2]])
-@pytest.mark.parametrize("showticks", [None, True, False])
+    "cmap", [None, "acton"]
+)  # test if seaborn-image supplied cmaps are working
+@pytest.mark.parametrize(
+    "dx, units, dimension",
+    [(None, None, None), (1, "nm", "si"), (1, "1/um", "si-reciprocal")],
+)
+@pytest.mark.parametrize("cbar", [True, False])
+@pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
+@pytest.mark.parametrize("showticks", [True, False])
+@pytest.mark.parametrize("despine", [True, False])
 def test_plot_w_all_inputs(
-    cmap,
-    vmin,
-    vmax,
-    title,
-    fontdict,
-    dx,
-    units,
-    dimension,
-    cbar,
-    cbar_fontdict,
-    cbar_label,
-    cbar_ticks,
-    showticks,
+    cmap, cbar, dx, units, dimension, orientation, showticks, despine
 ):
     img_setup = isns._core._SetupImage(
         data,
         cmap=cmap,
-        vmin=vmin,
-        vmax=vmax,
-        title=title,
-        fontdict=fontdict,
+        vmin=None,
+        vmax=None,
+        title="My Title",
+        fontdict={"fontsize": 20},
         dx=dx,
         units=units,
         dimension=dimension,
         cbar=cbar,
-        cbar_fontdict=cbar_fontdict,
-        cbar_label=cbar_label,
-        cbar_ticks=cbar_ticks,
+        orientation=orientation,
+        cbar_fontdict={"fontsize": 20},
+        cbar_label="cbar label",
+        cbar_ticks=[],
         showticks=showticks,
+        despine=despine,
     )
     f, ax, cax = img_setup.plot()
 
