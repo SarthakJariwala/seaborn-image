@@ -9,6 +9,8 @@ from matplotlib.colors import Colormap
 from ._colormap import _CMAP_QUAL
 from ._core import _SetupImage
 
+__all__ = ["imgplot", "imghist"]
+
 
 def imgplot(
     data,
@@ -21,10 +23,12 @@ def imgplot(
     dimension=None,
     describe=True,
     cbar=True,
+    orientation="v",
     cbar_label=None,
     cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
+    despine=True,
     title=None,
     title_fontdict=None,
 ):
@@ -57,6 +61,11 @@ def imgplot(
             Defaults to True.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
+        orientation (str, optional): Specify the orientaion of colorbar.
+            Option include :
+                - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+                - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+            Defaults to 'v'.
         cbar_label (str, optional): Colorbar label. Defaults to None.
         cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
             Defaults to None.
@@ -64,6 +73,8 @@ def imgplot(
             the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
             are used for colorbar ticks. Defaults to None.
         showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
+        despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
+            Defaults to True.
         title (str, optional): Image title. Defaults to None.
         title_fontdict (dict, optional): [Font specifications for `title`. Defaults to None.
 
@@ -71,9 +82,11 @@ def imgplot(
         TypeError: if `cmap` is not str or `matplotlib.colors.Colormap`
         TypeError: if `ax` is not `matplotlib.axes.Axes`
         TypeError: if `cbar` is not bool
+        TypeError: if `orientation` is not str
         TypeError: if `cbar_label` is not str
         TypeError: if `cbar_fontdict` is not dict
         TypeError: if `showticks` is not bool
+        TypeError: if `despine` is not bool
         TypeError: if `title` is not str
         TypeError: if `title_fontdict` is not dict
 
@@ -96,24 +109,38 @@ def imgplot(
     if cmap is not None:
         if not isinstance(cmap, (str, Colormap)):
             raise TypeError
+
     if ax is not None:
         if not isinstance(ax, Axes):
             raise TypeError
+
     if not isinstance(describe, bool):
         raise TypeError
+
     if not isinstance(cbar, bool):
         raise TypeError
+
+    if not isinstance(orientation, str):
+        raise TypeError
+
     if cbar_label is not None:
         if not isinstance(cbar_label, str):
             raise TypeError
+
     if cbar_fontdict is not None:
         if not isinstance(cbar_fontdict, dict):
             raise TypeError
+
     if not isinstance(showticks, bool):
         raise TypeError
+
+    if not isinstance(despine, bool):
+        raise TypeError
+
     if title is not None:
         if not isinstance(title, str):
             raise TypeError
+
     if title_fontdict is not None:
         if not isinstance(title_fontdict, dict):
             raise TypeError
@@ -128,10 +155,12 @@ def imgplot(
         units=units,
         dimension=dimension,
         cbar=cbar,
+        orientation=orientation,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
+        despine=despine,
         title=title,
         fontdict=title_fontdict,
     )
@@ -161,10 +190,12 @@ def imghist(
     dimension=None,
     describe=True,
     cbar=True,
+    orientation="v",
     cbar_label=None,
     cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
+    despine=True,
     title=None,
     title_fontdict=None,
 ):
@@ -196,6 +227,11 @@ def imghist(
             Defaults to True.
         cbar (bool, optional): Specify if a colorbar is required or not.
             Defaults to True.
+        orientation (str, optional): Specify the orientaion of colorbar.
+            Option include :
+                - 'h' or 'horizontal' for a horizontal colorbar and histogram to the bottom of the image.
+                - 'v' or 'vertical' for a vertical colorbar and histogram to the right of the image.
+            Defaults to 'v'.
         cbar_label (str, optional): Colorbar label. Defaults to None.
         cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
             Defaults to None.
@@ -203,6 +239,8 @@ def imghist(
             the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
             are used for colorbar ticks. Defaults to None.
         showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
+        despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
+            Defaults to True.
         title (str, optional): Image title. Defaults to None.
         title_fontdict (dict, optional): [Font specifications for `title`. Defaults to None.
 
@@ -233,8 +271,20 @@ def imghist(
         if not bins > 0:
             raise ValueError("'bins' must be a positive integer")
 
-    f = plt.figure(figsize=(10, 6))  # TODO make figsize user defined
-    gs = gridspec.GridSpec(1, 2, width_ratios=[5, 1], figure=f)
+    if orientation in ["v", "vertical"]:
+        orientation = "vertical"  # matplotlib doesn't support 'v'
+        f = plt.figure(figsize=(10, 6))  # TODO make figsize user defined
+        gs = gridspec.GridSpec(1, 2, width_ratios=[5, 1], figure=f)
+
+    elif orientation in ["h", "horizontal"]:
+        orientation = "horizontal"  # matplotlib doesn't support 'h'
+        f = plt.figure(figsize=(6, 10))  # TODO make figsize user defined
+        gs = gridspec.GridSpec(2, 1, height_ratios=[5, 1], figure=f)
+
+    else:
+        raise ValueError(
+            "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
+        )
 
     ax1 = f.add_subplot(gs[0])
 
@@ -249,26 +299,38 @@ def imghist(
         dimension=dimension,
         describe=describe,
         cbar=cbar,
+        orientation=orientation,
         cbar_label=cbar_label,
         cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
+        despine=despine,
         title=title,
         title_fontdict=title_fontdict,
     )
 
-    ax2 = f.add_subplot(gs[1], sharey=cax)
+    if orientation == "vertical":
+        ax2 = f.add_subplot(gs[1], sharey=cax)
 
-    n, bins, patches = ax2.hist(
-        data.ravel(), bins=bins, density=True, orientation="horizontal"
-    )
+        n, bins, patches = ax2.hist(
+            data.ravel(), bins=bins, density=True, orientation="horizontal"
+        )
 
-    ax2.get_xaxis().set_visible(False)
-    ax2.get_yaxis().set_visible(False)
-    ax2.set_frame_on(False)
+    elif orientation == "horizontal":
+        ax2 = f.add_subplot(gs[1], sharex=cax)
+
+        n, bins, patches = ax2.hist(
+            data.ravel(), bins=bins, density=True, orientation="vertical"
+        )
+
+    if not showticks:
+        ax2.get_xaxis().set_visible(False)
+        ax2.get_yaxis().set_visible(False)
+
+    if despine:
+        ax2.set_frame_on(False)
 
     if cmap is None:
-        # cm = _CMAP_QUAL.get("deep").mpl_colormap
         cm = get_cmap()
     else:
         if cmap in _CMAP_QUAL.keys():

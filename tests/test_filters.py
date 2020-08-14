@@ -6,6 +6,7 @@ import numpy as np
 import scipy.ndimage as ndi
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from skimage.filters import difference_of_gaussians
 
 import seaborn_image as isns
 
@@ -50,6 +51,45 @@ def test_filters(filter, fft, describe):
     assert isinstance(f, Figure)
     assert isinstance(ax, np.ndarray)
     assert isinstance(ax.ravel().all(), Axes)
-    assert filt_data.all() == data.all()
+
+    plt.close("all")
+
+
+def test_filterplot_gaussian():
+    f, ax, filt_data = isns.filterplot(data, filter="gaussian")
+
+    np.testing.assert_array_equal(filt_data, ndi.gaussian_filter(data, sigma=1))
+
+    plt.close("all")
+
+
+def test_filterplot_sobel():
+    f, ax, filt_data = isns.filterplot(data, filter="sobel")
+
+    np.testing.assert_array_equal(filt_data, ndi.sobel(data))
+
+    plt.close("all")
+
+
+def test_filterplot_median():
+    f, ax, filt_data = isns.filterplot(data, filter="median")
+
+    np.testing.assert_array_equal(filt_data, ndi.median_filter(data, size=5))
+
+    plt.close("all")
+
+
+def test_filterplot_max():
+    f, ax, filt_data = isns.filterplot(data, filter="max")
+
+    np.testing.assert_array_equal(filt_data, ndi.maximum_filter(data, size=5))
+
+    plt.close("all")
+
+
+def test_filterplot_diff_of_gaussian():
+    f, ax, filt_data = isns.filterplot(data, filter="diff_of_gaussians")
+
+    np.testing.assert_array_equal(filt_data, difference_of_gaussians(data, low_sigma=1))
 
     plt.close("all")

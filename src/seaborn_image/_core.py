@@ -4,6 +4,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
 
 from ._colormap import _CMAP_QUAL
+from .utils import despine, scientific_ticks
 
 # dimensions for scalebar
 _DIMENSIONS = {
@@ -34,10 +35,12 @@ class _SetupImage(object):
         units=None,
         dimension=None,
         cbar=None,
+        orientation="v",
         cbar_fontdict=None,
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
+        despine=True,
     ):
 
         self.data = data
@@ -51,10 +54,12 @@ class _SetupImage(object):
         self.units = units
         self.dimension = dimension
         self.cbar = cbar
+        self.orientation = orientation
         self.cbar_fontdict = cbar_fontdict
         self.cbar_label = cbar_label
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
+        self.despine = despine
 
     def _setup_figure(self):
         """Wrapper to setup image with the desired parameters
@@ -105,6 +110,7 @@ class _SetupImage(object):
         if self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
+        # TODO move everything other than data to kwargs
         _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
 
         if self.dx:
@@ -112,25 +118,42 @@ class _SetupImage(object):
 
         if self.cbar:
             divider = make_axes_locatable(ax)
-            width = axes_size.AxesY(ax, aspect=1.0 / 20)
-            pad = axes_size.Fraction(0.5, width)
-            cax = divider.append_axes("right", size=width, pad=pad)
 
-            cb = f.colorbar(_map, cax=cax)
-            if self.vmin is not None:
-                _min = self.vmin
-            else:
-                _min = np.min(self.data)
-            if self.vmax is not None:
-                _max = self.vmax
-            else:
-                _max = np.max(self.data)
+            if self.orientation in ["vertical", "v"]:
+                self.orientation = "vertical"  # plt.colorbar doesn't take 'v'
+                width = axes_size.AxesY(ax, aspect=1.0 / 20)
+                pad = axes_size.Fraction(0.5, width)
+                cax = divider.append_axes("right", size=width, pad=pad)
 
-            if self.cbar_ticks is None:
-                cb.set_ticks(
-                    [_min, (_min + _max) / 2, _max]
-                )  # min, middle, max for colorbar ticks
+            elif self.orientation in ["horizontal", "h"]:
+                self.orientation = "horizontal"  # plt.colorbar doesn't take 'h'
+                width = axes_size.AxesX(ax, aspect=1.0 / 20)
+                pad = axes_size.Fraction(0.5, width)
+                cax = divider.append_axes("bottom", size=width, pad=pad)
+
             else:
+                raise ValueError(
+                    "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
+                )
+
+            cb = f.colorbar(_map, cax=cax, orientation=self.orientation)
+
+            if self.despine:
+                cb.outline.set_visible(False)  # remove colorbar outline border
+
+            # display only 3 tick marks on colorbar
+            if self.orientation in ["vertical"]:
+                cax.yaxis.set_major_locator(plt.MaxNLocator(3))
+                cax.tick_params(axis="y", width=0, length=0)  # remove ytick lines
+
+            if self.orientation in ["horizontal"]:
+                cax.xaxis.set_major_locator(plt.MaxNLocator(3))
+                cax.tick_params(axis="x", width=0, length=0)  # remove xtick lines
+
+            # TODO add option for scientific ticks as part of inbuilt functions
+            # scientific_ticks(ax=cax)
+
+            if self.cbar_ticks is not None:
                 cb.set_ticks(self.cbar_ticks)
 
             if self.cbar_fontdict is not None:
@@ -145,6 +168,9 @@ class _SetupImage(object):
         if not self.showticks:
             ax.get_yaxis().set_visible(False)
             ax.get_xaxis().set_visible(False)
+
+        if self.despine:
+            despine(ax=ax, which="all")
 
         f.tight_layout()
 
