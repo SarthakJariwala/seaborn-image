@@ -76,30 +76,19 @@ def test_imgplot_return():
     assert isinstance(ax, Axes)
     assert isinstance(cax, Axes)
 
+    plt.close("all")
 
-@pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
-@pytest.mark.parametrize("cbar", [True, False])
-@pytest.mark.parametrize("cbar_label", ["My title", None])
-@pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
-@pytest.mark.parametrize("showticks", [True, False])
-@pytest.mark.parametrize("title", ["My title", None])
-@pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
+
+def test_imgplot_data_is_same_as_input():
+    f, ax, cax = isns.imgplot(data)
+
+    # check if data iput is what was plotted
+    np.testing.assert_array_equal(ax.images[0].get_array().data, data)
+
+
 @pytest.mark.parametrize("describe", [True, False])
-def test_imgplot_w_all_valid_inputs(
-    cmap, cbar, cbar_label, cbar_fontdict, showticks, title, title_fontdict, describe
-):
-    f, ax, cax = isns.imgplot(
-        data,
-        ax=None,
-        cmap=cmap,
-        describe=describe,
-        cbar=cbar,
-        cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
-        showticks=showticks,
-        title=title,
-        title_fontdict=title_fontdict,
-    )
+def test_imgplot_w_all_valid_inputs(describe):
+    f, ax, cax = isns.imgplot(data, describe=describe)
     plt.close("all")
 
 
@@ -128,43 +117,31 @@ def test_imghist_return():
     assert isinstance(axes[1], Axes)
     assert isinstance(cax, Axes)
 
+    plt.close("all")
 
-@pytest.mark.parametrize("cmap", [None, "acton", "inferno"])
-@pytest.mark.parametrize("bins", [None, 500, 10])
-@pytest.mark.parametrize("cbar", [True, False])
-@pytest.mark.parametrize(
-    "orientation", ["h", "v"]
-)  # options can also be horizontal or vertical
-@pytest.mark.parametrize("cbar_label", ["My title", None])
-@pytest.mark.parametrize("cbar_fontdict", [{"fontsize": 20}, None])
+
+def test_imghist_data_is_same_as_input():
+    f, ax, cax = isns.imghist(data)
+
+    # check if data iput is what was plotted
+    np.testing.assert_array_equal(ax[0].images[0].get_array().data, data)
+
+
+@pytest.mark.parametrize("cmap", [None, "acton"])
+@pytest.mark.parametrize("bins", [None, 100])
+@pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
 @pytest.mark.parametrize("showticks", [True, False])
-@pytest.mark.parametrize("title", ["My title", None])
-@pytest.mark.parametrize("title_fontdict", [{"fontsize": 20}, None])
-@pytest.mark.parametrize("describe", [True, False])
+@pytest.mark.parametrize("despine", [True, False])
 def test_imghist_w_all_valid_inputs(
-    cmap,
-    bins,
-    cbar,
-    orientation,
-    cbar_label,
-    cbar_fontdict,
-    showticks,
-    title,
-    title_fontdict,
-    describe,
+    cmap, bins, orientation, showticks, despine,
 ):
     f, axes, cax = isns.imghist(
         data,
         cmap=cmap,
         bins=bins,
-        describe=describe,
-        cbar=cbar,
         orientation=orientation,
-        cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
         showticks=showticks,
-        title=title,
-        title_fontdict=title_fontdict,
+        despine=despine,
     )
 
     plt.close("all")
