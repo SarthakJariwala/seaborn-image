@@ -13,6 +13,7 @@ __all__ = ["filterplot"]
 def filterplot(
     data,
     filter="gaussian",
+    ax=None,
     fft=False,
     cmap=None,
     vmin=None,
@@ -102,11 +103,6 @@ def filterplot(
     if not isinstance(describe, bool):
         raise TypeError
 
-    # kwargs across filters
-    size = kwargs.get("size", 5)
-    sigma = kwargs.get("sigma", 1)
-    low_sigma = kwargs.get("low_sigma", 1)
-
     _implemented_filters = ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
 
     if filter not in _implemented_filters:
@@ -119,18 +115,36 @@ def filterplot(
             filtered_data = ndi.sobel(data, **kwargs)
 
         elif filter == "gaussian":
-            filtered_data = ndi.gaussian_filter(data, sigma=sigma, **kwargs)
+            func_kwargs = {}
+            if "sigma" not in kwargs:
+                func_kwargs.update({"sigma": 1})
+            func_kwargs.update(**kwargs)
+
+            filtered_data = ndi.gaussian_filter(data, **func_kwargs)
 
         elif filter == "median":
-            filtered_data = ndi.median_filter(data, size=size, **kwargs)
+            func_kwargs = {}
+            if "size" not in kwargs:
+                func_kwargs.update({"size": 5})
+            func_kwargs.update(**kwargs)
+
+            filtered_data = ndi.median_filter(data, **func_kwargs)
 
         elif filter == "max":
-            filtered_data = ndi.maximum_filter(data, size=size, **kwargs)
+            func_kwargs = {}
+            if "size" not in kwargs:
+                func_kwargs.update({"size": 5})
+            func_kwargs.update(**kwargs)
+
+            filtered_data = ndi.maximum_filter(data, **func_kwargs)
 
         elif filter == "diff_of_gaussians":
-            filtered_data = difference_of_gaussians(
-                data, low_sigma=low_sigma, **kwargs,
-            )
+            func_kwargs = {}
+            if "low_sigma" not in kwargs:
+                func_kwargs.update({"low_sigma": 1})
+            func_kwargs.update(**kwargs)
+
+            filtered_data = difference_of_gaussians(data, **func_kwargs,)
 
     if fft:  # move to FacetGrid like in seaborn (?) TODO
         # window image to improve fft
@@ -197,28 +211,28 @@ def filterplot(
         )
 
     else:
-        f, ax = plt.subplots(1, 2, figsize=(10, 5))
+        # f, ax = plt.subplots(1, 2, figsize=(10, 5))
 
-        imgplot(
-            data,
-            ax=ax[0],
-            cmap=cmap,
-            vmin=vmin,
-            vmax=vmax,
-            dx=dx,
-            units=units,
-            dimension=dimension,
-            cbar=cbar,
-            cbar_label=cbar_label,
-            cbar_fontdict=cbar_fontdict,
-            cbar_ticks=cbar_ticks,
-            showticks=showticks,
-            title=title1,
-            title_fontdict=title_fontdict,
-        )
+        # imgplot(
+        #     data,
+        #     ax=ax[0],
+        #     cmap=cmap,
+        #     vmin=vmin,
+        #     vmax=vmax,
+        #     dx=dx,
+        #     units=units,
+        #     dimension=dimension,
+        #     cbar=cbar,
+        #     cbar_label=cbar_label,
+        #     cbar_fontdict=cbar_fontdict,
+        #     cbar_ticks=cbar_ticks,
+        #     showticks=showticks,
+        #     title=title1,
+        #     title_fontdict=title_fontdict,
+        # )
         imgplot(
             filtered_data,
-            ax=ax[1],
+            ax=ax,
             cmap=cmap,
             vmin=vmin,
             vmax=vmax,
@@ -253,4 +267,4 @@ def filterplot(
         print(f"Variance : {result_2.variance}")
         print(f"Skewness : {result_2.skewness}")
 
-    return f, ax, filtered_data
+    return filtered_data
