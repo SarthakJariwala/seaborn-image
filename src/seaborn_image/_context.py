@@ -35,7 +35,7 @@ def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
         >>> isns.set_context(rc={"axes.edgecolor": "red"})
 
     """
-    # plt.rc("axes.spines", left=False, right=False, top=False, bottom=False)
+
     if mode == "paper":
         plt.rc("axes", linewidth=1.5)
         plt.rc("axes", titlesize=15, titleweight=fontweight)
@@ -116,26 +116,46 @@ def set_image(cmap="ice", origin="lower", interpolation="nearest"):
     plt.rc("image", cmap=cmap, origin=origin, interpolation=interpolation)
 
 
-def set_scalebar(rc=None):  # TODO re-write input as individual kwargs instead of dict
+def set_scalebar(
+    color="white",
+    location="lower right",
+    height_fraction=0.025,
+    length_fraction=0.3,
+    scale_loc="top",
+    box_alpha=0,
+    rc=None,
+):
     """Set scalebar properties such as color, scale_loc,
-    height_fraction, length_fraction, box_alpha, etc
+    height_fraction, length_fraction, box_alpha, etc.
+    To pass more properties that are not specified as key word
+    argument, use the `rc` parameter. Refer to https://github.com/ppinard/matplotlib-scalebar
+    for more information on additional parameters.
 
     Args:
+        color(str, optional): color of the scalebar. Defaults to "white".
+        location (str, optional): scalebar location on the image (same as `matplotlib` legend).
+            Defaults to "lower right".
+        height_fraction (float, optional): Defaults to 0.025.
+        length_fraction (float, optional): Defaults to 0.3
+        scale_loc (str, optional): location of the scale number and units with respect to the bar.
+            Defaults to "top".
+        box_alpha (float, optional): transparency of the box that contains the scalebar artist.
+            Defaults to 0.
         rc (dict, optional): dictionary of scalebar properties to be set.
             Defaults to None.
 
     Example:
         >>> import seaborn_image as isns
-        >>> isns.set_scalebar({"color":"red"})
-        >>> isns.set_scalebar({"scale_loc":"bottom"})
+        >>> isns.set_scalebar(color = "red")
+        >>> isns.set_scalebar(scale_loc = "bottom")
 
     """
-    mpl.rcParams.update({"scalebar.color": "white"})
-    mpl.rcParams.update({"scalebar.height_fraction": 0.05})
-    mpl.rcParams.update({"scalebar.length_fraction": 0.3})
-    mpl.rcParams.update({"scalebar.scale_loc": "top"})
-    mpl.rcParams.update({"scalebar.location": "lower right"})
-    mpl.rcParams.update({"scalebar.box_alpha": 0})
+    mpl.rcParams.update({"scalebar.color": color})
+    mpl.rcParams.update({"scalebar.height_fraction": height_fraction})
+    mpl.rcParams.update({"scalebar.length_fraction": length_fraction})
+    mpl.rcParams.update({"scalebar.scale_loc": scale_loc})
+    mpl.rcParams.update({"scalebar.location": location})
+    mpl.rcParams.update({"scalebar.box_alpha": box_alpha})
 
     if rc is not None:
         assert isinstance(rc, dict), "'rc' must be a dict"
