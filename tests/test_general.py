@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from skimage.color import rgb2gray
+from skimage.data import astronaut
 
 import seaborn_image as isns
 
@@ -69,25 +71,49 @@ def test_title_fontdict_type():
         isns.imgplot(data, title_fontdict=[{"fontsize": 20}])
 
 
-def test_imgplot_return():
+@pytest.mark.parametrize("data", [data, astronaut()])
+def test_imgplot_return(data):
     f, ax, cax = isns.imgplot(data)
 
     assert isinstance(f, Figure)
     assert isinstance(ax, Axes)
-    assert isinstance(cax, Axes)
+    if (
+        data.ndim == 3
+    ):  # if data dim is 3 it cbar will be set to False, and cax will be None
+        assert cax is None
+    else:
+        assert isinstance(cax, Axes)
 
     plt.close("all")
 
 
-def test_imgplot_data_is_same_as_input():
+@pytest.mark.parametrize("data", [data, astronaut()])
+def test_imgplot_data_is_same_as_input(data):
     f, ax, cax = isns.imgplot(data)
 
     # check if data iput is what was plotted
     np.testing.assert_array_equal(ax.images[0].get_array().data, data)
 
 
+def test_imgplot_gray_conversion_for_rgb():
+    """Check if the plotted data is grayscale when input is RGB image
+    and gray is True.
+    """
+    f, ax, cax = isns.imgplot(astronaut(), gray=True)
+
+    np.testing.assert_array_equal(ax.images[0].get_array().data, rgb2gray(astronaut()))
+
+
+@pytest.mark.parametrize("gray", [True, False])
+@pytest.mark.parametrize("cmap", [None, "ice"])
+@pytest.mark.parametrize("data", [data, astronaut()])
+def test_gray_cmap_interplay(data, gray, cmap):
+    f, ax, cax = isns.imgplot(data, cmap=cmap, gray=gray)
+    plt.close("all")
+
+
 @pytest.mark.parametrize("describe", [True, False])
-def test_imgplot_w_all_valid_inputs(describe):
+def test_imgplot_w_describe(describe):
     f, ax, cax = isns.imgplot(data, describe=describe)
     plt.close("all")
 

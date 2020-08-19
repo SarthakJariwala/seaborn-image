@@ -5,6 +5,7 @@ from matplotlib import gridspec
 from matplotlib.axes import Axes
 from matplotlib.cm import get_cmap
 from matplotlib.colors import Colormap
+from skimage.color import rgb2gray
 
 from ._colormap import _CMAP_QUAL
 from ._core import _SetupImage
@@ -16,6 +17,7 @@ def imgplot(
     data,
     ax=None,
     cmap=None,
+    gray=None,
     vmin=None,
     vmax=None,
     dx=None,
@@ -44,6 +46,8 @@ def imgplot(
         cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
             Can be a seaborn-image colormap or default matplotlib colormaps or
             any other colormap converted to a matplotlib colormap. Defaults to None.
+        gray (bool, optional): If True and data is RGB image, it will be converted to grayscale.
+            If True and cmap is None, cmap will be set to "gray".
         vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
         vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
         dx (float, optional): Size per pixel of the image data. If scalebar
@@ -144,6 +148,15 @@ def imgplot(
     if title_fontdict is not None:
         if not isinstance(title_fontdict, dict):
             raise TypeError
+
+    if isinstance(data, np.ndarray):
+        if data.ndim == 3:
+            cbar = False  # set cbar to False if RGB image
+            if gray is True:  # if gray is True, convert to grayscale
+                data = rgb2gray(data)
+
+    if gray is True and cmap is None:  # set colormap to gray only if cmap is None
+        cmap = "gray"
 
     img_plotter = _SetupImage(
         data=data,
