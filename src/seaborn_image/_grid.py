@@ -125,8 +125,14 @@ class FilterGrid(object):
         dx=None,
         units=None,
         dimension=None,
+        describe=False,
+        cbar=True,
+        cbar_label=None,
+        cbar_fontdict=None,
+        cbar_ticks=None,
+        showticks=False,
         **kwargs,
-    ):
+    ):  # TODO add despine option
 
         row_params = []
         if row is not None:
@@ -142,7 +148,7 @@ class FilterGrid(object):
         if col is not None:
             if not isinstance(col, str):
                 raise TypeError("'col' parameter must be a string")
-            if col not in kwargs:  # TODO add col is str check
+            if col not in kwargs:
                 err = f"Specified '{col}' as 'col' without passing it as a kwargs"
                 raise ValueError(err)
             else:
@@ -187,14 +193,19 @@ class FilterGrid(object):
         self.dx = dx
         self.units = units
         self.dimension = dimension
+        self.describe = describe
+        self.cbar = cbar
+        self.cbar_label = cbar_label
+        self.cbar_fontdict = cbar_fontdict
+        self.cbar_ticks = cbar_ticks
+        self.showticks = showticks
 
         self.map()
+        self._finalize_grid()
 
         return
 
-    def map(
-        self,
-    ):  # TODO pass extra args such as cmap, dx, etc without repeating in code!
+    def map(self):
 
         if self.row is None and self.col is None:
             imgplot(self.data, ax=self.axes)
@@ -205,29 +216,41 @@ class FilterGrid(object):
 
             if self.row is None:
                 func_kwargs = {self.col: p[0]}
-                print(func_kwargs)
-                filterplot(self.data, self.filter, ax=ax, **func_kwargs)
+                self._plot(ax=ax, **func_kwargs)
                 ax.set_title(f"{self.col} : {p[0]}")
 
             if self.col is None:
                 func_kwargs = {self.row: p[0]}
-                print(func_kwargs)
-                filterplot(self.data, self.filter, ax=ax, **func_kwargs)
+                # print(func_kwargs)
+                self._plot(ax=ax, **func_kwargs)
                 ax.set_title(f"{self.row} : {p[0]}")
 
             if self.row and self.col:
                 func_kwargs = {self.row: p[0], self.col: p[1]}
-                print(func_kwargs)
-                filterplot(
-                    self.data,
-                    self.filter,
-                    ax=ax,
-                    cmap=self.cmap,
-                    dx=self.dx,
-                    units=self.units,
-                    dimension=self.dimension,
-                    **func_kwargs,
-                )
+                # print(func_kwargs)
+                self._plot(ax=ax, **func_kwargs)
                 ax.set_title(f"{self.row} : {p[0]}, {self.col} : {p[1]}")
 
         return
+
+    def _plot(self, ax, **func_kwargs):
+
+        filterplot(
+            self.data,
+            self.filter,
+            ax=ax,
+            cmap=self.cmap,
+            dx=self.dx,
+            units=self.units,
+            dimension=self.dimension,
+            cbar=self.cbar,
+            cbar_label=self.cbar_label,
+            cbar_fontdict=self.cbar_fontdict,
+            cbar_ticks=self.cbar_ticks,
+            showticks=self.showticks,
+            **func_kwargs,
+        )
+        return
+
+    def _finalize_grid(self):
+        self.fig.tight_layout()

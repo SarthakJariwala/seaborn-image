@@ -90,7 +90,7 @@ def test_scalebar_w_rc():
             "scale_loc": "bottom",
             "location": "upper right",
             "box_alpha": 1,
-            "label_loc": "top"
+            "label_loc": "top",
         }
     )
 
