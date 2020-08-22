@@ -166,8 +166,12 @@ class _SetupImage(object):
             cax = None
 
         if not self.showticks:
-            ax.get_yaxis().set_visible(False)
-            ax.get_xaxis().set_visible(False)
+            ax.set_yticks([])
+            ax.set_xticks([])
+            ax.set_ylabel("")
+            ax.set_xlabel("")
+            # ax.get_yaxis().set_visible(False)
+            # ax.get_xaxis().set_visible(False)
 
         if self.despine:
             despine(ax=ax, which="all")
