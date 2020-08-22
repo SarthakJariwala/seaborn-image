@@ -8,8 +8,8 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-# TODO add despine option
 # TODO provide common cbar option
+# TODO allow gridspec_kws and subplot_kws
 
 
 class FilterGrid(object):
@@ -17,7 +17,7 @@ class FilterGrid(object):
     def __init__(
         self,
         data=None,
-        filter_name="gaussian",
+        filt="gaussian",
         *,
         row=None,
         col=None,
@@ -78,7 +78,7 @@ class FilterGrid(object):
         fig = plt.figure(figsize=figsize)
         axes = fig.subplots(
             nrow, ncol, squeeze=False
-        )  # TODO allow gridspec_kws and subplot_kws
+        )
 
         product_params = []
         if row and col:
@@ -96,7 +96,7 @@ class FilterGrid(object):
 
         # Public API
         self.data = data
-        self.filter = filter_name
+        self.filt = filt
         self.fig = fig
         self.axes = axes
         self.row = row
@@ -163,13 +163,16 @@ class FilterGrid(object):
                 if i < self._ncol:
                     ax.set_title(f"{self.col} : {p[1]}")
 
+        # FIXME - for common colorbar
+        # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
+
         return
 
     def _plot(self, ax, **func_kwargs):
 
         filterplot(
             self.data,
-            self.filter,
+            self.filt,
             ax=ax,
             cmap=self.cmap,
             dx=self.dx,

@@ -30,7 +30,7 @@ implemented_filters = [
 
 def filterplot(
     data,
-    filter="gaussian",
+    filt="gaussian",
     *,
     ax=None,
     cmap=None,
@@ -58,7 +58,7 @@ def filterplot(
     Args:
         data: Image data (array-like). Supported array shapes are all
             `matplotlib.pyplot.imshow` array shapes
-        filter (str, optional): Image filter to be used for processing.
+        filt (str, optional): Image filter to be used for processing.
             Defaults to "gaussian".
             Options include: "sobel", "gaussian", "median", "max", "diff_of_gaussians",
             "gaussian_gradient_magnitude", "gaussian_laplace", "laplace", "min", "percentile",
@@ -99,13 +99,13 @@ def filterplot(
             Defaults to True.
         title (str, optional): Image title. Defaults to None.
         title_fontdict (dict, optional): Font specifications for `title`. Defaults to None.
-        **kwargs : Any additional parameters to be passed to the specific filter chosen.
+        **kwargs : Any additional parameters to be passed to the specific filt chosen.
             For instance, "sigma" or "size" or "mode" etc.
 
     Raises:
-        TypeError: if `filter` is not a string type
+        TypeError: if `filt` is not a string type
         TypeError: if `fft` is not a bool type
-        NotImplementedError: if a `filter` that is not implemented is specified
+        NotImplementedError: if a `filt` that is not implemented is specified
 
     Returns:
         (tuple): tuple containing:
@@ -116,31 +116,31 @@ def filterplot(
 
     Example:
         >>> import seaborn_image as isns
-        >>> isns.filterplot(data) # use default gaussian filter
-        >>> isns.filterplot(data, "percentile", percentile=35) # specify a filter with specific parameter
+        >>> isns.filterplot(data) # use default gaussian filt
+        >>> isns.filterplot(data, "percentile", percentile=35) # specify a filt with specific parameter
         >>> isns.filterplot(data, dx=3, units="um") # specify scalebar for the filterplot
     """
 
-    if not isinstance(filter, str):
-        raise TypeError("filter must be a string")
+    if not isinstance(filt, str):
+        raise TypeError("filt must be a string")
 
     if not isinstance(describe, bool):
         raise TypeError("describe must be a bool - 'True' or 'False")
 
-    # check if the filter is implemented in seaborn-image
-    if filter not in implemented_filters:
+    # check if the filt is implemented in seaborn-image
+    if filt not in implemented_filters:
         raise NotImplementedError(
-            f"'{filter}' filter is not implemented. Following are implented: {implemented_filters}"
+            f"'{filt}' filt is not implemented. Following are implented: {implemented_filters}"
         )
 
     else:
-        if filter == "sobel":
+        if filt == "sobel":
             func_kwargs = {}
             func_kwargs.update(**kwargs)
 
             filtered_data = ndi.sobel(data, **func_kwargs)
 
-        elif filter == "gaussian":
+        elif filt == "gaussian":
             func_kwargs = {}
             if "sigma" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"sigma": 1})
@@ -148,7 +148,7 @@ def filterplot(
 
             filtered_data = ndi.gaussian_filter(data, **func_kwargs)
 
-        elif filter == "median":
+        elif filt == "median":
             func_kwargs = {}
             if "size" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"size": 5})
@@ -156,7 +156,7 @@ def filterplot(
 
             filtered_data = ndi.median_filter(data, **func_kwargs)
 
-        elif filter == "max":
+        elif filt == "max":
             func_kwargs = {}
             if "size" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"size": 5})
@@ -164,7 +164,7 @@ def filterplot(
 
             filtered_data = ndi.maximum_filter(data, **func_kwargs)
 
-        elif filter == "diff_of_gaussians":
+        elif filt == "diff_of_gaussians":
             func_kwargs = {}
             if (
                 "low_sigma" not in kwargs
@@ -174,7 +174,7 @@ def filterplot(
 
             filtered_data = difference_of_gaussians(data, **func_kwargs,)
 
-        elif filter == "gaussian_gradient_magnitude":
+        elif filt == "gaussian_gradient_magnitude":
             func_kwargs = {}
             if "sigma" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"sigma": 1})
@@ -182,7 +182,7 @@ def filterplot(
 
             filtered_data = ndi.gaussian_gradient_magnitude(data, **func_kwargs)
 
-        elif filter == "gaussian_laplace":
+        elif filt == "gaussian_laplace":
             func_kwargs = {}
             if "sigma" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"sigma": 1})
@@ -190,13 +190,13 @@ def filterplot(
 
             filtered_data = ndi.gaussian_laplace(data, **func_kwargs)
 
-        elif filter == "laplace":
+        elif filt == "laplace":
             func_kwargs = {}
             func_kwargs.update(**kwargs)
 
             filtered_data = ndi.laplace(data, **func_kwargs)
 
-        elif filter == "min":
+        elif filt == "min":
             func_kwargs = {}
             if "size" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"size": 5})
@@ -204,7 +204,7 @@ def filterplot(
 
             filtered_data = ndi.minimum_filter(data, **func_kwargs)
 
-        elif filter == "percentile":
+        elif filt == "percentile":
             func_kwargs = {}
             if (
                 "percentile" not in kwargs
@@ -219,13 +219,13 @@ def filterplot(
 
             filtered_data = ndi.percentile_filter(data, **func_kwargs)
 
-        elif filter == "prewitt":
+        elif filt == "prewitt":
             func_kwargs = {}
             func_kwargs.update(**kwargs)
 
             filtered_data = ndi.prewitt(data, **func_kwargs)
 
-        elif filter == "rank":
+        elif filt == "rank":
             func_kwargs = {}
             if "rank" not in kwargs:  # assign sensible default if user didn't specify
                 func_kwargs.update({"rank": 1})
@@ -238,7 +238,7 @@ def filterplot(
 
             filtered_data = ndi.rank_filter(data, **func_kwargs)
 
-        elif filter == "uniform":
+        elif filt == "uniform":
             func_kwargs = {}
             func_kwargs.update(**kwargs)
 
