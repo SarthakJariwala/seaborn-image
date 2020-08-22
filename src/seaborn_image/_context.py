@@ -15,7 +15,7 @@ __all__ = [
 # TODO implement a set() fuction for all underlying set_*
 
 
-def set_context(mode="talk", fontfamily="arial", fontweight="bold", rc=None):
+def set_context(mode="paper", fontfamily="sans-serif", fontweight="normal", rc=None):
     """
     Set context for images with mode, fontfamily and fontweight. Additional,
     rc params can also be passed as dict
