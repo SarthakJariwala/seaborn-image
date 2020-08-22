@@ -94,6 +94,20 @@ class FilterGrid(object):
 
         product_params = np.array(product_params, dtype=object)
 
+        # check if any additional kwargs are passed
+        # that need to be passed to the underlying filter
+        additional_kwargs = {}
+        for k, v in kwargs.items():
+            if row and col:
+                if k not in [row, col]:
+                    additional_kwargs.update({k : v})
+            elif row:
+                if k not in row:
+                    additional_kwargs.update({k : v})
+            elif col:
+                if k not in col:
+                    additional_kwargs.update({k : v})
+
         # Public API
         self.data = data
         self.filt = filt
@@ -103,6 +117,7 @@ class FilterGrid(object):
         self.col = col
         self.col_wrap = col_wrap
         self.param_product = product_params
+        self.additional_kwargs = additional_kwargs
         self.height = height
         self.aspect = aspect
 
@@ -129,6 +144,10 @@ class FilterGrid(object):
 
     def map_filter_to_grid(self):
 
+        # any additional kwargs that need to be passed
+        # to the underlying filter
+        func_kwargs = self.additional_kwargs
+
         if self.row is None and self.col is None:
             imgplot(self.data, ax=self.axes)
 
@@ -138,21 +157,21 @@ class FilterGrid(object):
 
             # plot only col vars
             if self.row is None:
-                func_kwargs = {self.col: p[0]}
+                func_kwargs.update({self.col: p[0]})
                 self._plot(ax=ax, **func_kwargs)
 
                 ax.set_title(f"{self.col} : {p[0]}")
 
             # plot only row vars
             if self.col is None:
-                func_kwargs = {self.row: p[0]}
+                func_kwargs.update({self.row: p[0]})
                 self._plot(ax=ax, **func_kwargs)
 
                 ax.set_title(f"{self.row} : {p[0]}")
 
             # when both row and col vars are specified
             if self.row and self.col:
-                func_kwargs = {self.row: p[0], self.col: p[1]}
+                func_kwargs.update({self.row: p[0], self.col: p[1]})
                 self._plot(ax=ax, **func_kwargs)
 
                 # set row labels only to the outermost column
