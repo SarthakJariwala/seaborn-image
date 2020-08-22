@@ -8,109 +8,6 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-# class ImageGrid(object):
-#     def __init__(
-#         self,
-#         data=None,
-#         row=None,
-#         col=None,
-#         col_wrap=None,
-#         mosaic=None,  # available starting matplotlib 3.3
-#         height=5,
-#         aspect=1,
-#     ):
-
-#         # Set up the lists of names for the row and column facet variables
-#         if row is None:
-#             row_names = []
-#         else:
-#             if isinstance(row, int):
-#                 row_names = [row]  # TODO add a hide_row_names option
-#             if isinstance(row, str):
-#                 row_names = [row]
-#             elif isinstance(row, list):
-#                 row_names = row
-
-#         if col is None:
-#             col_names = []
-#         else:
-#             if isinstance(col, int):
-#                 col_names = [col]  # TODO add a hide_row_names option
-#             if isinstance(col, str):
-#                 col_names = [col]
-#             elif isinstance(col, list):
-#                 col_names = col
-
-#         # Compute the grid shape like FacetGrid
-#         ncol = 1 if col is None else len(col_names)
-#         nrow = 1 if row is None else len(row_names)
-
-#         if col_wrap is not None:
-#             if row is not None:
-#                 err = "Cannot use `row` and `col_wrap` together."
-#                 raise ValueError(err)
-#             ncol = col_wrap
-#             nrow = int(np.ceil(len(col_names) / col_wrap))
-
-#         # Calculate the base figure size
-#         figsize = (ncol * height * aspect, nrow * height)
-
-#         fig = plt.figure(figsize=figsize)
-
-#         # Ignore everything and plot mosaic if specified
-#         if mosaic is not None:
-#             axes = fig.subplot_mosaic(mosaic)
-#             if row or col or col_wrap:
-#                 warnings.warn(
-#                     "Ignoring `row`, `col` and `col_wrap` when `mosiac` is specified"
-#                 )
-#         else:
-#             axes = fig.subplots(nrow, ncol)
-
-#         # if self.data is not None:
-#         #     if isinstance(self.data, list):
-#         #         _total = len(self.data)
-#         #         self.col_wrap = col_wrap
-
-#         # Public API
-#         self.data = data
-#         self.fig = fig
-#         self.axes = axes
-#         self.row = row
-#         self.col = col
-#         self.height = height
-#         self.aspect = aspect
-
-#         return
-
-#     def map(self, func, ax, *args, **kwargs):
-
-#         # If color was a keyword argument, grab it here
-#         kw_color = kwargs.pop("color", None)
-
-#         if hasattr(func, "__module__"):
-#             func_module = str(func.__module__)
-#         else:
-#             func_module = ""
-
-#         # Some matplotlib functions don't handle pandas objects correctly
-#         # if func_module.startswith("matplotlib"):
-#         #     plot_args = [v.values for v in plot_args]
-
-#         func(*args, **kwargs)
-#         # Draw the plot
-#         # self._facet_plot(func, ax, *args, **kwargs)
-
-#         return self
-
-#     def _facet_plot(self, func, ax, plot_args, plot_kwargs):
-
-#         # Draw the plot
-
-#         func(*plot_args, **plot_kwargs)
-
-#         return self
-
 # TODO add despine option
 # TODO provide common cbar option
 
@@ -131,12 +28,13 @@ class FilterGrid(object):
         dx=None,
         units=None,
         dimension=None,
-        describe=False,
         cbar=True,
+        orientation='v',
         cbar_label=None,
         cbar_fontdict=None,
         cbar_ticks=None,
         showticks=False,
+        despine=True,
         **kwargs,
     ):
 
@@ -212,12 +110,13 @@ class FilterGrid(object):
         self.dx = dx
         self.units = units
         self.dimension = dimension
-        self.describe = describe
         self.cbar = cbar
+        self.orientation = orientation
         self.cbar_label = cbar_label
         self.cbar_fontdict = cbar_fontdict
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
+        self.despine = despine
 
         self._nrow = nrow
         self._ncol = ncol
@@ -277,10 +176,12 @@ class FilterGrid(object):
             units=self.units,
             dimension=self.dimension,
             cbar=self.cbar,
+            orientation=self.orientation,
             cbar_label=self.cbar_label,
             cbar_fontdict=self.cbar_fontdict,
             cbar_ticks=self.cbar_ticks,
             showticks=self.showticks,
+            despine=self.despine,
             **func_kwargs,
         )
         return
@@ -300,7 +201,7 @@ class FilterGrid(object):
                     rem_ax[i].set_ylabel("")
                     rem_ax[i].set_xlabel("")
 
-                    despine()  # remove axes spines for the extra generated axes
+                    despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
 
     def _finalize_grid(self):
         """Finalize grid with tight layout.
