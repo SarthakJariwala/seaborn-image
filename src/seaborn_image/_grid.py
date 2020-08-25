@@ -8,12 +8,13 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
+__all__ = ["FilterGrid"]
+
 # TODO provide common cbar option
 # TODO allow gridspec_kws and subplot_kws
 
 
 class FilterGrid(object):
-
     def __init__(
         self,
         data=None,
@@ -29,7 +30,7 @@ class FilterGrid(object):
         units=None,
         dimension=None,
         cbar=True,
-        orientation='v',
+        orientation="v",
         cbar_label=None,
         cbar_fontdict=None,
         cbar_ticks=None,
@@ -76,9 +77,7 @@ class FilterGrid(object):
         figsize = (ncol * height * aspect, nrow * height)
 
         fig = plt.figure(figsize=figsize)
-        axes = fig.subplots(
-            nrow, ncol, squeeze=False
-        )
+        axes = fig.subplots(nrow, ncol, squeeze=False)
 
         product_params = []
         if row and col:
@@ -100,13 +99,13 @@ class FilterGrid(object):
         for k, v in kwargs.items():
             if row and col:
                 if k not in [row, col]:
-                    additional_kwargs.update({k : v})
+                    additional_kwargs.update({k: v})
             elif row:
                 if k not in row:
-                    additional_kwargs.update({k : v})
+                    additional_kwargs.update({k: v})
             elif col:
                 if k not in col:
-                    additional_kwargs.update({k : v})
+                    additional_kwargs.update({k: v})
 
         # Public API
         self.data = data
@@ -149,7 +148,9 @@ class FilterGrid(object):
         func_kwargs = self.additional_kwargs
 
         if self.row is None and self.col is None:
-            imgplot(self.data, ax=self.axes)
+            imgplot(
+                self.data, ax=self.axes.flat[0]
+            )  # since squeeze is False, array needs to be flattened and indexed
 
         for i in range(len(self.param_product)):
             ax = self.axes.flat[i]
@@ -223,7 +224,9 @@ class FilterGrid(object):
                     rem_ax[i].set_ylabel("")
                     rem_ax[i].set_xlabel("")
 
-                    despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
+                    despine(
+                        ax=rem_ax[i]
+                    )  # remove axes spines for the extra generated axes
 
     def _finalize_grid(self):
         """Finalize grid with tight layout.
