@@ -62,8 +62,7 @@ class _SetupImage(object):
         self.despine = despine
 
     def _setup_figure(self):
-        """Wrapper to setup image with the desired parameters
-        """
+        """Wrapper to setup image with the desired parameters"""
         if self.ax is None:
             f, ax = plt.subplots()
         else:
@@ -79,8 +78,7 @@ class _SetupImage(object):
         return f, ax
 
     def _setup_scalebar(self, ax):
-        """Setup scalebar for the image
-        """
+        """Setup scalebar for the image"""
 
         if self.dx:
             dx = self.dx

@@ -159,7 +159,11 @@ def test_imghist_data_is_same_as_input():
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("despine", [True, False])
 def test_imghist_w_all_valid_inputs(
-    cmap, bins, orientation, showticks, despine,
+    cmap,
+    bins,
+    orientation,
+    showticks,
+    despine,
 ):
     f, axes, cax = isns.imghist(
         data,

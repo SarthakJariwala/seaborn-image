@@ -303,8 +303,7 @@ class FilterGrid(object):
         return
 
     def _cleanup_extra_axes(self):
-        """Clean extra axes that are generated if col_wrap is specified.
-        """
+        """Clean extra axes that are generated if col_wrap is specified."""
         if self.col_wrap is not None:
             # check if there are any extra axes that need to be clened up
             _rem = (self.col_wrap * self._nrow) - len(self.param_product)
@@ -322,6 +321,5 @@ class FilterGrid(object):
                     )  # remove axes spines for the extra generated axes
 
     def _finalize_grid(self):
-        """Finalize grid with tight layout.
-        """
+        """Finalize grid with tight layout."""
         self.fig.tight_layout()

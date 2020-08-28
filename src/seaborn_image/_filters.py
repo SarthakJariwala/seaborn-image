@@ -172,7 +172,10 @@ def filterplot(
                 func_kwargs.update({"low_sigma": 1})
             func_kwargs.update(**kwargs)
 
-            filtered_data = difference_of_gaussians(data, **func_kwargs,)
+            filtered_data = difference_of_gaussians(
+                data,
+                **func_kwargs,
+            )
 
         elif filt == "gaussian_gradient_magnitude":
             func_kwargs = {}
