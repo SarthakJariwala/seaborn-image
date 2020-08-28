@@ -6,22 +6,35 @@ Reference
     :backlinks: none
 
 
-seaborn_image._general
-----------------------
+imgplot
+-------
 
-.. automodule:: seaborn_image._general
+.. autofunction:: seaborn_image.imgplot
+
+
+imghist
+-------
+
+.. autofunction:: seaborn_image.imghist
+
+
+filterplot
+----------
+
+.. autofunction:: seaborn_image.filterplot
+
+
+fftplot
+-------
+
+.. autofunction:: seaborn_image.fftplot
+
+
+FilterGrid
+----------
+
+.. autoclass:: seaborn_image.FilterGrid
    :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-seaborn_image._filters
-----------------------
-
-.. automodule:: seaborn_image._filters
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 seaborn_image._context
