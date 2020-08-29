@@ -58,11 +58,9 @@ def filterplot(
     Args:
         data: Image data (array-like). Supported array shapes are all
             `matplotlib.pyplot.imshow` array shapes
-        filt (str, optional): Image filter to be used for processing.
-            Defaults to "gaussian".
-            Options include: "sobel", "gaussian", "median", "max", "diff_of_gaussians",
-            "gaussian_gradient_magnitude", "gaussian_laplace", "laplace", "min", "percentile",
-            "prewitt", "rank", "uniform".
+        filt (str or callable, optional): Filter name or function to be applied.
+            Filter name can be a string from `seaborn_image.implemented_filters` or a callable
+            filter. Defaults to "gaussian".
         cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
             Can be a seaborn-image colormap or default matplotlib colormaps or
             any other colormap converted to a matplotlib colormap. Defaults to None.
@@ -103,21 +101,32 @@ def filterplot(
             For instance, "sigma" or "size" or "mode" etc.
 
     Raises:
-        TypeError: if `filt` is not a string type
+        TypeError: if `filt` is not a string type or callable function
         NotImplementedError: if a `filt` that is not implemented is specified
+        TypeError: if `describe` is not a `bool`
 
     Returns:
         (tuple): tuple containing:
 
-            (`matplotlib.figure.Figure`): Matplotlib figure.
             (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
+            (`matplotlib.axes.Axes`): Colorbar axes
             (`numpy.array`): Filtered image data
 
     Example:
         >>> import seaborn_image as isns
-        >>> isns.filterplot(data) # use default gaussian filt
-        >>> isns.filterplot(data, "percentile", percentile=35) # specify a filt with specific parameter
-        >>> isns.filterplot(data, dx=3, units="um") # specify scalebar for the filterplot
+
+        >>> # use default gaussian filter
+        >>> isns.filterplot(data, sigma=3)
+
+        >>> # specify a filt with specific parameter
+        >>> isns.filterplot(data, "percentile", percentile=35, size=10)
+
+        >>> # callable filter
+        >>> import scipy.ndimage as ndi
+        >>> isns.filterplot(data, ndi.gaussian_filter, sigma=3)
+
+        >>> # specify scalebar for the filterplot
+        >>> isns.filterplot(data, "sobel", dx=3, units="um")
     """
 
     if not isinstance(describe, bool):
