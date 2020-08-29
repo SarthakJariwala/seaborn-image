@@ -15,6 +15,10 @@ class TestFilterGrid(object):
 
     data = np.random.random(2500).reshape((50, 50))
 
+    def test_none_data(self):
+        with pytest.raises(ValueError):
+            isns.FilterGrid(None)
+
     def test_self_data(self):
         g = isns.FilterGrid(self.data)
         np.testing.assert_array_equal(self.data, g.data)

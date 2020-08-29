@@ -124,6 +124,9 @@ class FilterGrid(object):
         **kwargs,
     ):
 
+        if data is None:
+            raise ValueError("image data can not be None")
+
         row_params = []
         if row is not None:
             if not isinstance(row, str):

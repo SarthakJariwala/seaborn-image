@@ -104,7 +104,6 @@ def filterplot(
 
     Raises:
         TypeError: if `filt` is not a string type
-        TypeError: if `fft` is not a bool type
         NotImplementedError: if a `filt` that is not implemented is specified
 
     Returns:
