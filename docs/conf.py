@@ -59,7 +59,7 @@ html_theme = "bootstrap"
 # documentation.
 html_theme_options = {
     "source_link_position": "footer",
-    "bootswatch_theme": "united",  # paper, simplex
+    "bootswatch_theme": "lumen",  # united, simplex
     "navbar_sidebarrel": False,
     "bootstrap_version": "3",
     "navbar_links": [

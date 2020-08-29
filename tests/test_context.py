@@ -8,11 +8,11 @@ import seaborn_image as isns
 @pytest.mark.parametrize(
     "context,outputs",
     [
-        ("notebook", [2.5, 20, "bold", 20, "bold"]),
-        ("talk", [2.5, 20, "bold", 20, "bold"]),
-        ("presentation", [2.5, 20, "bold", 20, "bold"]),
-        ("paper", [1.5, 15, "bold", 15, "bold"]),
-        ("poster", [3.5, 25, "bold", 25, "bold"]),
+        ("notebook", [2.5, 20, "normal", 20, "normal"]),
+        ("talk", [2.5, 20, "normal", 20, "normal"]),
+        ("presentation", [2.5, 20, "normal", 20, "normal"]),
+        ("paper", [1.5, 15, "normal", 15, "normal"]),
+        ("poster", [3.5, 25, "normal", 25, "normal"]),
     ],
 )
 def test_set_context(context, outputs):
@@ -90,7 +90,7 @@ def test_scalebar_w_rc():
             "scale_loc": "bottom",
             "location": "upper right",
             "box_alpha": 1,
-            "label_loc": "top"
+            "label_loc": "top",
         }
     )
 

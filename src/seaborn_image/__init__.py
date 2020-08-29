@@ -6,6 +6,7 @@ except ImportError:  # pragma: no cover
 from ._context import *
 from ._general import *
 from ._filters import *
+from ._grid import *
 from .utils import *
 
 

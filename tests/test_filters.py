@@ -6,7 +6,8 @@ import numpy as np
 import scipy.ndimage as ndi
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
-from skimage.filters import difference_of_gaussians
+from scipy.fftpack import fftn, fftshift
+from skimage.filters import difference_of_gaussians, window
 
 import seaborn_image as isns
 
@@ -14,24 +15,17 @@ matplotlib.use("AGG")  # use non-interactive backend for tests
 
 
 data = np.random.random(2500).reshape((50, 50))
-filter_list = ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
 
 
 def test_filter_not_implemented():
     with pytest.raises(NotImplementedError):
-        isns.filterplot(data, filter="not-implemented-filter")
+        isns.filterplot(data, filt="not-implemented-filt")
 
 
-@pytest.mark.parametrize("filter", [["gaussian"], ndi.gaussian_filter, None])
-def test_filter_types(filter):
+@pytest.mark.parametrize("filt", [["gaussian"], ndi.gaussian_filter, None])
+def test_filter_types(filt):
     with pytest.raises(TypeError):
-        isns.filterplot(data, filter=filter)
-
-
-@pytest.mark.parametrize("fft", ["True", "False", None, 1])
-def test_fft_type(fft):
-    with pytest.raises(TypeError):
-        isns.filterplot(data, fft=fft)
+        isns.filterplot(data, filt=filt)
 
 
 @pytest.mark.parametrize("describe", ["True", "False", None, 1])
@@ -40,23 +34,19 @@ def test_describe_type(describe):
         isns.imgplot(data, describe=describe)
 
 
-@pytest.mark.parametrize("fft", [True, False])
-@pytest.mark.parametrize(
-    "filter", ["sobel", "gaussian", "median", "max", "diff_of_gaussians"]
-)
+@pytest.mark.parametrize("filt", isns.implemented_filters)
 @pytest.mark.parametrize("describe", [True, False])
-def test_filters(filter, fft, describe):
-    f, ax, filt_data = isns.filterplot(data, filter=filter, fft=fft, describe=describe)
+def test_filters(filt, describe):
+    ax, cax, filt_data = isns.filterplot(data, filt=filt, describe=describe)
 
-    assert isinstance(f, Figure)
-    assert isinstance(ax, np.ndarray)
-    assert isinstance(ax.ravel().all(), Axes)
+    assert isinstance(ax, Axes)
+    assert isinstance(cax, Axes)
 
     plt.close("all")
 
 
 def test_filterplot_gaussian():
-    f, ax, filt_data = isns.filterplot(data, filter="gaussian")
+    _, _, filt_data = isns.filterplot(data, filt="gaussian")
 
     np.testing.assert_array_equal(filt_data, ndi.gaussian_filter(data, sigma=1))
 
@@ -64,7 +54,7 @@ def test_filterplot_gaussian():
 
 
 def test_filterplot_sobel():
-    f, ax, filt_data = isns.filterplot(data, filter="sobel")
+    _, _, filt_data = isns.filterplot(data, filt="sobel")
 
     np.testing.assert_array_equal(filt_data, ndi.sobel(data))
 
@@ -72,7 +62,7 @@ def test_filterplot_sobel():
 
 
 def test_filterplot_median():
-    f, ax, filt_data = isns.filterplot(data, filter="median")
+    _, _, filt_data = isns.filterplot(data, filt="median")
 
     np.testing.assert_array_equal(filt_data, ndi.median_filter(data, size=5))
 
@@ -80,7 +70,7 @@ def test_filterplot_median():
 
 
 def test_filterplot_max():
-    f, ax, filt_data = isns.filterplot(data, filter="max")
+    _, _, filt_data = isns.filterplot(data, filt="max")
 
     np.testing.assert_array_equal(filt_data, ndi.maximum_filter(data, size=5))
 
@@ -88,8 +78,96 @@ def test_filterplot_max():
 
 
 def test_filterplot_diff_of_gaussian():
-    f, ax, filt_data = isns.filterplot(data, filter="diff_of_gaussians")
+    _, _, filt_data = isns.filterplot(data, filt="diff_of_gaussians")
 
     np.testing.assert_array_equal(filt_data, difference_of_gaussians(data, low_sigma=1))
+
+    plt.close("all")
+
+
+def test_filterplot_gaussian_gradient_magnitude():
+    _, _, filt_data = isns.filterplot(data, filt="gaussian_gradient_magnitude")
+
+    np.testing.assert_array_equal(
+        filt_data, ndi.gaussian_gradient_magnitude(data, sigma=1)
+    )
+
+    plt.close("all")
+
+
+def test_filterplot_gaussian_laplace():
+    _, _, filt_data = isns.filterplot(data, filt="gaussian_laplace")
+
+    np.testing.assert_array_equal(filt_data, ndi.gaussian_laplace(data, sigma=1))
+
+    plt.close("all")
+
+
+def test_filterplot_laplace():
+    _, _, filt_data = isns.filterplot(data, filt="laplace")
+
+    np.testing.assert_array_equal(filt_data, ndi.laplace(data))
+
+    plt.close("all")
+
+
+def test_filterplot_min():
+    _, _, filt_data = isns.filterplot(data, filt="min")
+
+    np.testing.assert_array_equal(filt_data, ndi.minimum_filter(data, size=5))
+
+    plt.close("all")
+
+
+def test_filterplot_percentile():
+    _, _, filt_data = isns.filterplot(data, filt="percentile")
+
+    np.testing.assert_array_equal(
+        filt_data, ndi.percentile_filter(data, percentile=10, size=10)
+    )
+
+    plt.close("all")
+
+
+def test_filterplot_prewitt():
+    _, _, filt_data = isns.filterplot(data, filt="prewitt")
+
+    np.testing.assert_array_equal(filt_data, ndi.prewitt(data))
+
+    plt.close("all")
+
+
+def test_filterplot_rank():
+    _, _, filt_data = isns.filterplot(data, filt="rank")
+
+    np.testing.assert_array_equal(filt_data, ndi.rank_filter(data, rank=1, size=10))
+
+    plt.close("all")
+
+
+def test_filterplot_uniform():
+    _, _, filt_data = isns.filterplot(data, filt="uniform")
+
+    np.testing.assert_array_equal(filt_data, ndi.uniform_filter(data))
+
+    plt.close("all")
+
+
+def test_fftplot_plot():
+    ax, cax = isns.fftplot(data)
+
+    assert isinstance(ax, Axes)
+    assert isinstance(cax, Axes)
+
+    plt.close("all")
+
+
+def test_fftplot_fft():
+    ax, cax = isns.fftplot(data)
+
+    w_data = data * window("hann", data.shape)
+    data_f_mag = fftshift(np.abs(fftn(w_data)))
+
+    np.testing.assert_array_equal(ax.images[0].get_array().data, np.log(data_f_mag))
 
     plt.close("all")
