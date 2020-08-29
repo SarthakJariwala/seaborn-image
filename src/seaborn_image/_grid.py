@@ -23,8 +23,7 @@ class FilterGrid(object):
     Args:
         data : Image data (array-like). Supported array shapes are all
             `matplotlib.pyplot.imshow` array shapes
-        filt (str, optional): Name of the filter to be applied.
-            Defaults to "gaussian".
+        filt (str or callable): Filter name or function to be applied.
         row (str, optional): Parameter name that is to be displayed
             along the row. Defaults to None.
         col (str, optional): Parameter name that is to be displayed
@@ -103,7 +102,7 @@ class FilterGrid(object):
     def __init__(
         self,
         data,
-        filt="gaussian",
+        filt,
         *,
         row=None,
         col=None,
@@ -126,6 +125,9 @@ class FilterGrid(object):
 
         if data is None:
             raise ValueError("image data can not be None")
+
+        if filt is None:
+            raise ValueError("'filt' can not be None; must be a string or callable")
 
         row_params = []
         if row is not None:

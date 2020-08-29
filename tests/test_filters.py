@@ -22,7 +22,7 @@ def test_filter_not_implemented():
         isns.filterplot(data, filt="not-implemented-filt")
 
 
-@pytest.mark.parametrize("filt", [["gaussian"], ndi.gaussian_filter, None])
+@pytest.mark.parametrize("filt", [["gaussian"], None])
 def test_filter_types(filt):
     with pytest.raises(TypeError):
         isns.filterplot(data, filt=filt)
@@ -31,13 +31,13 @@ def test_filter_types(filt):
 @pytest.mark.parametrize("describe", ["True", "False", None, 1])
 def test_describe_type(describe):
     with pytest.raises(TypeError):
-        isns.imgplot(data, describe=describe)
+        isns.filterplot(data, "sobel", describe=describe)
 
 
-@pytest.mark.parametrize("filt", isns.implemented_filters)
+# @pytest.mark.parametrize("filt", isns.implemented_filters)
 @pytest.mark.parametrize("describe", [True, False])
-def test_filters(filt, describe):
-    ax, cax, filt_data = isns.filterplot(data, filt=filt, describe=describe)
+def test_filters(describe):
+    ax, cax, filt_data = isns.filterplot(data, "sobel", describe=describe)
 
     assert isinstance(ax, Axes)
     assert isinstance(cax, Axes)
@@ -45,8 +45,19 @@ def test_filters(filt, describe):
     plt.close("all")
 
 
+def test_filterplot_callable_filt():
+    "Test a callable filt parameter with additional parameters passed to the callable filt function"
+    _, _, filt_data = isns.filterplot(data, ndi.uniform_filter, size=5, mode="nearest")
+
+    np.testing.assert_array_equal(
+        filt_data, ndi.uniform_filter(data, size=5, mode="nearest")
+    )
+
+    plt.close("all")
+
+
 def test_filterplot_gaussian():
-    _, _, filt_data = isns.filterplot(data, filt="gaussian")
+    _, _, filt_data = isns.filterplot(data, filt="gaussian", sigma=1)
 
     np.testing.assert_array_equal(filt_data, ndi.gaussian_filter(data, sigma=1))
 
@@ -62,7 +73,7 @@ def test_filterplot_sobel():
 
 
 def test_filterplot_median():
-    _, _, filt_data = isns.filterplot(data, filt="median")
+    _, _, filt_data = isns.filterplot(data, filt="median", size=5)
 
     np.testing.assert_array_equal(filt_data, ndi.median_filter(data, size=5))
 
@@ -70,7 +81,7 @@ def test_filterplot_median():
 
 
 def test_filterplot_max():
-    _, _, filt_data = isns.filterplot(data, filt="max")
+    _, _, filt_data = isns.filterplot(data, filt="max", size=5)
 
     np.testing.assert_array_equal(filt_data, ndi.maximum_filter(data, size=5))
 
@@ -78,7 +89,7 @@ def test_filterplot_max():
 
 
 def test_filterplot_diff_of_gaussian():
-    _, _, filt_data = isns.filterplot(data, filt="diff_of_gaussians")
+    _, _, filt_data = isns.filterplot(data, filt="diff_of_gaussians", low_sigma=1)
 
     np.testing.assert_array_equal(filt_data, difference_of_gaussians(data, low_sigma=1))
 
@@ -86,7 +97,7 @@ def test_filterplot_diff_of_gaussian():
 
 
 def test_filterplot_gaussian_gradient_magnitude():
-    _, _, filt_data = isns.filterplot(data, filt="gaussian_gradient_magnitude")
+    _, _, filt_data = isns.filterplot(data, filt="gaussian_gradient_magnitude", sigma=1)
 
     np.testing.assert_array_equal(
         filt_data, ndi.gaussian_gradient_magnitude(data, sigma=1)
@@ -96,7 +107,7 @@ def test_filterplot_gaussian_gradient_magnitude():
 
 
 def test_filterplot_gaussian_laplace():
-    _, _, filt_data = isns.filterplot(data, filt="gaussian_laplace")
+    _, _, filt_data = isns.filterplot(data, filt="gaussian_laplace", sigma=1)
 
     np.testing.assert_array_equal(filt_data, ndi.gaussian_laplace(data, sigma=1))
 
@@ -112,7 +123,7 @@ def test_filterplot_laplace():
 
 
 def test_filterplot_min():
-    _, _, filt_data = isns.filterplot(data, filt="min")
+    _, _, filt_data = isns.filterplot(data, filt="min", size=5)
 
     np.testing.assert_array_equal(filt_data, ndi.minimum_filter(data, size=5))
 
@@ -120,7 +131,7 @@ def test_filterplot_min():
 
 
 def test_filterplot_percentile():
-    _, _, filt_data = isns.filterplot(data, filt="percentile")
+    _, _, filt_data = isns.filterplot(data, filt="percentile", percentile=10, size=10)
 
     np.testing.assert_array_equal(
         filt_data, ndi.percentile_filter(data, percentile=10, size=10)
@@ -138,7 +149,7 @@ def test_filterplot_prewitt():
 
 
 def test_filterplot_rank():
-    _, _, filt_data = isns.filterplot(data, filt="rank")
+    _, _, filt_data = isns.filterplot(data, filt="rank", rank=1, size=10)
 
     np.testing.assert_array_equal(filt_data, ndi.rank_filter(data, rank=1, size=10))
 
