@@ -11,21 +11,21 @@ from ._general import imgplot
 
 __all__ = ["filterplot", "fftplot", "implemented_filters"]
 
-implemented_filters = [
-    "sobel",
-    "gaussian",
-    "median",
-    "max",
-    "diff_of_gaussians",
-    "gaussian_gradient_magnitude",
-    "gaussian_laplace",
-    "laplace",
-    "min",
-    "percentile",
-    "prewitt",
-    "rank",
-    "uniform",
-]
+implemented_filters = {
+    "sobel": ndi.sobel,
+    "gaussian": ndi.gaussian_filter,
+    "median": ndi.median_filter,
+    "max": ndi.maximum_filter,
+    "diff_of_gaussians": difference_of_gaussians,
+    "gaussian_gradient_magnitude": ndi.gaussian_gradient_magnitude,
+    "gaussian_laplace": ndi.gaussian_laplace,
+    "laplace": ndi.laplace,
+    "min": ndi.minimum_filter,
+    "percentile": ndi.percentile_filter,
+    "prewitt": ndi.prewitt,
+    "rank": ndi.rank_filter,
+    "uniform": ndi.uniform_filter,
+}
 
 
 def filterplot(
@@ -120,131 +120,29 @@ def filterplot(
         >>> isns.filterplot(data, dx=3, units="um") # specify scalebar for the filterplot
     """
 
-    if not isinstance(filt, str):
-        raise TypeError("filt must be a string")
-
     if not isinstance(describe, bool):
         raise TypeError("describe must be a bool - 'True' or 'False")
 
     # check if the filt is implemented in seaborn-image
-    if filt not in implemented_filters:
+    if isinstance(filt, str) and filt not in implemented_filters.keys():
         raise NotImplementedError(
-            f"'{filt}' filt is not implemented. Following are implented: {implemented_filters}"
+            f"'{filt}' filt is not implemented. Following are implented: {implemented_filters.keys()}"
         )
 
     else:
-        if filt == "sobel":
-            func_kwargs = {}
-            func_kwargs.update(**kwargs)
+        if isinstance(filt, str) and filt in implemented_filters.keys():
+            filt_func = implemented_filters[filt]
 
-            filtered_data = ndi.sobel(data, **func_kwargs)
+        elif callable(filt):
+            filt_func = filt
 
-        elif filt == "gaussian":
-            func_kwargs = {}
-            if "sigma" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"sigma": 1})
-            func_kwargs.update(**kwargs)
+        else:
+            raise TypeError("'filt' must either be a string or a function")
 
-            filtered_data = ndi.gaussian_filter(data, **func_kwargs)
+        func_kwargs = {}
+        func_kwargs.update(**kwargs)
 
-        elif filt == "median":
-            func_kwargs = {}
-            if "size" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"size": 5})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.median_filter(data, **func_kwargs)
-
-        elif filt == "max":
-            func_kwargs = {}
-            if "size" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"size": 5})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.maximum_filter(data, **func_kwargs)
-
-        elif filt == "diff_of_gaussians":
-            func_kwargs = {}
-            if (
-                "low_sigma" not in kwargs
-            ):  # assign sensible default if user didn't specify
-                func_kwargs.update({"low_sigma": 1})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = difference_of_gaussians(
-                data,
-                **func_kwargs,
-            )
-
-        elif filt == "gaussian_gradient_magnitude":
-            func_kwargs = {}
-            if "sigma" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"sigma": 1})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.gaussian_gradient_magnitude(data, **func_kwargs)
-
-        elif filt == "gaussian_laplace":
-            func_kwargs = {}
-            if "sigma" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"sigma": 1})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.gaussian_laplace(data, **func_kwargs)
-
-        elif filt == "laplace":
-            func_kwargs = {}
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.laplace(data, **func_kwargs)
-
-        elif filt == "min":
-            func_kwargs = {}
-            if "size" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"size": 5})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.minimum_filter(data, **func_kwargs)
-
-        elif filt == "percentile":
-            func_kwargs = {}
-            if (
-                "percentile" not in kwargs
-            ):  # assign sensible default if user didn't specify
-                func_kwargs.update({"percentile": 10})
-            if "size" or "footprint" not in kwargs:
-                warnings.warn(
-                    "'size' or 'footprint' not specified; using 'size'=10", UserWarning
-                )
-                func_kwargs.update({"size": 10})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.percentile_filter(data, **func_kwargs)
-
-        elif filt == "prewitt":
-            func_kwargs = {}
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.prewitt(data, **func_kwargs)
-
-        elif filt == "rank":
-            func_kwargs = {}
-            if "rank" not in kwargs:  # assign sensible default if user didn't specify
-                func_kwargs.update({"rank": 1})
-            if "size" or "footprint" not in kwargs:
-                warnings.warn(
-                    "'size' or 'footprint' not specified; using 'size'=10", UserWarning
-                )
-                func_kwargs.update({"size": 10})
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.rank_filter(data, **func_kwargs)
-
-        elif filt == "uniform":
-            func_kwargs = {}
-            func_kwargs.update(**kwargs)
-
-            filtered_data = ndi.uniform_filter(data, **func_kwargs)
+        filtered_data = filt_func(data, **func_kwargs)
 
     # finally, plot the filtered image
     f, ax, cax = imgplot(
