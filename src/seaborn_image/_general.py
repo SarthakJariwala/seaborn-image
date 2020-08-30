@@ -38,7 +38,7 @@ def imgplot(
 ):
     """
 
-    Plot data as a 2-D image with options to add scalebar, colorbar, title.
+    Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
     Args:
         data: Image data (array-like). Supported array shapes are all

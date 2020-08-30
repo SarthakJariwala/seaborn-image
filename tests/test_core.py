@@ -106,9 +106,21 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("despine", [True, False])
+@pytest.mark.parametrize("vmin", [None, 0])
+@pytest.mark.parametrize("vmax", [None, 1])
 @pytest.mark.parametrize("robust", [True, False])
 def test_plot_w_all_inputs(
-    cmap, cbar, dx, units, dimension, orientation, showticks, despine, robust
+    cmap,
+    vmin,
+    vmax,
+    cbar,
+    dx,
+    units,
+    dimension,
+    orientation,
+    showticks,
+    despine,
+    robust,
 ):
     img_setup = isns._core._SetupImage(
         data,
