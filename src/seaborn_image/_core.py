@@ -29,6 +29,8 @@ class _SetupImage(object):
         cmap=None,
         vmin=None,
         vmax=None,
+        robust=False,
+        perc=None,
         title=None,
         fontdict=None,
         dx=None,
@@ -48,6 +50,8 @@ class _SetupImage(object):
         self.cmap = cmap
         self.vmin = vmin
         self.vmax = vmax
+        self.robust = robust
+        self.perc = perc
         self.title = title
         self.fontdict = fontdict
         self.dx = dx
@@ -108,6 +112,18 @@ class _SetupImage(object):
         if self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
+        if self.robust:
+            if self.vmin is None:
+                min_robust = (
+                    True  # remember that vmin was None and now set to new value
+                )
+                self.vmin = np.nanpercentile(self.data, self.perc[0])
+            if self.vmax is None:
+                max_robust = (
+                    True  # remember that vmax was None and now set to new value
+                )
+                self.vmax = np.nanpercentile(self.data, self.perc[1])
+
         # TODO move everything other than data to kwargs
         _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
 
@@ -134,7 +150,22 @@ class _SetupImage(object):
                     "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
                 )
 
-            cb = f.colorbar(_map, cax=cax, orientation=self.orientation)
+            # extend specific colorbar regions if robust is True
+            if self.robust:
+                if min_robust and max_robust:
+                    cb = f.colorbar(
+                        _map, cax=cax, orientation=self.orientation, extend="both"
+                    )
+                elif min_robust:
+                    cb = f.colorbar(
+                        _map, cax=cax, orientation=self.orientation, extend="min"
+                    )
+                elif max_robust:
+                    cb = f.colorbar(
+                        _map, cax=cax, orientation=self.orientation, extend="max"
+                    )
+            else:
+                cb = f.colorbar(_map, cax=cax, orientation=self.orientation)
 
             if self.despine:
                 cb.outline.set_visible(False)  # remove colorbar outline border

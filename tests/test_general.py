@@ -31,6 +31,17 @@ def test_describe_type():
         isns.imgplot(data, describe=["True"])
 
 
+def test_robust_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, robust="True")
+
+
+@pytest.mark.parametrize("perc", [(2, 10, 88), (45, 40)])
+def test_percentile(perc):
+    with pytest.raises(AssertionError):
+        isns.imgplot(data, robust=True, perc=perc)
+
+
 def test_cbar_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, cbar="True")

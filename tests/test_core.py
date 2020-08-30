@@ -58,13 +58,40 @@ def test_plot_check_cbar_dict():
         f, ax, cax = img_setup.plot()
 
 
+def test_robust_param():
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98))
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == np.nanpercentile(data, 2)
+    assert img_setup.vmax == np.nanpercentile(data, 98)
+    plt.close()
+
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == 0
+    assert img_setup.vmax == np.nanpercentile(data, 98)
+    plt.close()
+
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmax=1)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == np.nanpercentile(data, 2)
+    assert img_setup.vmax == 1
+    plt.close()
+
+    img_setup = isns._core._SetupImage(
+        data, robust=True, perc=(2, 98), vmin=0, vmax=1
+    )
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == 0
+    assert img_setup.vmax == 1
+    plt.close()
+
+
 def test_data_plotted_is_same_as_input():
     img_setup = isns._core._SetupImage(data)
     f, ax, cax = img_setup.plot()
 
     # check if data iput is what was plotted
     np.testing.assert_array_equal(ax.images[0].get_array().data, data)
-
     plt.close("all")
 
 
@@ -79,14 +106,29 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("despine", [True, False])
+@pytest.mark.parametrize("vmin", [None, 0])
+@pytest.mark.parametrize("vmax", [None, 1])
+@pytest.mark.parametrize("robust", [True, False])
 def test_plot_w_all_inputs(
-    cmap, cbar, dx, units, dimension, orientation, showticks, despine
+    cmap,
+    vmin,
+    vmax,
+    cbar,
+    dx,
+    units,
+    dimension,
+    orientation,
+    showticks,
+    despine,
+    robust,
 ):
     img_setup = isns._core._SetupImage(
         data,
         cmap=cmap,
         vmin=None,
         vmax=None,
+        robust=robust,
+        perc=(2, 98),
         title="My Title",
         fontdict={"fontsize": 20},
         dx=dx,

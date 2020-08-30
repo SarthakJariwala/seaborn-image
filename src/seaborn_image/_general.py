@@ -20,6 +20,8 @@ def imgplot(
     gray=None,
     vmin=None,
     vmax=None,
+    robust=False,
+    perc=(2, 98),
     dx=None,
     units=None,
     dimension=None,
@@ -36,7 +38,7 @@ def imgplot(
 ):
     """
 
-    Plot data as a 2-D image with options to add scalebar, colorbar, title.
+    Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
     Args:
         data: Image data (array-like). Supported array shapes are all
@@ -50,6 +52,11 @@ def imgplot(
             If True and cmap is None, cmap will be set to "gray".
         vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
         vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
+        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
+            based on the percentiles defined in `percentile` parameter. Defaults to False.
+        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
+            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
+            percentiles for min and max values.
         dx (float, optional): Size per pixel of the image data. If scalebar
             is required, `dx` and `units` must be sepcified. Defaults to None.
         units (str, optional): Units of `dx`. Defaults to None.
@@ -85,6 +92,8 @@ def imgplot(
     Raises:
         TypeError: if `cmap` is not str or `matplotlib.colors.Colormap`
         TypeError: if `ax` is not `matplotlib.axes.Axes`
+        TypeError: if `describe` is not bool
+        TypeError: if `robust` is not bool
         TypeError: if `cbar` is not bool
         TypeError: if `orientation` is not str
         TypeError: if `cbar_label` is not str
@@ -93,6 +102,8 @@ def imgplot(
         TypeError: if `despine` is not bool
         TypeError: if `title` is not str
         TypeError: if `title_fontdict` is not dict
+        AssertionError: if `len(perc)` is not equal to 2
+        AssertionError: if the first element of `perc` is greater than the second
 
     Returns:
         (tuple): tuple containing:
@@ -102,14 +113,30 @@ def imgplot(
 
     Example:
         >>> import seaborn_image as isns
+
         >>> isns.imgplot(data)
-        >>> isns.imgplot(data, dx=2, units="nm") # add a scalebar
-        >>> isns.imgplot(data, cmap="deep") # specify a colormap
 
+        >>> # add a scalebar
+        >>> isns.imgplot(data, dx=2, units="nm")
 
+        >>> # specify a colormap
+        >>> isns.imgplot(data, cmap="deep")
+
+        >>> # convert RGB image to grayscale
+        >>> isns.imgplot(data, gray=True)
+
+        >>> # exclude the outliers
+        >>> isns.imgplot(data, robust=True)
+
+        >>> # change colorbar orientation
+        >>> isns.imgplot(data, orientation="h") # horizontal
+        >>> isns.imgplot(data, orientation="v") # vertical
+
+        >>> # add a colorbar label
+        >>> isns.imgplot(data, cbar_label="Label (au)")
     """
 
-    # add vmin, vmax, dx, units to checks
+    # TODO add vmin, vmax, dx, units to checks
     if cmap is not None:
         if not isinstance(cmap, (str, Colormap)):
             raise TypeError
@@ -120,6 +147,13 @@ def imgplot(
 
     if not isinstance(describe, bool):
         raise TypeError
+
+    if not isinstance(robust, bool):
+        raise TypeError("'robust' must be either True or False")
+
+    if robust is True:
+        assert len(perc) == 2
+        assert perc[0] < perc[1]  # order should be (min, max)
 
     if not isinstance(cbar, bool):
         raise TypeError
@@ -152,6 +186,7 @@ def imgplot(
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
             cbar = False  # set cbar to False if RGB image
+            robust = False  # set robust to False if RGB image
             if gray is True:  # if gray is True, convert to grayscale
                 data = rgb2gray(data)
 
@@ -164,6 +199,8 @@ def imgplot(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        robust=robust,
+        perc=perc,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -198,6 +235,8 @@ def imghist(
     bins=None,
     vmin=None,
     vmax=None,
+    robust=False,
+    perc=(2, 98),
     dx=None,
     units=None,
     dimension=None,
@@ -225,6 +264,11 @@ def imghist(
             is used.
         vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
         vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
+        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
+            based on the percentiles defined in `percentile` parameter. Defaults to False.
+        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
+            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
+            percentiles for min and max values.
         dx (float, optional): Size per pixel of the image data. If scalebar
             is required, `dx` and `units` must be sepcified. Defaults to None.
         units (str, optional): Units of `dx`. Defaults to None.
@@ -307,6 +351,8 @@ def imghist(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        robust=robust,
+        perc=perc,
         dx=dx,
         units=units,
         dimension=dimension,
