@@ -59,26 +59,26 @@ def test_plot_check_cbar_dict():
 
 
 def test_robust_param():
-    img_setup = isns._core._SetupImage(data, robust=True, percentile=(2, 98))
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98))
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == np.nanpercentile(data, 2)
     assert img_setup.vmax == np.nanpercentile(data, 98)
     plt.close()
 
-    img_setup = isns._core._SetupImage(data, robust=True, percentile=(2, 98), vmin=0)
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0)
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == 0
     assert img_setup.vmax == np.nanpercentile(data, 98)
     plt.close()
 
-    img_setup = isns._core._SetupImage(data, robust=True, percentile=(2, 98), vmax=1)
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmax=1)
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == np.nanpercentile(data, 2)
     assert img_setup.vmax == 1
     plt.close()
 
     img_setup = isns._core._SetupImage(
-        data, robust=True, percentile=(2, 98), vmin=0, vmax=1
+        data, robust=True, perc=(2, 98), vmin=0, vmax=1
     )
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == 0
@@ -128,7 +128,7 @@ def test_plot_w_all_inputs(
         vmin=None,
         vmax=None,
         robust=robust,
-        percentile=(2, 98),
+        perc=(2, 98),
         title="My Title",
         fontdict={"fontsize": 20},
         dx=dx,

@@ -36,6 +36,8 @@ def filterplot(
     cmap=None,
     vmin=None,
     vmax=None,
+    robust=False,
+    perc=(2, 98),
     dx=None,
     units=None,
     dimension=None,
@@ -66,6 +68,11 @@ def filterplot(
             any other colormap converted to a matplotlib colormap. Defaults to None.
         vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
         vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
+        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
+            based on the percentiles defined in `percentile` parameter. Defaults to False.
+        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
+            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
+            percentiles for min and max values.
         dx (float, optional): Size per pixel of the image data. If scalebar
             is required, `dx` and `units` must be sepcified. Defaults to None.
         units (str, optional): Units of `dx`. Defaults to None.
@@ -160,6 +167,8 @@ def filterplot(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        robust=robust,
+        perc=perc,
         dx=dx,
         units=units,
         dimension=dimension,

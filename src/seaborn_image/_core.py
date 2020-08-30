@@ -30,7 +30,7 @@ class _SetupImage(object):
         vmin=None,
         vmax=None,
         robust=False,
-        percentile=None,
+        perc=None,
         title=None,
         fontdict=None,
         dx=None,
@@ -51,7 +51,7 @@ class _SetupImage(object):
         self.vmin = vmin
         self.vmax = vmax
         self.robust = robust
-        self.percentile = percentile
+        self.perc = perc
         self.title = title
         self.fontdict = fontdict
         self.dx = dx
@@ -117,12 +117,12 @@ class _SetupImage(object):
                 min_robust = (
                     True  # remember that vmin was None and now set to new value
                 )
-                self.vmin = np.nanpercentile(self.data, self.percentile[0])
+                self.vmin = np.nanpercentile(self.data, self.perc[0])
             if self.vmax is None:
                 max_robust = (
                     True  # remember that vmax was None and now set to new value
                 )
-                self.vmax = np.nanpercentile(self.data, self.percentile[1])
+                self.vmax = np.nanpercentile(self.data, self.perc[1])
 
         # TODO move everything other than data to kwargs
         _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
