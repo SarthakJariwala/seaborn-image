@@ -113,6 +113,8 @@ class _SetupImage(object):
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
         if self.robust:
+            min_robust = False
+            max_robust = False
             if self.vmin is None:
                 min_robust = (
                     True  # remember that vmin was None and now set to new value
