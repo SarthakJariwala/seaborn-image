@@ -77,9 +77,7 @@ def test_robust_param():
     assert img_setup.vmax == 1
     plt.close()
 
-    img_setup = isns._core._SetupImage(
-        data, robust=True, perc=(2, 98), vmin=0, vmax=1
-    )
+    img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0, vmax=1)
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == 0
     assert img_setup.vmax == 1

@@ -50,6 +50,3 @@ MANIFEST
 # Per-project virtualenvs
 .venv*/
 .vscode/
-
-# Data
-data/
