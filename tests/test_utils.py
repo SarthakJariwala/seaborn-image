@@ -2,6 +2,7 @@ import pytest
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 import seaborn_image as isns
 
@@ -40,3 +41,20 @@ def test_despine_type():
     plt.subplots()
     with pytest.raises(TypeError):
         isns.despine(which=0)
+
+
+def test_load_image():
+    img = isns.load_image("polymer")
+    np.testing.assert_array_equal(
+        img, np.loadtxt("data/PolymerImage.txt", skiprows=1) * 1e9
+    )
+
+    img = isns.load_image("polymer outliers")
+    test_img = np.loadtxt("data/PolymerImage.txt", skiprows=1) * 1e9
+    test_img[0, 0] = 80
+    np.testing.assert_array_equal(img, test_img)
+
+
+def test_load_image_error():
+    with pytest.raises(ValueError):
+        isns.load_image("coins")

@@ -8,6 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/SarthakJariwala/seaborn-image"
 repository = "https://github.com/SarthakJariwala/seaborn-image"
 documentation = "https://seaborn-image.readthedocs.io/"
+include = ["data/PolymerImage.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.6"

@@ -16,6 +16,7 @@ repos:
   - id: requirements-txt-fixer
   - id: mixed-line-ending
     args: ['--fix=no']
+    exclude: '^data/*'
   - id: flake8
     args: ['--max-line-length=88']  # default of Black
 
