@@ -13,6 +13,8 @@ from ._core import _SetupImage
 __all__ = ["imgplot", "imghist"]
 
 
+# TODO implement rgbplot() - which has options
+# to split the channels
 def imgplot(
     data,
     ax=None,
@@ -36,104 +38,186 @@ def imgplot(
     title=None,
     title_fontdict=None,
 ):
-    """
+    """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
-    Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
+    Parameters
+    ----------
+    data : array-like
+        Image data. Supported array shapes are all `matplotlib.pyplot.imshow` array shapes
+    ax : `matplotlib.axes.Axes`, optional
+        Matplotlib axes to plot image on. If None, figure and axes are auto-generated, by default None
+    cmap : str or `matplotlib.colors.Colormap`, optional
+        Colormap for image. Can be a seaborn-image colormap or default matplotlib colormaps or
+        any other colormap converted to a matplotlib colormap, by default None
+    gray : bool, optional
+        If True and data is RGB image, it will be converted to grayscale.
+        If True and cmap is None, cmap will be set to "gray", by default None
+    vmin : float, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float, optional
+        Maximum data value that colormap covers, by default None
+    robust : bool, optional
+        If True and vmin or vmax are None, colormap range is calculated
+        based on the percentiles defined in `perc` parameter, by default False
+    perc : tuple or list, optional
+        If `robust` is True, colormap range is calculated based
+        on the percentiles specified instead of the extremes, by default (2, 98) -
+        2nd and 98th percentiles for min and max values
+    dx : float, optional
+        Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
+        to the image, by default None
+    units : str, optional
+        Units of `dx`, by default None
+    dimension : str, optional
+        dimension of `dx` and `units`, by default None
+        Options include (similar to `matplotlib_scalebar`):
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+    describe : bool, optional
+        Brief statistical description of the data, by default True
+    cbar : bool, optional
+        Specify if a colorbar is to be added to the image, by default True.
+        If `data` is RGB image, cbar is False
+    orientation : str, optional
+        Specify the orientaion of colorbar, by default "v".
+        Options include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_label : str, optional
+        Colorbar label, by default None
+    cbar_fontdict : dict, optional
+        Font specifications for colorbar label, by default None
+    cbar_ticks : list, optional
+        List of colorbar ticks, by default None
+    showticks : bool, optional
+        Show image x-y axis ticks, by default False
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes, by default True
+    title : [type], optional
+        Image title, by default None
+    title_fontdict : [type], optional
+        Font specifications for `title`, by default None
 
-    Args:
-        data: Image data (array-like). Supported array shapes are all
-            `matplotlib.pyplot.imshow` array shapes
-        ax (`matplotlib.axes.Axes`, optional): Matplotlib axes to plot image on.
-            If None, figure and axes are auto-generated. Defaults to None.
-        cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
-            Can be a seaborn-image colormap or default matplotlib colormaps or
-            any other colormap converted to a matplotlib colormap. Defaults to None.
-        gray (bool, optional): If True and data is RGB image, it will be converted to grayscale.
-            If True and cmap is None, cmap will be set to "gray".
-        vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
-        vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
-        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
-            based on the percentiles defined in `percentile` parameter. Defaults to False.
-        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
-            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
-            percentiles for min and max values.
-        dx (float, optional): Size per pixel of the image data. If scalebar
-            is required, `dx` and `units` must be sepcified. Defaults to None.
-        units (str, optional): Units of `dx`. Defaults to None.
-        dimension (str, optional): dimension of `dx` and `units`.
-            Options include (similar to `matplotlib_scalebar`):
-                - "si" : scale bar showing km, m, cm, etc.
-                - "imperial" : scale bar showing in, ft, yd, mi, etc.
-                - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
-                - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
-                - "pixel" : scale bar showing px, kpx, Mpx, etc.
-            Defaults to None.
-        describe (bool, optional): Brief statistical description of the data.
-            Defaults to True.
-        cbar (bool, optional): Specify if a colorbar is required or not.
-            Defaults to True.
-        orientation (str, optional): Specify the orientaion of colorbar.
-            Option include :
-                - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
-                - 'v' or 'vertical' for a vertical colorbar to the right of the image.
-            Defaults to 'v'.
-        cbar_label (str, optional): Colorbar label. Defaults to None.
-        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
-            Defaults to None.
-        cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
-            the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
-            are used for colorbar ticks. Defaults to None.
-        showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
-        despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
-            Defaults to True.
-        title (str, optional): Image title. Defaults to None.
-        title_fontdict (dict, optional): [Font specifications for `title`. Defaults to None.
+    Returns
+    -------
+    `matplotlib.figure.Figure`
+        Matplotlib figure.
+    `matplotlib.axes.Axes`
+        Matplotlib axes where the image is drawn.
+    `matplotlib.axes.Axes`
+        Colorbar axes
 
-    Raises:
-        TypeError: if `cmap` is not str or `matplotlib.colors.Colormap`
-        TypeError: if `ax` is not `matplotlib.axes.Axes`
-        TypeError: if `describe` is not bool
-        TypeError: if `robust` is not bool
-        TypeError: if `cbar` is not bool
-        TypeError: if `orientation` is not str
-        TypeError: if `cbar_label` is not str
-        TypeError: if `cbar_fontdict` is not dict
-        TypeError: if `showticks` is not bool
-        TypeError: if `despine` is not bool
-        TypeError: if `title` is not str
-        TypeError: if `title_fontdict` is not dict
-        AssertionError: if `len(perc)` is not equal to 2
-        AssertionError: if the first element of `perc` is greater than the second
+    Raises
+    ------
+    TypeError
+        if `cmap` is not str or `matplotlib.colors.Colormap`
+    TypeError
+        if `ax` is not `matplotlib.axes.Axes`
+    TypeError
+        if `describe` is not bool
+    TypeError
+        if `robust` is not bool
+    TypeError
+        if `cbar` is not bool
+    TypeError
+        if `orientation` is not str
+    TypeError
+        if `cbar_label` is not str
+    TypeError
+        if `cbar_fontdict` is not dict
+    TypeError
+        if `showticks` is not bool
+    TypeError
+        if `despine` is not bool
+    TypeError
+        if `title` is not str
+    TypeError
+        if `title_fontdict` is not dict
+    AssertionError
+        if `len(perc)` is not equal to 2
+    AssertionError
+        if the first element of `perc` is greater than the second
 
-    Returns:
-        (tuple): tuple containing:
-            (`matplotlib.figure.Figure`): Matplotlib figure.
-            (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
-            (`matplotlib.axes.Axes`): Colorbar axes
+    Examples
+    --------
 
-    Example:
+    Plot image
+
+    .. plot::
+        :context: close-figs
+
         >>> import seaborn_image as isns
+        >>> img = isns.load_image("polymer")
+        >>> isns.imgplot(img)
 
-        >>> isns.imgplot(data)
+    Add a scalebar
 
-        >>> # add a scalebar
-        >>> isns.imgplot(data, dx=2, units="nm")
+    .. plot::
+        :context: close-figs
 
-        >>> # specify a colormap
-        >>> isns.imgplot(data, cmap="deep")
+        >>> isns.imgplot(img, dx=15, units="nm")
 
-        >>> # convert RGB image to grayscale
-        >>> isns.imgplot(data, gray=True)
+    Change colormap
 
-        >>> # exclude the outliers
-        >>> isns.imgplot(data, robust=True)
+    .. plot::
+        :context: close-figs
 
-        >>> # change colorbar orientation
-        >>> isns.imgplot(data, orientation="h") # horizontal
-        >>> isns.imgplot(data, orientation="v") # vertical
+        >>> isns.imgplot(img, cmap="deep")
 
-        >>> # add a colorbar label
-        >>> isns.imgplot(data, cbar_label="Label (au)")
+    Rescale colormap to exclude outliers while plotting
+
+    Image with outliers
+
+    .. plot::
+        :context: close-figs
+
+        >>> img_out = isns.load_image("polymer outliers")
+        >>> isns.imgplot(img_out)
+
+    Rescale colormap using `robust` parameter
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img_out, robust=True, perc=(2,99.99))
+
+    Convert RGB image to grayscale
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.data import astronaut
+        >>> isns.imgplot(astronaut(), gray=True)
+
+
+    Change colorbar orientation
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, orientation="h") # horizontal
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, orientation="v") # vertical
+
+    Add colorbar label
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, cbar_label="Height (nm)")
+
+    Avoid image and colorbar axes despining
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, despine=False)
     """
 
     # TODO add vmin, vmax, dx, units to checks
@@ -229,6 +313,8 @@ def imgplot(
     return f, ax, cax
 
 
+# TODO implement a imgdist function with more distributions
+# TODO add height, aspect parameter
 def imghist(
     data,
     cmap=None,
@@ -254,70 +340,117 @@ def imghist(
     """Plot data as a 2-D image with histogram showing the distribution of
     the data. Options to add scalebar, colorbar, title.
 
-    Args:
-        data: Image data (array-like). Supported array shapes are all
-            `matplotlib.pyplot.imshow` array shapes
-        cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
-            Can be a seaborn-image colormap or default matplotlib colormaps or
-            any other colormap converted to a matplotlib colormap. Defaults to None.
-        bins (int, optional): Number of histogram bins. Defaults to None. If None, 'auto'
-            is used.
-        vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
-        vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
-        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
-            based on the percentiles defined in `percentile` parameter. Defaults to False.
-        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
-            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
-            percentiles for min and max values.
-        dx (float, optional): Size per pixel of the image data. If scalebar
-            is required, `dx` and `units` must be sepcified. Defaults to None.
-        units (str, optional): Units of `dx`. Defaults to None.
-        dimension (str, optional): dimension of `dx` and `units`.
-            Options include :
-                - "si" : scale bar showing km, m, cm, etc.
-                - "imperial" : scale bar showing in, ft, yd, mi, etc.
-                - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
-                - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
-                - "pixel" : scale bar showing px, kpx, Mpx, etc.
-            Defaults to None.
-        describe (bool, optional): Brief statistical description of the data.
-            Defaults to True.
-        cbar (bool, optional): Specify if a colorbar is required or not.
-            Defaults to True.
-        orientation (str, optional): Specify the orientaion of colorbar.
-            Option include :
-                - 'h' or 'horizontal' for a horizontal colorbar and histogram to the bottom of the image.
-                - 'v' or 'vertical' for a vertical colorbar and histogram to the right of the image.
-            Defaults to 'v'.
-        cbar_label (str, optional): Colorbar label. Defaults to None.
-        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
-            Defaults to None.
-        cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
-            the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
-            are used for colorbar ticks. Defaults to None.
-        showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
-        despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
-            Defaults to True.
-        title (str, optional): Image title. Defaults to None.
-        title_fontdict (dict, optional): [Font specifications for `title`. Defaults to None.
+    Parameters
+    ----------
+    data : array-like
+        Image data. Supported array shapes are all `matplotlib.pyplot.imshow` array shapes
+    bins : int, optional
+        Histogram bins, by default None. If None, `auto` is used.
+    ax : `matplotlib.axes.Axes`, optional
+        Matplotlib axes to plot image on. If None, figure and axes are auto-generated, by default None
+    cmap : str or `matplotlib.colors.Colormap`, optional
+        Colormap for image. Can be a seaborn-image colormap or default matplotlib colormaps or
+        any other colormap converted to a matplotlib colormap, by default None
+    gray : bool, optional
+        If True and data is RGB image, it will be converted to grayscale.
+        If True and cmap is None, cmap will be set to "gray", by default None
+    vmin : float, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float, optional
+        Maximum data value that colormap covers, by default None
+    robust : bool, optional
+        If True and vmin or vmax are None, colormap range is calculated
+        based on the percentiles defined in `perc` parameter, by default False
+    perc : tuple or list, optional
+        If `robust` is True, colormap range is calculated based
+        on the percentiles specified instead of the extremes, by default (2, 98) -
+        2nd and 98th percentiles for min and max values
+    dx : float, optional
+        Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
+        to the image, by default None
+    units : str, optional
+        Units of `dx`, by default None
+    dimension : str, optional
+        dimension of `dx` and `units`, by default None
+        Options include (similar to `matplotlib_scalebar`):
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+    describe : bool, optional
+        Brief statistical description of the data, by default True
+    cbar : bool, optional
+        Specify if a colorbar is to be added to the image, by default True.
+        If `data` is RGB image, cbar is False
+    orientation : str, optional
+        Specify the orientaion of colorbar, by default "v".
+        Options include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_label : str, optional
+        Colorbar label, by default None
+    cbar_fontdict : dict, optional
+        Font specifications for colorbar label, by default None
+    cbar_ticks : list, optional
+        List of colorbar ticks, by default None
+    showticks : bool, optional
+        Show image x-y axis ticks, by default False
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes, by default True
+    title : [type], optional
+        Image title, by default None
+    title_fontdict : [type], optional
+        Font specifications for `title`, by default None
 
-    Raises:
-        TypeError: if `bins` is not int
+    Returns
+    -------
+    `matplotlib.figure.Figure`
+        Matplotlib figure.
+    `matplotlib.axes.Axes`
+        Matplotlib axes where the image is drawn.
+    `matplotlib.axes.Axes`
+        Matplotlib axes where the histogram is drawn.
+    `matplotlib.axes.Axes`
+        Colorbar axes
 
-    Returns:
-        (tuple): tuple containing:
-            (`matplotlib.figure.Figure`): Matplotlib figure.
-            (tuple): tuple containing:
-                (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
-                (`matplotlib.axes.Axes`): Matplotlib axes where the histogram is drawn.
-            (`matplotlib.axes.Axes`): Colorbar axes
+    Raises
+    ------
+    TypeError
+        if `bins` is not a positive integer
 
-    Example:
+    Examples
+    --------
+
+    Plot distribution alongside the image
+
+    .. plot::
+        :context: close-figs
+
         >>> import seaborn_image as isns
-        >>> isns.imghist(data)
-        >>> isns.imghist(data, bins=300) # specify the number of histogram bins
-        >>> isns.imghist(data, dx=2, units="nm") # add a scalebar
-        >>> isns.imghist(data, cmap="deep") # specify a colormap
+        >>> img = isns.load_image("polymer")
+        >>> isns.imghist(img)
+
+    Change the number of bins
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, bins=300)
+
+    Add a scalebar
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, dx=15, units="nm")
+
+    Change colormaps
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, cmap="deep")
     """
 
     if bins is None:

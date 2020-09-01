@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import ticker
@@ -73,11 +75,25 @@ def load_image(name):
     """
 
     if name == "polymer":
-        img = np.loadtxt("data/PolymerImage.txt", skiprows=1)
+        try:
+            path = "data/PolymerImage.txt"
+            img = np.loadtxt(path, skiprows=1)
+        except:  # noqa
+            # if building docstrings
+            path = "../data/PolymerImage.txt"
+            img = np.loadtxt(path, skiprows=1)
+
         img = img * 1e9  # convert height data from m to nm
 
     elif name == "polymer outliers":
-        img = np.loadtxt("data/PolymerImage.txt", skiprows=1)
+        try:  # not very pretty fix to the path issue
+            path = "data/PolymerImage.txt"
+            img = np.loadtxt(path, skiprows=1)
+        except:  # noqa
+            # if building docstrings
+            path = "../data/PolymerImage.txt"
+            img = np.loadtxt(path, skiprows=1)
+
         img = img * 1e9  # convert height data from m to nm
         img[0, 0] = 80  # assign an outlier value to a random pixel
 
