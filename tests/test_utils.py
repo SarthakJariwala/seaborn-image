@@ -58,3 +58,27 @@ def test_load_image():
 def test_load_image_error():
     with pytest.raises(ValueError):
         isns.load_image("coins")
+
+
+def test_scientific_ticks():
+    img = isns.load_image("polymer") * 1e-9
+
+    f, ax, cax = isns.imgplot(img)
+    isns.scientific_ticks(cax, which="y")
+    plt.close()
+
+    f, ax, cax = isns.imgplot(img, orientation="h")
+    isns.scientific_ticks(cax, which="x")
+    plt.close()
+
+    f, ax, cax = isns.imgplot(img)
+    isns.scientific_ticks(cax, which="both")
+    plt.close()
+
+
+def test_scientific_ticks_valueerror():
+    with pytest.raises(ValueError):
+        img = isns.load_image("polymer") * 1e-9
+        f, ax, cax = isns.imgplot(img)
+        isns.scientific_ticks(cax, which="all")
+        plt.close()
