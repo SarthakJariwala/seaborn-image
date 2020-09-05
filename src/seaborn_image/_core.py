@@ -16,11 +16,6 @@ _DIMENSIONS = {
 }
 
 
-def _check_dict(dictionary):
-    if not isinstance(dictionary, dict):
-        raise TypeError(f"{dictionary} must be a dictionary")
-
-
 class _SetupImage(object):
     def __init__(
         self,
