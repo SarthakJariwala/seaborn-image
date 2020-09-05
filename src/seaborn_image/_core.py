@@ -31,14 +31,11 @@ class _SetupImage(object):
         vmax=None,
         robust=False,
         perc=None,
-        title=None,
-        fontdict=None,
         dx=None,
         units=None,
         dimension=None,
         cbar=None,
         orientation="v",
-        cbar_fontdict=None,
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
@@ -52,14 +49,11 @@ class _SetupImage(object):
         self.vmax = vmax
         self.robust = robust
         self.perc = perc
-        self.title = title
-        self.fontdict = fontdict
         self.dx = dx
         self.units = units
         self.dimension = dimension
         self.cbar = cbar
         self.orientation = orientation
-        self.cbar_fontdict = cbar_fontdict
         self.cbar_label = cbar_label
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
@@ -72,12 +66,6 @@ class _SetupImage(object):
         else:
             f = plt.gcf()
             ax = self.ax
-
-        if self.fontdict is not None:
-            _check_dict(self.fontdict)
-
-        if self.title is not None:
-            ax.set_title(self.title, fontdict=self.fontdict)
 
         return f, ax
 
@@ -187,11 +175,8 @@ class _SetupImage(object):
             if self.cbar_ticks is not None:
                 cb.set_ticks(self.cbar_ticks)
 
-            if self.cbar_fontdict is not None:
-                _check_dict(self.cbar_fontdict)
-
             if self.cbar_label is not None:
-                cb.set_label(self.cbar_label, fontdict=self.cbar_fontdict)
+                cb.set_label(self.cbar_label)
 
         else:
             cax = None

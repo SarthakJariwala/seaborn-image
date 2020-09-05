@@ -45,12 +45,9 @@ def filterplot(
     cbar=True,
     orientation="v",
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
     despine=True,
-    title=None,
-    title_fontdict=None,
     **kwargs,
 ):
     """
@@ -94,16 +91,12 @@ def filterplot(
                 - 'v' or 'vertical' for a vertical colorbar to the right of the image.
             Defaults to 'v'.
         cbar_label (str, optional): Colorbar label. Defaults to None.
-        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
-            Defaults to None.
         cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
             the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
             are used for colorbar ticks. Defaults to None.
         showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
         despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
             Defaults to True.
-        title (str, optional): Image title. Defaults to None.
-        title_fontdict (dict, optional): Font specifications for `title`. Defaults to None.
         **kwargs : Any additional parameters to be passed to the specific filt chosen.
             For instance, "sigma" or "size" or "mode" etc.
 
@@ -176,7 +169,6 @@ def filterplot(
         cbar=cbar,
         orientation=orientation,
         cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
@@ -203,11 +195,8 @@ def fftplot(
     cmap=None,
     cbar=True,
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
-    title=None,
-    title_fontdict=None,
 ):
 
     if cmap is None:
@@ -226,12 +215,9 @@ def fftplot(
         ax=ax,
         cmap=cmap,
         cbar=cbar,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         describe=False,
-        title=title,
-        title_fontdict=title_fontdict,
     )
 
     return ax, cax

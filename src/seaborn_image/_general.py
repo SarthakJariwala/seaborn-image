@@ -31,12 +31,9 @@ def imgplot(
     cbar=True,
     orientation="v",
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
     despine=True,
-    title=None,
-    title_fontdict=None,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
@@ -88,18 +85,12 @@ def imgplot(
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
     cbar_label : str, optional
         Colorbar label, by default None
-    cbar_fontdict : dict, optional
-        Font specifications for colorbar label, by default None
     cbar_ticks : list, optional
         List of colorbar ticks, by default None
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default True
-    title : [type], optional
-        Image title, by default None
-    title_fontdict : [type], optional
-        Font specifications for `title`, by default None
 
     Returns
     -------
@@ -127,15 +118,9 @@ def imgplot(
     TypeError
         if `cbar_label` is not str
     TypeError
-        if `cbar_fontdict` is not dict
-    TypeError
         if `showticks` is not bool
     TypeError
         if `despine` is not bool
-    TypeError
-        if `title` is not str
-    TypeError
-        if `title_fontdict` is not dict
     AssertionError
         if `len(perc)` is not equal to 2
     AssertionError
@@ -191,7 +176,6 @@ def imgplot(
 
         >>> from skimage.data import astronaut
         >>> isns.imgplot(astronaut(), gray=True)
-
 
     Change colorbar orientation
 
@@ -249,23 +233,11 @@ def imgplot(
         if not isinstance(cbar_label, str):
             raise TypeError
 
-    if cbar_fontdict is not None:
-        if not isinstance(cbar_fontdict, dict):
-            raise TypeError
-
     if not isinstance(showticks, bool):
         raise TypeError
 
     if not isinstance(despine, bool):
         raise TypeError
-
-    if title is not None:
-        if not isinstance(title, str):
-            raise TypeError
-
-    if title_fontdict is not None:
-        if not isinstance(title_fontdict, dict):
-            raise TypeError
 
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
@@ -291,12 +263,9 @@ def imgplot(
         cbar=cbar,
         orientation=orientation,
         cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        title=title,
-        fontdict=title_fontdict,
     )
 
     f, ax, cax = img_plotter.plot()
@@ -330,12 +299,9 @@ def imghist(
     cbar=True,
     orientation="v",
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
     despine=True,
-    title=None,
-    title_fontdict=None,
 ):
     """Plot data as a 2-D image with histogram showing the distribution of
     the data. Options to add scalebar, colorbar, title.
@@ -390,18 +356,12 @@ def imghist(
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
     cbar_label : str, optional
         Colorbar label, by default None
-    cbar_fontdict : dict, optional
-        Font specifications for colorbar label, by default None
     cbar_ticks : list, optional
         List of colorbar ticks, by default None
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default True
-    title : [type], optional
-        Image title, by default None
-    title_fontdict : [type], optional
-        Font specifications for `title`, by default None
 
     Returns
     -------
@@ -493,12 +453,9 @@ def imghist(
         cbar=cbar,
         orientation=orientation,
         cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        title=title,
-        title_fontdict=title_fontdict,
     )
 
     if orientation == "vertical":

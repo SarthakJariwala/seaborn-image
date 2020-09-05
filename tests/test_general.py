@@ -57,11 +57,6 @@ def test_cbar_label_type():
         isns.imgplot(data, cbar_label=["Title"])
 
 
-def test_cbar_fontdict_type():
-    with pytest.raises(TypeError):
-        isns.imgplot(data, cbar_fontdict=["fontsize", 20])
-
-
 def test_showticks_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, showticks="True")
@@ -70,16 +65,6 @@ def test_showticks_type():
 def test_despine_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, despine="True")
-
-
-def test_title_type():
-    with pytest.raises(TypeError):
-        isns.imgplot(data, title=["Title"])
-
-
-def test_title_fontdict_type():
-    with pytest.raises(TypeError):
-        isns.imgplot(data, title_fontdict=[{"fontsize": 20}])
 
 
 @pytest.mark.parametrize("data", [data, astronaut()])

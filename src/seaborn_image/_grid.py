@@ -53,8 +53,6 @@ class FilterGrid(object):
                 - 'v' or 'vertical' for a vertical colorbar and histogram to the right of the image.
             Defaults to 'v'.
         cbar_label (str, optional): Colorbar label. Defaults to None.
-        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
-            Defaults to None.
         cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
             the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
             are used for colorbar ticks. Defaults to None.
@@ -116,7 +114,6 @@ class FilterGrid(object):
         cbar=True,
         orientation="v",
         cbar_label=None,
-        cbar_fontdict=None,
         cbar_ticks=None,
         showticks=False,
         despine=True,
@@ -217,7 +214,6 @@ class FilterGrid(object):
         self.cbar = cbar
         self.orientation = orientation
         self.cbar_label = cbar_label
-        self.cbar_fontdict = cbar_fontdict
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
         self.despine = despine
@@ -299,7 +295,6 @@ class FilterGrid(object):
             cbar=self.cbar,
             orientation=self.orientation,
             cbar_label=self.cbar_label,
-            cbar_fontdict=self.cbar_fontdict,
             cbar_ticks=self.cbar_ticks,
             showticks=self.showticks,
             despine=self.despine,
