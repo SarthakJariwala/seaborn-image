@@ -44,3 +44,12 @@ seaborn_image._context
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+seaborn_image.utils
+-------------------
+
+.. automodule:: seaborn_image.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
