@@ -85,7 +85,7 @@ def reset_defaults():
 
     Example:
         >>> import seaborn_image as isns
-        >>> isns.reset_deafults()
+        >>> isns.reset_defaults()
 
     """
     mpl.rcParams.update(mpl.rcParamsDefault)

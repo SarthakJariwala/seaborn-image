@@ -73,16 +73,17 @@ class FilterGrid(object):
 
     Examples:
         >>> import seaborn_image as isns
+        >>> img = isns.load_image("polymer")
 
         >>> # Specify a median filter with different `size` parameters along the columns/rows
-        >>> g = isns.FilterGrid(data, "median", col="size", size=[2,3,4,5])
-        >>> g = isns.FilterGrid(data, "median", row="size", size=[2,3,4,5])
+        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5])
+        >>> g = isns.FilterGrid(img, "median", row="size", size=[2,3,4,5])
 
         >>> # Use col_wrap to control column display
-        >>> g = isns.FilterGrid(data, "median", col="size", size=[2,3,4,5], col_wrap=3)
+        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], col_wrap=3)
 
         >>> # Use col and row to display different parameters along the columns and rows
-        >>> g = isns.FilterGrid(data,
+        >>> g = isns.FilterGrid(img,
                                 "percentile",
                                 row="percentile",
                                 col="size",
@@ -90,11 +91,11 @@ class FilterGrid(object):
                                 size=[20,25,30])
 
         >>> # Specify additional kwargs for the filter
-        >>> g = isns.FilterGrid(data, "median", col="size", size=[2,3,4,5], mode="reflect")
+        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], mode="reflect")
 
         >>> # General image controls such as changing cmap, scalebar, etc.
-        >>> g = isns.FilterGrid(data, "median", col="size", size=[2,3,4,5], cmap="inferno")
-        >>> g = isns.FilterGrid(data, "median", col="size", size=[2,3,4,5], dx=10, units="nm")
+        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], cmap="inferno")
+        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], dx=10, units="nm")
     """
 
     def __init__(
