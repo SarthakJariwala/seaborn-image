@@ -114,4 +114,11 @@ def test_rc_assertion():
 
 def test_reset_defaults():
     isns.reset_defaults()
-    assert mpl.rcParams == mpl.rcParamsDefault
+
+    for k, v in mpl.rcParams.items():
+        # ignore scalebar keys since they are not in
+        # matplotlib defaults
+        if "scalebar" in k:
+            pass
+        else:
+            assert mpl.rcParams[k] == mpl.rcParamsDefault[k]

@@ -95,12 +95,7 @@ def reset_defaults():
         >>> import seaborn_image as isns
         >>> isns.reset_defaults()
     """
-    # need to set it equal instead of using update method
-    # because we have scalebar keys in our rcParams that are
-    # not originally part of the matplotlib rcParamsDefault
-    # Since the goal of this function is to set everything back
-    # to matplotlib defaults, scalebar should be taken out....
-    mpl.rcParams = mpl.rcParamsDefault
+    mpl.rcParams.update(mpl.rcParamsDefault)
 
 
 def set_image(cmap="deep", origin="lower", interpolation="nearest"):
