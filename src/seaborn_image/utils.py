@@ -190,7 +190,7 @@ def load_image(name):
         try:
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
-        except:  # noqa
+        except OSError:  # pragma: no cover
             # if building docstrings
             path = "../data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
@@ -201,7 +201,7 @@ def load_image(name):
         try:  # not very pretty fix to the path issue
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
-        except:  # noqa
+        except OSError:  # pragma: no cover
             # if building docstrings
             path = "../data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)

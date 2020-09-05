@@ -110,3 +110,8 @@ def test_rc_assertion():
 
         rc = ["color", "black"]
         isns.set_scalebar(rc=rc)
+
+
+def test_reset_defaults():
+    isns.reset_defaults()
+    assert mpl.rcParams == mpl.rcParamsDefault
