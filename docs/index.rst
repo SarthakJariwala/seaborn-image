@@ -2,19 +2,27 @@
 seaborn-image: image data visualization
 =======================================
 
-.. list-table::
+|img1| |img2| |img3| |img4|
 
-    * - .. image:: ../examples/image_1.png
-            :width: 150px
-            :height: 140px
+.. |img1| image:: /auto_examples/images/thumb/sphx_glr_plot_image_hist_thumb.png
+    :width: 190px
+    :height: 180px
 
-        .. image:: ../examples/image_5.png
-            :width: 200px
-            :height: 140px
+.. |img2| image:: /auto_examples/images/thumb/sphx_glr_plot_filter_thumb.png
+    :width: 140px
+    :height: 140px
 
-        .. image:: ../examples/image_4.png
-            :width:  140px
-            :height: 140px
+.. |img3| image:: /auto_examples/images/thumb/sphx_glr_plot_fft_thumb.png
+    :width: 120px
+    :height: 120px
+
+.. |img4| image:: /auto_examples/images/thumb/sphx_glr_plot_filtergrid_thumb.png
+    :width: 140px
+    :height: 140px
+
+.. .. |img5| image:: /auto_examples/images/thumb/sphx_glr_plot_image_robust_thumb.png
+..     :width: 200px
+..     :height: 200px
 
 
 Description
@@ -27,7 +35,7 @@ The aim of seaborn-image is to provide a high-level API to **process and plot at
 **and effectively**.
 
 To get started with ``seaborn_image``, check out the :doc:`quickstart page <quickstart>`.
-To view example images, check out the :doc:`gallery page <gallery>`.
+To view example images, check out the :doc:`gallery page <auto_examples/index>`.
 For specific how-to questions, refer to the :doc:`how-to page <how_to>`.
 
 Check out the source code on `github <https://github.com/SarthakJariwala/seaborn-image>`_.
@@ -84,7 +92,7 @@ Contents
 
    Quickstart <quickstart>
    How-to? <how_to>
-   Gallery <gallery>
+   Gallery <auto_examples/index>
    License <license>
    Authors <authors>
    Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>

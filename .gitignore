@@ -44,6 +44,7 @@ sdist/*
 docs/api/*
 docs/_rst/*
 docs/_build/*
+docs/auto_examples/*
 cover/*
 MANIFEST
 
