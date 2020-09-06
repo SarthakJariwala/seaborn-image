@@ -4,7 +4,7 @@ from pathlib import Path
 
 import nox
 
-locations = "src", "tests", "noxfile.py", "docs/conf.py"
+locations = "src", "tests", "noxfile.py", "docs/conf.py", "examples"
 nox.options.sessions = "safety", "tests", "xdoctest"
 
 
