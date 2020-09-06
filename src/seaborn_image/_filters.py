@@ -236,6 +236,7 @@ def fftplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
+    despine=False,
 ):
 
     if cmap is None:
@@ -257,6 +258,7 @@ def fftplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         describe=False,
+        despine=despine,
     )
 
     return ax, cax

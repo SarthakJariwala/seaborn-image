@@ -2,16 +2,27 @@
 seaborn-image: image data visualization
 =======================================
 
-|img1| |img2| |img3|
+|img1| |img2| |img3| |img4|
 
 .. |img1| image:: /auto_examples/images/thumb/sphx_glr_plot_image_hist_thumb.png
-    :width: 30%
+    :width: 190px
+    :height: 180px
 
-.. |img2| image:: /auto_examples/images/thumb/sphx_glr_plot_filtergrid_thumb.png
-    :width: 30%
+.. |img2| image:: /auto_examples/images/thumb/sphx_glr_plot_filter_thumb.png
+    :width: 140px
+    :height: 140px
 
-.. |img3| image:: /auto_examples/images/thumb/sphx_glr_plot_image_robust_thumb.png
-    :width: 30%
+.. |img3| image:: /auto_examples/images/thumb/sphx_glr_plot_fft_thumb.png
+    :width: 120px
+    :height: 120px
+
+.. |img4| image:: /auto_examples/images/thumb/sphx_glr_plot_filtergrid_thumb.png
+    :width: 140px
+    :height: 140px
+
+.. .. |img5| image:: /auto_examples/images/thumb/sphx_glr_plot_image_robust_thumb.png
+..     :width: 200px
+..     :height: 200px
 
 
 Description
