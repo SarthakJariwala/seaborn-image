@@ -143,6 +143,18 @@ def test_imghist_return():
     plt.close("all")
 
 
+def test_imghist_figsize():
+    # check default
+    f = isns.imghist(data)
+    np.testing.assert_array_equal(f.get_size_inches(), (5 * 1.75, 5))
+    plt.close()
+
+    # check user specified
+    f = isns.imghist(data, height=6, aspect=1.5)
+    np.testing.assert_array_equal(f.get_size_inches(), (6 * 1.5, 6))
+    plt.close()
+
+
 def test_imghist_data_is_same_as_input():
     f = isns.imghist(data)
 
