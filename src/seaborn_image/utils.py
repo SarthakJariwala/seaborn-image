@@ -33,7 +33,9 @@ def scientific_ticks(ax, which="y"):
 
         >>> import seaborn_image as isns
         >>> img = isns.load_image("polymer") * 1e-9
-        >>> f, ax, cax = isns.imgplot(img)
+        >>> ax = isns.imgplot(img)
+        >>> # get colorbar axes
+        >>> cax = plt.gcf().axes[1]
         >>> isns.scientific_ticks(cax)
 
     Set colorbar xaxis ticks to scientific
@@ -43,7 +45,9 @@ def scientific_ticks(ax, which="y"):
 
         >>> import seaborn_image as isns
         >>> img = isns.load_image("polymer") * 1e-9
-        >>> f, ax, cax = isns.imgplot(img, orientation="h")
+        >>> ax = isns.imgplot(img, orientation="h")
+        >>> # get colorbar axes
+        >>> cax = plt.gcf().axes[1]
         >>> isns.scientific_ticks(cax, which="x")
     """
 

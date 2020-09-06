@@ -69,23 +69,24 @@ def test_despine_type():
 
 @pytest.mark.parametrize("data", [data, astronaut()])
 def test_imgplot_return(data):
-    f, ax, cax = isns.imgplot(data)
+    ax = isns.imgplot(data)
 
-    assert isinstance(f, Figure)
+    f = plt.gcf()
+
     assert isinstance(ax, Axes)
     if (
         data.ndim == 3
     ):  # if data dim is 3 it cbar will be set to False, and cax will be None
-        assert cax is None
+        pass  # no colorbar axes in this case
     else:
-        assert isinstance(cax, Axes)
+        assert isinstance(f.axes[1], Axes)
 
     plt.close("all")
 
 
 @pytest.mark.parametrize("data", [data, astronaut()])
 def test_imgplot_data_is_same_as_input(data):
-    f, ax, cax = isns.imgplot(data)
+    ax = isns.imgplot(data)
 
     # check if data iput is what was plotted
     np.testing.assert_array_equal(ax.images[0].get_array().data, data)
@@ -95,7 +96,7 @@ def test_imgplot_gray_conversion_for_rgb():
     """Check if the plotted data is grayscale when input is RGB image
     and gray is True.
     """
-    f, ax, cax = isns.imgplot(astronaut(), gray=True)
+    ax = isns.imgplot(astronaut(), gray=True)
 
     np.testing.assert_array_equal(ax.images[0].get_array().data, rgb2gray(astronaut()))
 
@@ -104,13 +105,13 @@ def test_imgplot_gray_conversion_for_rgb():
 @pytest.mark.parametrize("cmap", [None, "ice"])
 @pytest.mark.parametrize("data", [data, astronaut()])
 def test_gray_cmap_interplay(data, gray, cmap):
-    f, ax, cax = isns.imgplot(data, cmap=cmap, gray=gray)
+    _ = isns.imgplot(data, cmap=cmap, gray=gray)
     plt.close("all")
 
 
 @pytest.mark.parametrize("describe", [True, False])
 def test_imgplot_w_describe(describe):
-    f, ax, cax = isns.imgplot(data, describe=describe)
+    _ = isns.imgplot(data, describe=describe)
     plt.close("all")
 
 
@@ -132,21 +133,21 @@ def test_imghist_orientation_value():
 
 
 def test_imghist_return():
-    f, axes, cax = isns.imghist(data)
+    f = isns.imghist(data)
 
     assert isinstance(f, Figure)
-    assert isinstance(axes[0], Axes)
-    assert isinstance(axes[1], Axes)
-    assert isinstance(cax, Axes)
+    assert isinstance(f.axes[0], Axes)
+    assert isinstance(f.axes[1], Axes)
+    assert isinstance(f.axes[2], Axes)
 
     plt.close("all")
 
 
 def test_imghist_data_is_same_as_input():
-    f, ax, cax = isns.imghist(data)
+    f = isns.imghist(data)
 
     # check if data iput is what was plotted
-    np.testing.assert_array_equal(ax[0].images[0].get_array().data, data)
+    np.testing.assert_array_equal(f.axes[0].images[0].get_array().data, data)
 
 
 @pytest.mark.parametrize("cmap", [None, "acton"])
@@ -161,7 +162,7 @@ def test_imghist_w_all_valid_inputs(
     showticks,
     despine,
 ):
-    f, axes, cax = isns.imghist(
+    _ = isns.imghist(
         data,
         cmap=cmap,
         bins=bins,

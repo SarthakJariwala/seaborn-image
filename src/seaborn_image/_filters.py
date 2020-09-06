@@ -118,20 +118,17 @@ def filterplot(
 
     Returns
     -------
-        (tuple): tuple containing:
-
-            (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
-            (`matplotlib.axes.Axes`): Colorbar axes
-            (`numpy.array`): Filtered image data
+    `matplotlib.axes.Axes`
+        Matplotlib axes where the image is drawn.
 
     Raises
     ------
-        TypeError
-            if `filt` is not a string type or callable function
-        NotImplementedError
-            if a `filt` that is not implemented is specified
-        TypeError
-            if `describe` is not a `bool`
+    TypeError
+        if `filt` is not a string type or callable function
+    NotImplementedError
+        if a `filt` that is not implemented is specified
+    TypeError
+        if `describe` is not a `bool`
 
     Examples
     --------
@@ -193,7 +190,7 @@ def filterplot(
         filtered_data = filt_func(data, **func_kwargs)
 
     # finally, plot the filtered image
-    f, ax, cax = imgplot(
+    ax = imgplot(
         filtered_data,
         ax=ax,
         cmap=cmap,
@@ -224,7 +221,7 @@ def filterplot(
         print(f"Variance : {result_1.variance}")
         print(f"Skewness : {result_1.skewness}")
 
-    return ax, cax, filtered_data
+    return ax
 
 
 def fftplot(
@@ -250,7 +247,7 @@ def fftplot(
     # perform fft
     data_f_mag = fftshift(np.abs(fftn(w_data)))
 
-    f, ax, cax = imgplot(
+    ax = imgplot(
         np.log(data_f_mag),
         ax=ax,
         cmap=cmap,
@@ -261,4 +258,4 @@ def fftplot(
         despine=despine,
     )
 
-    return ax, cax
+    return ax

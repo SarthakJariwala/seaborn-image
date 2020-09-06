@@ -94,12 +94,8 @@ def imgplot(
 
     Returns
     -------
-    `matplotlib.figure.Figure`
-        Matplotlib figure.
     `matplotlib.axes.Axes`
         Matplotlib axes where the image is drawn.
-    `matplotlib.axes.Axes`
-        Colorbar axes
 
     Raises
     ------
@@ -279,10 +275,10 @@ def imgplot(
         print(f"Variance : {result.variance}")
         print(f"Skewness : {result.skewness}")
 
-    return f, ax, cax
+    return ax
 
 
-# TODO implement a imgdist function with more distributions
+# TODO implement a imgdist function with more distributions (?)
 # TODO add height, aspect parameter
 def imghist(
     data,
@@ -367,12 +363,6 @@ def imghist(
     -------
     `matplotlib.figure.Figure`
         Matplotlib figure.
-    `matplotlib.axes.Axes`
-        Matplotlib axes where the image is drawn.
-    `matplotlib.axes.Axes`
-        Matplotlib axes where the histogram is drawn.
-    `matplotlib.axes.Axes`
-        Colorbar axes
 
     Raises
     ------
@@ -438,7 +428,7 @@ def imghist(
 
     ax1 = f.add_subplot(gs[0])
 
-    f, ax1, cax = imgplot(
+    ax1 = imgplot(
         data,
         ax=ax1,
         cmap=cmap,
@@ -457,6 +447,9 @@ def imghist(
         showticks=showticks,
         despine=despine,
     )
+
+    # get colorbar axes
+    cax = f.axes[1]
 
     if orientation == "vertical":
         ax2 = f.add_subplot(gs[1], sharey=cax)
@@ -496,4 +489,4 @@ def imghist(
     for c, p in zip(col, patches):
         plt.setp(p, "facecolor", cm(c))
 
-    return f, (ax1, ax2), cax
+    return f
