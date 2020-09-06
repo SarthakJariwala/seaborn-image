@@ -18,7 +18,7 @@ _all = ["top", "bottom", "right", "left"]
     "fig_to_despine", [plt.subplots(), plt.subplots(nrows=2, ncols=3)]
 )
 @pytest.mark.parametrize("fig", [None, plt.gcf()])  # test when fig is None and not None
-def test_despine(fig_to_despine, fig, which):
+def test_despine(fig_to_despine, fig, which):  # TODO improve this test
     f, ax = fig_to_despine
 
     if which == "all":
@@ -31,6 +31,10 @@ def test_despine(fig_to_despine, fig, which):
     else:
         isns.despine(fig=fig, which=which)
         # assert ax.spines[which] == False
+
+    # test axes despine when ndarray
+    f, ax = fig_to_despine
+    isns.despine(ax=ax)
 
     plt.close("all")
 
