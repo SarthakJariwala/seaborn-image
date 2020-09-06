@@ -386,12 +386,26 @@ def imghist(
         >>> img = isns.load_image("polymer")
         >>> isns.imghist(img)
 
+    Change the orientation
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, orientation="h")
+
     Change the number of bins
 
     .. plot::
         :context: close-figs
 
         >>> isns.imghist(img, bins=300)
+
+    Change height and aspect ratio of the figure
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, height=4, aspect=1.5)
 
     Add a scalebar
 
@@ -405,7 +419,7 @@ def imghist(
     .. plot::
         :context: close-figs
 
-        >>> isns.imghist(img, cmap="deep")
+        >>> isns.imghist(img, cmap="ice")
     """
 
     if bins is None:
