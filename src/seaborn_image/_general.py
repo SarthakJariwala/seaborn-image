@@ -279,7 +279,6 @@ def imgplot(
 
 
 # TODO implement a imgdist function with more distributions (?)
-# TODO add height, aspect parameter
 def imghist(
     data,
     cmap=None,
@@ -475,7 +474,6 @@ def imghist(
         ax2.get_xaxis().set_visible(False)
         ax2.get_yaxis().set_visible(False)
 
-    # if despine:
     ax2.set_frame_on(False)
 
     if cmap is None:
