@@ -9,23 +9,23 @@
 
 <div class="row">
 
-  <a href="https://seaborn-image.readthedocs.io/auto_examples/plot_image_hist.html">
+  <a href="https://seaborn-image.readthedocs.io/en/latest/auto_examples/plot_image_hist.html">
   <img src="./images/sphx_glr_plot_image_hist_001.png" height="120" width="170">
   </a>
 
-  <a href="https://seaborn-image.readthedocs.io/auto_examples/plot_filter.html">
+  <a href="https://seaborn-image.readthedocs.io/en/latest/auto_examples/plot_filter.html">
   <img src="./images/sphx_glr_plot_filter_001.png" height="120" width="130">
   </a>
 
-  <a href="https://seaborn-image.readthedocs.io/auto_examples/plot_fft.html">
+  <a href="https://seaborn-image.readthedocs.io/en/latest/auto_examples/plot_fft.html">
   <img src="./images/sphx_glr_plot_fft_001.png" height="120" width="120">
   </a>
 
-  <a href="https://seaborn-image.readthedocs.io/auto_examples/plot_filtergrid.html">
+  <a href="https://seaborn-image.readthedocs.io/en/latest/auto_examples/plot_filtergrid.html">
   <img src="./images/sphx_glr_plot_filtergrid_001.png" height="120" width="120">
   </a>
 
-  <a href="https://seaborn-image.readthedocs.io/auto_examples/plot_image_robust.html">
+  <a href="https://seaborn-image.readthedocs.io/en/latest/auto_examples/plot_image_robust.html">
   <img src="./images/sphx_glr_plot_image_robust_001.png" height="120" width="260">
   </a>
 

@@ -337,8 +337,10 @@ class FilterGrid(object):
     def _plot(self, ax, **func_kwargs):
         """Helper function to call the underlying filterplot
 
-        Args:
-            ax (`matplotlib.axes.Axes`): Axis to plot filtered image
+        Parameters
+        ----------
+        ax : `matplotlib.axes.Axes`
+            Axis to plot filtered image
         """
 
         filterplot(

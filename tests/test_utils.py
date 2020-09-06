@@ -71,15 +71,18 @@ def test_load_image_error():
 def test_scientific_ticks():
     img = isns.load_image("polymer") * 1e-9
 
-    f, ax, cax = isns.imgplot(img)
+    _ = isns.imgplot(img)
+    cax = plt.gcf().axes[1]
     isns.scientific_ticks(cax, which="y")
     plt.close()
 
-    f, ax, cax = isns.imgplot(img, orientation="h")
+    _ = isns.imgplot(img, orientation="h")
+    cax = plt.gcf().axes[1]
     isns.scientific_ticks(cax, which="x")
     plt.close()
 
-    f, ax, cax = isns.imgplot(img)
+    _ = isns.imgplot(img)
+    cax = plt.gcf().axes[1]
     isns.scientific_ticks(cax, which="both")
     plt.close()
 
@@ -87,6 +90,7 @@ def test_scientific_ticks():
 def test_scientific_ticks_valueerror():
     with pytest.raises(ValueError):
         img = isns.load_image("polymer") * 1e-9
-        f, ax, cax = isns.imgplot(img)
+        _ = isns.imgplot(img)
+        cax = plt.gcf().axes[1]
         isns.scientific_ticks(cax, which="all")
         plt.close()
