@@ -11,6 +11,6 @@ jobs:
         architecture: x64
     - run: pip install nox==2020.5.24
     - run: pip install poetry==1.0.9
-    - run: nox --sessions tests coverage
+    - run: nox --sessions tests coverage xdoctest
       env:
         CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}

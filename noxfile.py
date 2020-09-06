@@ -5,7 +5,7 @@ from pathlib import Path
 import nox
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
-nox.options.sessions = "safety", "tests"
+nox.options.sessions = "safety", "tests", "xdoctest"
 
 
 def install_with_constraints(session, *args, **kwargs):
@@ -38,6 +38,15 @@ def coverage(session):
     install_with_constraints(session, "coverage[toml]", "codecov")
     session.run("coverage", "xml", "--fail-under=0")
     session.run("codecov", *session.posargs)
+
+
+@nox.session()
+def xdoctest(session):
+    """Run examples with xdoctest."""
+    args = session.posargs or ["all"]
+    session.run("poetry", "install", "--no-dev", external=True)
+    install_with_constraints(session, "xdoctest")
+    session.run("python", "-m", "xdoctest", "seaborn_image", *args)
 
 
 @nox.session()

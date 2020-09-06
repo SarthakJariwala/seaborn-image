@@ -22,12 +22,6 @@ def test_setup_figure():
     assert isinstance(ax, Axes)
 
 
-def test_setup_figure_check_title_dict():
-    with pytest.raises(TypeError):
-        img_setup = isns._core._SetupImage(data, title_dict=[{"fontsize": 20}])
-        f, ax = img_setup._setup_figure()
-
-
 def test_setup_scalebar():
     with pytest.raises(AttributeError):
         img_setup = isns._core._SetupImage(data, dx=1)
@@ -47,14 +41,6 @@ def test_setup_scalebar_dimension():
 def test_cbar_orientation():
     with pytest.raises(ValueError):
         img_setup = isns._core._SetupImage(data, cbar=True, orientation="right")
-        f, ax, cax = img_setup.plot()
-
-
-def test_plot_check_cbar_dict():
-    with pytest.raises(TypeError):
-        img_setup = isns._core._SetupImage(
-            data, cbar=True, cbar_fontdict=[{"fontsize": 20}]
-        )
         f, ax, cax = img_setup.plot()
 
 
@@ -127,14 +113,11 @@ def test_plot_w_all_inputs(
         vmax=None,
         robust=robust,
         perc=(2, 98),
-        title="My Title",
-        fontdict={"fontsize": 20},
         dx=dx,
         units=units,
         dimension=dimension,
         cbar=cbar,
         orientation=orientation,
-        cbar_fontdict={"fontsize": 20},
         cbar_label="cbar label",
         cbar_ticks=[],
         showticks=showticks,

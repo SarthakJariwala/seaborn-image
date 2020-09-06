@@ -45,95 +45,127 @@ def filterplot(
     cbar=True,
     orientation="v",
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
     despine=True,
-    title=None,
-    title_fontdict=None,
     **kwargs,
 ):
     """
     Apply N-dimensional filters and plot the filterd data as 2-D image with options to
     add scalebar, colorbar, titles and configure similar to `imgplot`
 
-    Args:
-        data: Image data (array-like). Supported array shapes are all
-            `matplotlib.pyplot.imshow` array shapes
-        filt (str or callable, optional): Filter name or function to be applied.
-            Filter name can be a string from `seaborn_image.implemented_filters` or a callable
-            filter. Defaults to "gaussian".
-        cmap (str or `matplotlib.colors.Colormap`, optional): Colormap for image.
-            Can be a seaborn-image colormap or default matplotlib colormaps or
-            any other colormap converted to a matplotlib colormap. Defaults to None.
-        vmin (float, optional): Minimum data value that colormap covers. Defaults to None.
-        vmax (float, optional): Maximum data value that colormap covers. Defaults to None.
-        robust (bool, optional): If True and vmin or vmax are None, colormap range is calculated
-            based on the percentiles defined in `percentile` parameter. Defaults to False.
-        perc (tuple or list, optional): If `robust` is True, colormap range is calculated based
-            on the percentiles specified instead of the extremes. Defaults to (2,98) - 2nd and 98th
-            percentiles for min and max values.
-        dx (float, optional): Size per pixel of the image data. If scalebar
-            is required, `dx` and `units` must be sepcified. Defaults to None.
-        units (str, optional): Units of `dx`. Defaults to None.
-        dimension (str, optional): dimension of `dx` and `units`.
-            Options include :
-                - "si" : scale bar showing km, m, cm, etc.
-                - "imperial" : scale bar showing in, ft, yd, mi, etc.
-                - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
-                - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
-                - "pixel" : scale bar showing px, kpx, Mpx, etc.
-            Defaults to None.
-        describe (bool, optional): Brief statistical description of the original and filterd
-            image. Defaults to False.
-        cbar (bool, optional): Specify if a colorbar is required or not.
-            Defaults to True.
-        orientation (str, optional): Specify the orientaion of colorbar.
-            Option include :
-                - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
-                - 'v' or 'vertical' for a vertical colorbar to the right of the image.
-            Defaults to 'v'.
-        cbar_label (str, optional): Colorbar label. Defaults to None.
-        cbar_fontdict (dict, optional): Font specifications for colorbar label - `cbar_label`.
-            Defaults to None.
-        cbar_ticks (list, optional): List of colorbar ticks. If None, min and max of
-            the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
-            are used for colorbar ticks. Defaults to None.
-        showticks (bool, optional): Show image x-y axis ticks. Defaults to False.
-        despine (bool, optional): Remove axes spines from image axes as well as colorbar axes.
-            Defaults to True.
-        title (str, optional): Image title. Defaults to None.
-        title_fontdict (dict, optional): Font specifications for `title`. Defaults to None.
-        **kwargs : Any additional parameters to be passed to the specific filt chosen.
-            For instance, "sigma" or "size" or "mode" etc.
+    Parameters
+    ----------
+    data : array-like
+        Image data. Supported array shapes are all `matplotlib.pyplot.imshow` array shapes
+    filt : str or callable, optional
+        Filter name or function to be applied.
+        Filter name can be a string from `seaborn_image.implemented_filters` or a callable
+        filter. Defaults to "gaussian".
+    ax : `matplotlib.axes.Axes`, optional
+        Matplotlib axes to plot image on. If None, figure and axes are auto-generated, by default None
+    cmap : str or `matplotlib.colors.Colormap`, optional
+        Colormap for image. Can be a seaborn-image colormap or default matplotlib colormaps or
+        any other colormap converted to a matplotlib colormap, by default None
+    gray : bool, optional
+        If True and data is RGB image, it will be converted to grayscale.
+        If True and cmap is None, cmap will be set to "gray", by default None
+    vmin : float, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float, optional
+        Maximum data value that colormap covers, by default None
+    robust : bool, optional
+        If True and vmin or vmax are None, colormap range is calculated
+        based on the percentiles defined in `perc` parameter, by default False
+    perc : tuple or list, optional
+        If `robust` is True, colormap range is calculated based
+        on the percentiles specified instead of the extremes, by default (2, 98) -
+        2nd and 98th percentiles for min and max values
+    dx : float, optional
+        Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
+        to the image, by default None
+    units : str, optional
+        Units of `dx`, by default None
+    dimension : str, optional
+        dimension of `dx` and `units`, by default None
+        Options include (similar to `matplotlib_scalebar`):
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+    describe : bool, optional
+        Brief statistical description of the data, by default True
+    cbar : bool, optional
+        Specify if a colorbar is to be added to the image, by default True.
+        If `data` is RGB image, cbar is False
+    orientation : str, optional
+        Specify the orientaion of colorbar, by default "v".
+        Options include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_label : str, optional
+        Colorbar label, by default None
+    cbar_ticks : list, optional
+        List of colorbar ticks, by default None
+    showticks : bool, optional
+        Show image x-y axis ticks, by default False
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes, by default True
+    **kwargs : optional
+        Any additional parameters to be passed to the specific `filt` chosen.
+        For instance, "sigma" or "size" or "mode" etc.
 
-    Raises:
-        TypeError: if `filt` is not a string type or callable function
-        NotImplementedError: if a `filt` that is not implemented is specified
-        TypeError: if `describe` is not a `bool`
-
-    Returns:
+    Returns
+    -------
         (tuple): tuple containing:
 
             (`matplotlib.axes.Axes`): Matplotlib axes where the image is drawn.
             (`matplotlib.axes.Axes`): Colorbar axes
             (`numpy.array`): Filtered image data
 
-    Example:
+    Raises
+    ------
+        TypeError
+            if `filt` is not a string type or callable function
+        NotImplementedError
+            if a `filt` that is not implemented is specified
+        TypeError
+            if `describe` is not a `bool`
+
+    Examples
+    --------
+
+    Use default gaussian filter
+
+    .. plot::
+        :context: close-figs
+
         >>> import seaborn_image as isns
+        >>> img = isns.load_image("polymer")
+        >>> isns.filterplot(img, sigma=3)
 
-        >>> # use default gaussian filter
-        >>> isns.filterplot(data, sigma=3)
+    Specify an image filter with specific parameters
 
-        >>> # specify a filt with specific parameter
-        >>> isns.filterplot(data, "percentile", percentile=35, size=10)
+    .. plot::
+        :context: close-figs
 
-        >>> # callable filter
+        >>> isns.filterplot(img, "percentile", percentile=35, size=10)
+
+    `filter` can also be a function
+
+    .. plot::
+        :context: close-figs
+
         >>> import scipy.ndimage as ndi
-        >>> isns.filterplot(data, ndi.gaussian_filter, sigma=3)
+        >>> isns.filterplot(img, ndi.gaussian_filter, sigma=2.5)
 
-        >>> # specify scalebar for the filterplot
-        >>> isns.filterplot(data, "sobel", dx=3, units="um")
+    Specify other image parameters for visualization along with the filter
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.filterplot(img, "sobel", dx=15, units="nm", cmap="acton")
     """
 
     if not isinstance(describe, bool):
@@ -176,7 +208,6 @@ def filterplot(
         cbar=cbar,
         orientation=orientation,
         cbar_label=cbar_label,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
@@ -203,11 +234,8 @@ def fftplot(
     cmap=None,
     cbar=True,
     cbar_label=None,
-    cbar_fontdict=None,
     cbar_ticks=None,
     showticks=False,
-    title=None,
-    title_fontdict=None,
 ):
 
     if cmap is None:
@@ -226,12 +254,9 @@ def fftplot(
         ax=ax,
         cmap=cmap,
         cbar=cbar,
-        cbar_fontdict=cbar_fontdict,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         describe=False,
-        title=title,
-        title_fontdict=title_fontdict,
     )
 
     return ax, cax

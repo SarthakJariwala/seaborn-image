@@ -14,8 +14,12 @@ _all = ["top", "bottom", "right", "left"]
 @pytest.mark.parametrize(
     "which", ["all", "top", "bottom", "right", "left", ["top", "right"], _all]
 )
-def test_despine(which):
-    f, ax = plt.subplots()
+@pytest.mark.parametrize(
+    "fig_to_despine", [plt.subplots(), plt.subplots(nrows=2, ncols=3)]
+)
+@pytest.mark.parametrize("fig", [None, plt.gcf()])  # test when fig is None and not None
+def test_despine(fig_to_despine, fig, which):  # TODO improve this test
+    f, ax = fig_to_despine
 
     if which == "all":
         which = _all
@@ -25,8 +29,12 @@ def test_despine(which):
             isns.despine(which=side)
             # assert ax.spines[side] == False
     else:
-        isns.despine(which=which)
+        isns.despine(fig=fig, which=which)
         # assert ax.spines[which] == False
+
+    # test axes despine when ndarray
+    f, ax = fig_to_despine
+    isns.despine(ax=ax)
 
     plt.close("all")
 
@@ -58,3 +66,27 @@ def test_load_image():
 def test_load_image_error():
     with pytest.raises(ValueError):
         isns.load_image("coins")
+
+
+def test_scientific_ticks():
+    img = isns.load_image("polymer") * 1e-9
+
+    f, ax, cax = isns.imgplot(img)
+    isns.scientific_ticks(cax, which="y")
+    plt.close()
+
+    f, ax, cax = isns.imgplot(img, orientation="h")
+    isns.scientific_ticks(cax, which="x")
+    plt.close()
+
+    f, ax, cax = isns.imgplot(img)
+    isns.scientific_ticks(cax, which="both")
+    plt.close()
+
+
+def test_scientific_ticks_valueerror():
+    with pytest.raises(ValueError):
+        img = isns.load_image("polymer") * 1e-9
+        f, ax, cax = isns.imgplot(img)
+        isns.scientific_ticks(cax, which="all")
+        plt.close()

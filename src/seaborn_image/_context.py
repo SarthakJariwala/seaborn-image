@@ -20,16 +20,21 @@ def set_context(mode="paper", fontfamily="sans-serif", fontweight="normal", rc=N
     Set context for images with mode, fontfamily and fontweight. Additional,
     rc params can also be passed as dict
 
-    Args:
-        mode (str, optional): context mode. Options are 'paper', 'notebook',
-            'presentation', 'talk' and 'poster'. Defaults to "talk".
-        fontfamily (str, optional): font-family to use. Defaults to "arial".
-        fontweight (str, optional): font-weight to use. Options include 'normal'
-            and 'bold'. Defaults to "bold".
-        rc (dict, optional): additional rc params to be passed to matplotlib.
-            Defaults to None.
+    Parameters
+    ----------
+    mode : str, optional
+        Plotting context mode. Depending on the context, axes width, fontsize, layout etc.
+        are scaled. Options are 'paper', 'notebook', 'presentation', 'talk' and 'poster',
+        by default "paper".
+    fontfamily : str, optional
+        Font-family to use, by default "sans-serif".
+    fontweight : str, optional
+        Font-weight to use. Options include 'normal' and 'bold', by default "bold".
+    rc : dict, optional
+        Additional `matplotlib.rcParams` to be passed to matplotlib, by default None.
 
-    Example:
+    Examples
+    --------
         >>> import seaborn_image as isns
         >>> isns.set_context(mode="poster", fontfamily="sans-serif")
         >>> isns.set_context(rc={"axes.edgecolor": "red"})
@@ -68,13 +73,15 @@ def set_save_context(dpi=300):
     """
     Set dpi for saving figures to disk
 
-    Args:
-        dpi (int, optional): image dpi. Defaults to 300.
+    Parameters
+    ----------
+    dpi : int, optional
+        Image dpi for saving, by default 300.
 
-    Example:
+    Examples
+    --------
         >>> import seaborn_image as isns
         >>> isns.set_save_context(dpi=200)
-
     """
     plt.rc("savefig", dpi=dpi, bbox="tight")
 
@@ -83,27 +90,29 @@ def reset_defaults():
     """
     Reset rcParams to matplotlib defaults
 
-    Example:
+    Examples
+    --------
         >>> import seaborn_image as isns
-        >>> isns.reset_deafults()
-
+        >>> isns.reset_defaults()
     """
     mpl.rcParams.update(mpl.rcParamsDefault)
 
 
-def set_image(cmap="ice", origin="lower", interpolation="nearest"):
+def set_image(cmap="deep", origin="lower", interpolation="nearest"):
     """
     Set deaults for plotting images
 
-    Args:
-        cmap (str, optional): Colormap to use accross images.
-            Defaults to "viridis".
-        origin (str, optional): image origin - same as in matplotlib imshow.
-            Defaults to "lower".
-        interpolation (str, optional): image interpolation - same as in matplotlib imshow.
-            Defaults to "nearest".
+    Parameters
+    ----------
+    cmap : str, optional
+        Colormap to use accross images, by default to "deep".
+    origin : str, optional
+        Image origin - same as in `matplotlib.pyplot.imshow`, by default "lower".
+    interpolation : str, optional
+        Image interpolation - same as in `matplotlib.pyplot.imshow`, by default "nearest".
 
-    Example:
+    Examples
+    --------
         >>> import seaborn_image as isns
         >>> isns.set_image(cmap="inferno", interpolation="bicubic")
 
@@ -131,20 +140,28 @@ def set_scalebar(
     argument, use the `rc` parameter. Refer to https://github.com/ppinard/matplotlib-scalebar
     for more information on additional parameters.
 
-    Args:
-        color(str, optional): color of the scalebar. Defaults to "white".
-        location (str, optional): scalebar location on the image (same as `matplotlib` legend).
-            Defaults to "lower right".
-        height_fraction (float, optional): Defaults to 0.025.
-        length_fraction (float, optional): Defaults to 0.3
-        scale_loc (str, optional): location of the scale number and units with respect to the bar.
-            Defaults to "top".
-        box_alpha (float, optional): transparency of the box that contains the scalebar artist.
-            Defaults to 0.
-        rc (dict, optional): dictionary of scalebar properties to be set.
-            Defaults to None.
+    Parameters
+    ----------
+        color : str, optional
+            Color of the scalebar, by default "white".
+        location : str, optional
+            Scalebar location on the image (same as `matplotlib` legend).
+            by default "lower right".
+        height_fraction : float, optional
+            By default 0.025.
+        length_fraction : float, optional
+            By default 0.3
+        scale_loc :str, optional
+            Location of the scale number and units with respect to
+            the bar, by default "top".
+        box_alpha : float, optional
+            Transparency of the box that contains
+            the scalebar artist, by default 0.
+        rc : dict, optional
+            Dictionary of scalebar properties to be set, by default None.
 
-    Example:
+    Examples
+    --------
         >>> import seaborn_image as isns
         >>> isns.set_scalebar(color = "red")
         >>> isns.set_scalebar(scale_loc = "bottom")

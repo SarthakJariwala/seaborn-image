@@ -5,8 +5,19 @@ import sphinx_bootstrap_theme
 project = "seaborn-image"
 author = "Sarthak Jariwala"
 copyright = f"{datetime.now().year}, {author}"
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinxcontrib.images"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinxcontrib.images",
+    "matplotlib.sphinxext.plot_directive",
+]
 html_static_path = ["_static"]
+
+
+plot_include_source = True
+plot_formats = [("png", 90)]
+plot_html_show_formats = False
+plot_html_show_source_link = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
