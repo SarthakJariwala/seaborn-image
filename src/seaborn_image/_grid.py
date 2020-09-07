@@ -36,9 +36,9 @@ class FilterGrid(object):
     col_wrap : int, optional
         Number of columns to display if `col`
         is not None and `row` is None. Defaults to None.
-    height : int, optional
+    height : int or float, optional
         Size of the individual images. Defaults to 3.
-    aspect : int, optional
+    aspect : int or float, optional
         Aspect ratio of individual images. Defaults to 1.
     cmap : str or `matplotlib.colors.Colormap`, optional
         Image colormap. Defaults to None.

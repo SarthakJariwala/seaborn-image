@@ -279,7 +279,6 @@ def imgplot(
 
 
 # TODO implement a imgdist function with more distributions (?)
-# TODO add height, aspect parameter
 def imghist(
     data,
     cmap=None,
@@ -298,6 +297,8 @@ def imghist(
     cbar_ticks=None,
     showticks=False,
     despine=True,
+    height=5,
+    aspect=1.75,
 ):
     """Plot data as a 2-D image with histogram showing the distribution of
     the data. Options to add scalebar, colorbar, title.
@@ -358,6 +359,10 @@ def imghist(
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default True
+    height : int or float, optional
+        Size of the individual images, by default 5.
+    aspect : int or float, optional
+        Aspect ratio of individual images, by default 1.75.
 
     Returns
     -------
@@ -381,12 +386,26 @@ def imghist(
         >>> img = isns.load_image("polymer")
         >>> isns.imghist(img)
 
+    Change the orientation
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, orientation="h")
+
     Change the number of bins
 
     .. plot::
         :context: close-figs
 
         >>> isns.imghist(img, bins=300)
+
+    Change height and aspect ratio of the figure
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, height=4, aspect=1.5)
 
     Add a scalebar
 
@@ -400,7 +419,7 @@ def imghist(
     .. plot::
         :context: close-figs
 
-        >>> isns.imghist(img, cmap="deep")
+        >>> isns.imghist(img, cmap="ice")
     """
 
     if bins is None:
@@ -413,13 +432,13 @@ def imghist(
 
     if orientation in ["v", "vertical"]:
         orientation = "vertical"  # matplotlib doesn't support 'v'
-        f = plt.figure(figsize=(10, 6))  # TODO make figsize user defined
-        gs = gridspec.GridSpec(1, 2, width_ratios=[5, 1], figure=f)
+        f = plt.figure(figsize=(height * aspect, height))
+        gs = gridspec.GridSpec(1, 2, width_ratios=[height - 1, 1], figure=f)
 
     elif orientation in ["h", "horizontal"]:
         orientation = "horizontal"  # matplotlib doesn't support 'h'
-        f = plt.figure(figsize=(6, 10))  # TODO make figsize user defined
-        gs = gridspec.GridSpec(2, 1, height_ratios=[5, 1], figure=f)
+        f = plt.figure(figsize=(height, height * aspect))
+        gs = gridspec.GridSpec(2, 1, height_ratios=[height - 1, 1], figure=f)
 
     else:
         raise ValueError(
@@ -469,7 +488,6 @@ def imghist(
         ax2.get_xaxis().set_visible(False)
         ax2.get_yaxis().set_visible(False)
 
-    # if despine:
     ax2.set_frame_on(False)
 
     if cmap is None:
