@@ -7,6 +7,7 @@ import scipy.ndimage as ndi
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from scipy.fftpack import fftn, fftshift
+from skimage.data import astronaut
 from skimage.filters import difference_of_gaussians, window
 
 import seaborn_image as isns
@@ -179,7 +180,7 @@ def test_filterplot_uniform():
     plt.close("all")
 
 
-def test_fftplot_plot():
+def test_fftplot_return():
     ax = isns.fftplot(data)
 
     assert isinstance(ax, Axes)
@@ -188,11 +189,30 @@ def test_fftplot_plot():
 
 
 def test_fftplot_fft():
+    # shift is True, log is True
     ax = isns.fftplot(data)
+    test_data = np.log(fftshift(np.abs(fftn(data))))
+    np.testing.assert_array_equal(ax.images[0].get_array().data, test_data)
+    plt.close()
 
+    ax = isns.fftplot(data, shift=False)
+    test_data = np.log(np.abs(fftn(data)))
+    np.testing.assert_array_equal(ax.images[0].get_array().data, test_data)
+    plt.close()
+
+    ax = isns.fftplot(data, log=False)
+    test_data = fftshift(np.abs(fftn(data)))
+    np.testing.assert_array_equal(ax.images[0].get_array().data, test_data)
+    plt.close()
+
+    ax = isns.fftplot(data, window_type="hann")
     w_data = data * window("hann", data.shape)
-    data_f_mag = fftshift(np.abs(fftn(w_data)))
+    test_data = np.log(fftshift(np.abs(fftn(w_data))))
+    np.testing.assert_array_equal(ax.images[0].get_array().data, test_data)
+    plt.close()
 
-    np.testing.assert_array_equal(ax.images[0].get_array().data, np.log(data_f_mag))
 
-    plt.close("all")
+def test_fftplot_ValueError():
+    # raise valueerror if RGB image
+    with pytest.raises(ValueError):
+        _ = isns.fftplot(astronaut())
