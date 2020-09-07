@@ -227,32 +227,109 @@ def filterplot(
 def fftplot(
     data,
     *,
+    window_type=None,
+    shift=True,
+    log=True,
     ax=None,
-    cmap=None,
-    cbar=True,
-    cbar_label=None,
-    cbar_ticks=None,
+    cmap="viridis",
     showticks=False,
     despine=False,
+    **kwargs
 ):
+    """Perform and visualize fast fourier transform of input image.
 
-    if cmap is None:
-        cmap = "sunset-dark"
+    Parameters
+    ----------
+    data : array-like
+        Image data. Supported array shapes are all `matplotlib.pyplot.imshow` array shapes
+    window_type : string, float or tuple, optional
+        The type of window to be created. Any window type supported by
+        `scipy.signal.get_window` is allowed here.
+        See the scikit-image documentation https://scikit-image.org/docs/stable/api/skimage.filters.html#skimage.filters.window or
+        the SciPy documentation https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.get_window.html
+        for the supported window types, by default None
+    shift : bool, optional
+        If True, this will shift the DC component to the center, by default True
+    log : bool, optional
+        If true, takes the magnitude spectrum of the frequency transform, by default True
+    ax : `matplotlib.axes.Axes`, optional
+        Matplotlib axes to plot image on. If None, figure and axes are auto-generated, by default None
+    cmap : str or `matplotlib.colors.Colormap`, optional
+        Colormap for image, by default "viridis"
+    showticks : bool, optional
+        Show image x-y axis ticks, by default False
+    despine : bool, optional
+        Remove axes spines from image axes, by default False
+    **kwargs : optional
+        Any additional parameters to be passed to `skimage.filters.window`.
+        For more information see https://scikit-image.org/docs/stable/api/skimage.filters.html#skimage.filters.window
+
+    Returns
+    -------
+    `matplotlib.axes.Axes`
+        Matplotlib axes where the image is drawn
+
+    Raises
+    ------
+    ValueError
+        If input image is RGB image
+
+    Examples
+    --------
+
+    Perform fast-fourier transform and visualize it
+
+    .. plot::
+        :context: close-figs
+
+        >>> import seaborn_image as isns
+        >>> img = isns.load_image("polymer")
+        >>> isns.fftplot(img)
+
+    Specify a window type
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.fftplot(img, window_type="hann")
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.fftplot(img, window_type=('tukey', 0.8))
+
+    Don't shift the DC comppnent to the center
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.fftplot(img, shift=False)
+    """
+
+    if data.ndim == 3:
+        raise ValueError("input image for fourier transfrom can not be RGB image")
 
     # window image to improve fft
-    w_data = data * window(
-        "hann", data.shape
-    )  # TODO provide user option for choosing window
+    if window_type is not None:
+        shape = kwargs.get("shape", data.shape)
+        warp_kwargs = kwargs.get("warp_kwargs", None)
+        data = data * window(window_type, shape, warp_kwargs)
 
-    # perform fft
-    data_f_mag = fftshift(np.abs(fftn(w_data)))
+    # perform fft and get absolute value
+    data = np.abs(fftn(data))
+
+    # shift the DC component to center
+    if shift:
+        data = fftshift(data)
+
+    if log:
+        data = np.log(data)
 
     ax = imgplot(
-        np.log(data_f_mag),
+        data,
         ax=ax,
         cmap=cmap,
-        cbar=cbar,
-        cbar_ticks=cbar_ticks,
+        cbar=False,
         showticks=showticks,
         describe=False,
         despine=despine,
