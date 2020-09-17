@@ -234,7 +234,7 @@ def fftplot(
     cmap="viridis",
     showticks=False,
     despine=False,
-    **kwargs
+    **kwargs,
 ):
     """Perform and visualize fast fourier transform of input image.
 

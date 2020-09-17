@@ -1,5 +1,6 @@
 import itertools
 import warnings
+from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +9,186 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-__all__ = ["FilterGrid"]
+__all__ = ["FilterGrid", "ImageGrid"]
+
+
+class ImageGrid:
+    def __init__(
+        self,
+        data,
+        *,
+        slices=None,
+        col_wrap=None,
+        height=3,
+        aspect=1,
+        cmap=None,
+        dx=None,
+        units=None,
+        dimension=None,
+        cbar=True,
+        orientation="v",
+        cbar_label=None,
+        cbar_ticks=None,
+        showticks=False,
+        despine=True,
+    ):
+        if data is None:
+            raise ValueError("image data can not be None")
+
+        if isinstance(
+            data, (list, tuple, set)
+        ):  # using 'Iterable' numpy was being picked up
+            # check the number of images to be plotted
+            _nimages = len(data)
+
+        elif data.ndim > 2:
+            if slices is None:
+                slices = np.arange(data.shape[-1])
+
+            # if a single slice is provided and
+            # it is not an interable
+            elif not isinstance(slices, Iterable):
+                slices = [slices]
+
+            _nimages = len(slices)
+
+        else:
+            # if data dim is not >2,
+            # TODO issue user warning to use imgplot() instead
+            _nimages = 1
+
+        # if no column wrap specified
+        # set it to default 3
+        if col_wrap is None:
+            col_wrap = 3
+
+            # don't create extra columns when there aren't enough images
+            if col_wrap > _nimages:
+                col_wrap = _nimages
+
+        # Compute the grid shape if col_wrap is specified
+        ncol = col_wrap
+        nrow = int(np.ceil(_nimages / col_wrap))
+
+        # Calculate the base figure size
+        figsize = (ncol * height * aspect, nrow * height)
+
+        fig = plt.figure(figsize=figsize)
+        axes = fig.subplots(nrow, ncol, squeeze=False)
+
+        # Public API
+        self.data = data
+        self.fig = fig
+        self.axes = axes
+        self.slices = slices
+        self.col_wrap = col_wrap
+        self.height = height
+        self.aspect = aspect
+
+        self.cmap = cmap
+        self.dx = dx
+        self.units = units
+        self.dimension = dimension
+        self.cbar = cbar
+        self.orientation = orientation
+        self.cbar_label = cbar_label
+        self.cbar_ticks = cbar_ticks
+        self.showticks = showticks
+        self.despine = despine
+
+        self._nrow = nrow
+        self._ncol = ncol
+        self._nimages = _nimages
+
+        self.map_img_to_grid()
+        self._cleanup_extra_axes()
+
+        return
+
+    def map_img_to_grid(self):
+        """Map image data cube to the image grid."""
+
+        _cmap = self.cmap
+        _dx = self.dx
+        _units = self.units
+        _dimension = self.dimension
+        _cbar = self.cbar
+        _cbar_label = self.cbar_label
+
+        for i in range(self._nimages):
+            ax = self.axes.flat[i]
+
+            if isinstance(self.data, (list, tuple, set)):
+                _d = self.data[i]
+
+                # check if the image has more than 2 dimensions
+                if _d.ndim > 2:
+                    raise ValueError(
+                        "can not plot multiple 3D images. Supply an individual 3D image"
+                    )
+
+                if isinstance(self.cmap, (list, tuple, set)):
+                    _cmap = self.cmap[i]
+
+                if isinstance(self.dx, (list, tuple, set)):
+                    _dx = self.dx[i]
+
+                if isinstance(self.units, (list, tuple, set)):
+                    _units = self.units[i]
+
+                if isinstance(self.dimension, (list, tuple, set)):
+                    _dimension = self.dimension[i]
+
+                if isinstance(self.cbar, (list, tuple, set)):
+                    _cbar = self.cbar[i]
+
+                if isinstance(self.cbar_label, (list, tuple, set)):
+                    _cbar_label = self.cbar_label[i]
+
+            elif self.data.ndim > 2:
+                _d = self.data[:, :, self.slices[i]]
+
+            else:
+                # if a single 2D image is supplied
+                # TODO issue a warning and direct the user to imgplot()
+                _d = self.data
+
+            imgplot(
+                _d,
+                ax=ax,
+                cmap=_cmap,
+                dx=_dx,
+                units=_units,
+                dimension=_dimension,
+                cbar=_cbar,
+                orientation=self.orientation,
+                cbar_label=_cbar_label,
+                cbar_ticks=self.cbar_ticks,
+                showticks=self.showticks,
+                despine=self.despine,
+                describe=False,
+            )
+
+        # FIXME - for common colorbar
+        # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
+
+        return
+
+    def _cleanup_extra_axes(self):
+        """Clean extra axes that are generated if col_wrap is specified."""
+        # check if there are any extra axes that need to be clened up
+        _rem = (self._ncol * self._nrow) - self._nimages
+        if _rem > 0:
+            rem_ax = self.axes.flat[-_rem:]
+            for i in range(len(rem_ax)):
+                rem_ax[i].set_yticks([])
+                rem_ax[i].set_xticks([])
+
+                rem_ax[i].set_ylabel("")
+                rem_ax[i].set_xlabel("")
+
+                despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
+
 
 # TODO provide common cbar option
 # TODO allow gridspec_kws and subplot_kws
