@@ -213,6 +213,15 @@ def load_image(name):
         img = img * 1e9  # convert height data from m to nm
         img[0, 0] = 80  # assign an outlier value to a random pixel
 
+    elif name == "fluorescence":
+        try:  # not very pretty fix to the path issue
+            path = "data/Perovskite.txt"
+            img = np.loadtxt(path)
+        except OSError:  # pragma: no cover
+            # if building docstrings
+            path = "../data/Perovskite.txt"
+            img = np.loadtxt(path)
+
     else:
         raise ValueError(f"No '{name}' image dataset")
 

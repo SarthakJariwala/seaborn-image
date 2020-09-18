@@ -1,5 +1,6 @@
 import itertools
 import warnings
+from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +9,375 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-__all__ = ["FilterGrid"]
+__all__ = ["FilterGrid", "ImageGrid"]
+
+
+class ImageGrid:
+    """
+    Plot multiple images along a grid.
+    This class allows plotting of mulitple images
+    as well as all the different slices of a 3-D image.
+
+    Parameters
+    ----------
+    data :
+        3-D Image data (array-like) or list of 2-D image data. Supported array shapes are all
+        `matplotlib.pyplot.imshow` array shapes
+    slices : int or list, optional
+        If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
+        the resulting images. If None, it will plot all the slices from the last axis, by default None
+    col_wrap : int, optional
+        Number of columns to display. Defaults to None.
+    height : int or float, optional
+        Size of the individual images. Defaults to 3.
+    aspect : int or float, optional
+        Aspect ratio of individual images. Defaults to 1.
+    cmap : str or `matplotlib.colors.Colormap` or list, optional
+        Image colormap. If input data is a list of images,
+        `cmap` can be a list of colormaps. Defaults to None.
+    robust : bool or list, optional
+        If True, colormap range is calculated based on the percentiles
+        defined in `perc` parameter. If input data is a list of images,
+        robust can be a list of bools, by default False
+    perc : tuple or list, optional
+        If `robust` is True, colormap range is calculated based
+        on the percentiles specified instead of the extremes, by default (2, 98) -
+        2nd and 98th percentiles for min and max values. Can be a list of tuples, if
+        input data is a list of images
+    dx : float or list, optional
+        Size per pixel of the image data. If scalebar
+        is required, `dx` and `units` must be sepcified.
+        Can be a list of floats, if input data is a list of images.
+        Defaults to None.
+    units : str or list, optional
+        Units of `dx`.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    dimension : str or list, optional
+        Dimension of `dx` and `units`.
+        Options include :
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    cbar : bool or list, optional
+        Specify if a colorbar is required or not.
+        Can be a list of bools, if input data is a list of images.
+        Defaults to True.
+    orientation : str, optional
+        Specify the orientaion of colorbar.
+        Option include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+        Defaults to 'v'.
+    cbar_label : str or list, optional
+        Colorbar label.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    cbar_ticks : list, optional
+        List of colorbar ticks. Defaults to None.
+    showticks : bool, optional
+        Show image x-y axis ticks. Defaults to False.
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes.
+        Defaults to True.
+
+    Returns
+    -------
+        A `seaborn_image.ImageGrid` object
+
+    Raises
+    ------
+    ValueError
+        If `data` is None
+    ValueError
+        If `data` has more than 3 dimensions
+    ValueError
+        If `data` contains a 3D image within a list of images
+
+    Examples
+    --------
+
+    Plot a collection of images
+
+    .. plot::
+        :context: close-figs
+
+        >>> import seaborn_image as isns
+        >>> pol = isns.load_image("polymer")
+        >>> pl = isns.load_image("fluorescence")
+        >>> g = isns.ImageGrid([pol, pl])
+
+    Common properties across images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], cmap="inferno")
+
+    Different scalebars for different images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], dx=[0.15, 0.1], units="um")
+
+    Specify properties only for specific images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], dx=[None, 100], units=[None, "nm"])
+
+    Different colormaps and colorbar titles
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], cmap=["deep", "magma"], cbar_label=["Height (nm)", "PL Intensity"])
+
+    Correct colormap for outliers
+
+    .. plot::
+        :context: close-figs
+
+        >>> pol_out = isns.load_image("polymer outliers")
+        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)])
+
+    Plot 3-D images
+
+    .. plot::
+        :context: close-figs
+
+        >>> img_3d = np.random.random((50, 50, 4)).reshape((50, 50, 4))
+        >>> g = isns.ImageGrid(img_3d)
+
+    Control number of columns
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(img_3d, col_wrap=2)
+
+    Plot specific slices of the 3-D data cube
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(img_3d, slices=[0, 2, 3])
+
+    Change colorbar orientation
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], orientation="h")
+
+    Change figure size using height
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], height=4.5)
+
+    """
+
+    def __init__(
+        self,
+        data,
+        *,
+        slices=None,
+        col_wrap=None,
+        height=3,
+        aspect=1,
+        cmap=None,
+        robust=False,
+        perc=(2, 98),
+        dx=None,
+        units=None,
+        dimension=None,
+        cbar=True,
+        orientation="v",
+        cbar_label=None,
+        cbar_ticks=None,
+        showticks=False,
+        despine=True,
+    ):
+        if data is None:
+            raise ValueError("image data can not be None")
+
+        if isinstance(
+            data, (list, tuple)
+        ):  # using 'Iterable' numpy was being picked up
+            # check the number of images to be plotted
+            _nimages = len(data)
+
+        elif data.ndim > 3:
+            raise ValueError("image data can not have more than 3 dimensions")
+
+        elif data.ndim == 3:
+            if slices is None:
+                slices = np.arange(data.shape[-1])
+
+            # if a single slice is provided and
+            # it is not an interable
+            elif not isinstance(slices, Iterable):
+                slices = [slices]
+
+            _nimages = len(slices)
+
+        else:
+            # if data dim is not >2,
+            # TODO issue user warning to use imgplot() instead
+            _nimages = 1
+
+        # if no column wrap specified
+        # set it to default 3
+        if col_wrap is None:
+            col_wrap = 3
+
+            # don't create extra columns when there aren't enough images
+        if col_wrap > _nimages:
+            col_wrap = _nimages
+
+        # Compute the grid shape if col_wrap is specified
+        ncol = col_wrap
+        nrow = int(np.ceil(_nimages / col_wrap))
+
+        # Calculate the base figure size
+        figsize = (ncol * height * aspect, nrow * height)
+
+        fig = plt.figure(figsize=figsize)
+        axes = fig.subplots(nrow, ncol, squeeze=False)
+
+        # Public API
+        self.data = data
+        self.fig = fig
+        self.axes = axes
+        self.slices = slices
+        self.col_wrap = col_wrap
+        self.height = height
+        self.aspect = aspect
+
+        self.cmap = cmap
+        self.robust = robust
+        self.perc = perc
+        self.dx = dx
+        self.units = units
+        self.dimension = dimension
+        self.cbar = cbar
+        self.orientation = orientation
+        self.cbar_label = cbar_label
+        self.cbar_ticks = cbar_ticks
+        self.showticks = showticks
+        self.despine = despine
+
+        self._nrow = nrow
+        self._ncol = ncol
+        self._nimages = _nimages
+
+        self.map_img_to_grid()
+        self._cleanup_extra_axes()
+
+        return
+
+    def map_img_to_grid(self):
+        """Map image data cube to the image grid."""
+
+        _cmap = self.cmap
+        _robust = self.robust
+        _perc = self.perc
+        _dx = self.dx
+        _units = self.units
+        _dimension = self.dimension
+        _cbar = self.cbar
+        _cbar_label = self.cbar_label
+
+        for i in range(self._nimages):
+            ax = self.axes.flat[i]
+
+            if isinstance(self.data, (list, tuple)):
+                _d = self.data[i]
+
+                # check if the image has more than 2 dimensions
+                if _d.ndim > 2:
+                    raise ValueError(
+                        "can not plot multiple 3D images. Supply an individual 3D image"
+                    )
+
+                if isinstance(self.cmap, (list, tuple)):
+                    _cmap = self.cmap[i]
+
+                if isinstance(self.robust, (list, tuple)):
+                    _robust = self.robust[i]
+
+                if isinstance(self.perc, (list)):
+                    _perc = self.perc[i]
+
+                if isinstance(self.dx, (list, tuple)):
+                    _dx = self.dx[i]
+
+                if isinstance(self.units, (list, tuple)):
+                    _units = self.units[i]
+
+                if isinstance(self.dimension, (list, tuple)):
+                    _dimension = self.dimension[i]
+
+                if isinstance(self.cbar, (list, tuple)):
+                    _cbar = self.cbar[i]
+
+                if isinstance(self.cbar_label, (list, tuple)):
+                    _cbar_label = self.cbar_label[i]
+
+            elif self.data.ndim == 3:
+                _d = self.data[:, :, self.slices[i]]
+
+            else:
+                # if a single 2D image is supplied
+                # TODO issue a warning and direct the user to imgplot()
+                _d = self.data
+
+            imgplot(
+                _d,
+                ax=ax,
+                cmap=_cmap,
+                robust=_robust,
+                perc=_perc,
+                dx=_dx,
+                units=_units,
+                dimension=_dimension,
+                cbar=_cbar,
+                orientation=self.orientation,
+                cbar_label=_cbar_label,
+                cbar_ticks=self.cbar_ticks,
+                showticks=self.showticks,
+                despine=self.despine,
+                describe=False,
+            )
+
+        # FIXME - for common colorbar
+        # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
+
+        return
+
+    def _cleanup_extra_axes(self):
+        """Clean extra axes that are generated if col_wrap is specified."""
+        # check if there are any extra axes that need to be clened up
+        _rem = (self._ncol * self._nrow) - self._nimages
+        if _rem > 0:
+            rem_ax = self.axes.flat[-_rem:]
+            for i in range(len(rem_ax)):
+                rem_ax[i].set_yticks([])
+                rem_ax[i].set_xticks([])
+
+                rem_ax[i].set_ylabel("")
+                rem_ax[i].set_xlabel("")
+
+                despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
+
 
 # TODO provide common cbar option
 # TODO allow gridspec_kws and subplot_kws
@@ -62,15 +431,13 @@ class FilterGrid(object):
     orientation : str, optional
         Specify the orientaion of colorbar.
         Option include :
-            - 'h' or 'horizontal' for a horizontal colorbar and histogram to the bottom of the image.
-            - 'v' or 'vertical' for a vertical colorbar and histogram to the right of the image.
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
         Defaults to 'v'.
     cbar_label : str, optional
         Colorbar label. Defaults to None.
     cbar_ticks : list, optional
-        List of colorbar ticks. If None, min and max of
-        the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
-        are used for colorbar ticks. Defaults to None.
+        List of colorbar ticks. Defaults to None.
     showticks : bool, optional
         Show image x-y axis ticks. Defaults to False.
     despine : bool, optional
@@ -87,11 +454,11 @@ class FilterGrid(object):
     TypeError
         If `row` is not a str
     ValueError
-        If `row` is specified without passing the parameter as a keword argument
+        If `row` is specified without passing the parameter as a keyword argument
     TypeError
         If `col` is not a str
     ValueError
-        If `col` is specified without passing the parameter as a keword argument
+        If `col` is specified without passing the parameter as a keyword argument
     ValueError
         If `col_wrap` is specified when `row` is not `None`
 
