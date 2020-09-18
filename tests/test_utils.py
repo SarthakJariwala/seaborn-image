@@ -62,6 +62,10 @@ def test_load_image():
     test_img[0, 0] = 80
     np.testing.assert_array_equal(img, test_img)
 
+    img = isns.load_image("fluorescence")
+    test_img = np.loadtxt("data/Perovskite.txt")
+    np.testing.assert_array_equal(img, test_img)
+
 
 def test_load_image_error():
     with pytest.raises(ValueError):
