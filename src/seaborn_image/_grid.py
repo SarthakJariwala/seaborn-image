@@ -13,6 +13,178 @@ __all__ = ["FilterGrid", "ImageGrid"]
 
 
 class ImageGrid:
+    """
+    Plot multiple images along a grid.
+    This class allows plotting of mulitple images
+    as well as all the different slices of a 3-D image.
+
+    Parameters
+    ----------
+    data :
+        3-D Image data (array-like) or list of 2-D image data. Supported array shapes are all
+        `matplotlib.pyplot.imshow` array shapes
+    slices : int or list, optional
+        If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
+        the resulting images. If None, it will plot all the slices from the last axis, by default None
+    col_wrap : int, optional
+        Number of columns to display. Defaults to None.
+    height : int or float, optional
+        Size of the individual images. Defaults to 3.
+    aspect : int or float, optional
+        Aspect ratio of individual images. Defaults to 1.
+    cmap : str or `matplotlib.colors.Colormap` or list, optional
+        Image colormap. If input data is a list of images,
+        `cmap` can be a list of colormaps. Defaults to None.
+    robust : bool or list, optional
+        If True, colormap range is calculated based on the percentiles
+        defined in `perc` parameter. If input data is a list of images,
+        robust can be a list of bools, by default False
+    perc : tuple or list, optional
+        If `robust` is True, colormap range is calculated based
+        on the percentiles specified instead of the extremes, by default (2, 98) -
+        2nd and 98th percentiles for min and max values. Can be a list of tuples, if
+        input data is a list of images
+    dx : float or list, optional
+        Size per pixel of the image data. If scalebar
+        is required, `dx` and `units` must be sepcified.
+        Can be a list of floats, if input data is a list of images.
+        Defaults to None.
+    units : str or list, optional
+        Units of `dx`.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    dimension : str or list, optional
+        Dimension of `dx` and `units`.
+        Options include :
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    cbar : bool or list, optional
+        Specify if a colorbar is required or not.
+        Can be a list of bools, if input data is a list of images.
+        Defaults to True.
+    orientation : str, optional
+        Specify the orientaion of colorbar.
+        Option include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+        Defaults to 'v'.
+    cbar_label : str or list, optional
+        Colorbar label.
+        Can be a list of str, if input data is a list of images.
+        Defaults to None.
+    cbar_ticks : list, optional
+        List of colorbar ticks. Defaults to None.
+    showticks : bool, optional
+        Show image x-y axis ticks. Defaults to False.
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes.
+        Defaults to True.
+
+    Returns
+    -------
+        A `seaborn_image.ImageGrid` object
+
+    Raises
+    ------
+    ValueError
+        If `data` is None
+    ValueError
+        If `data` has more than 3 dimensions
+    ValueError
+        If `data` contains a 3D image within a list of images
+
+    Examples
+    --------
+
+    Plot a collection of images
+
+    .. plot::
+        :context: close-figs
+
+        >>> import seaborn_image as isns
+        >>> pol = isns.load_image("polymer")
+        >>> pl = isns.load_image("fluorescence")
+        >>> g = isns.ImageGrid([pol, pl])
+
+    Common properties across images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], cmap="inferno")
+
+    Different scalebars for different images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], dx=[0.15, 0.1], units="um")
+
+    Specify properties only for specific images
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], dx=[None, 100], units=[None, "nm"])
+
+    Different colormaps and colorbar titles
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], cmap=["deep", "magma"], cbar_label=["Height (nm)", "PL Intensity"])
+
+    Correct colormap for outliers
+
+    .. plot::
+        :context: close-figs
+
+        >>> pol_out = isns.load_image("polymer outliers")
+        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)])
+
+    Plot 3-D images
+
+    .. plot::
+        :context: close-figs
+
+        >>> img_3d = np.random.random((50, 50, 4)).reshape((50, 50, 4))
+        >>> g = isns.ImageGrid(img_3d)
+
+    Control number of columns
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(img_3d, col_wrap=2)
+
+    Plot specific slices of the 3-D data cube
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(img_3d, slices=[0, 2, 3])
+
+    Change colorbar orientation
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], orientation="h")
+
+    Change figure size using height
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid([pol, pl], height=4.5)
+
+    """
+
     def __init__(
         self,
         data,
@@ -43,7 +215,10 @@ class ImageGrid:
             # check the number of images to be plotted
             _nimages = len(data)
 
-        elif data.ndim > 2:
+        elif data.ndim > 3:
+            raise ValueError("image data can not have more than 3 dimensions")
+
+        elif data.ndim == 3:
             if slices is None:
                 slices = np.arange(data.shape[-1])
 
@@ -157,7 +332,7 @@ class ImageGrid:
                 if isinstance(self.cbar_label, (list, tuple)):
                     _cbar_label = self.cbar_label[i]
 
-            elif self.data.ndim > 2:
+            elif self.data.ndim == 3:
                 _d = self.data[:, :, self.slices[i]]
 
             else:
@@ -256,15 +431,13 @@ class FilterGrid(object):
     orientation : str, optional
         Specify the orientaion of colorbar.
         Option include :
-            - 'h' or 'horizontal' for a horizontal colorbar and histogram to the bottom of the image.
-            - 'v' or 'vertical' for a vertical colorbar and histogram to the right of the image.
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
         Defaults to 'v'.
     cbar_label : str, optional
         Colorbar label. Defaults to None.
     cbar_ticks : list, optional
-        List of colorbar ticks. If None, min and max of
-        the data are used. If `vmin` and `vmax` are specified, `vmin` and `vmax` values
-        are used for colorbar ticks. Defaults to None.
+        List of colorbar ticks. Defaults to None.
     showticks : bool, optional
         Show image x-y axis ticks. Defaults to False.
     despine : bool, optional
@@ -281,11 +454,11 @@ class FilterGrid(object):
     TypeError
         If `row` is not a str
     ValueError
-        If `row` is specified without passing the parameter as a keword argument
+        If `row` is specified without passing the parameter as a keyword argument
     TypeError
         If `col` is not a str
     ValueError
-        If `col` is specified without passing the parameter as a keword argument
+        If `col` is specified without passing the parameter as a keyword argument
     ValueError
         If `col_wrap` is specified when `row` is not `None`
 

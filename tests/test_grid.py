@@ -22,6 +22,10 @@ class TestImageGrid:
         with pytest.raises(ValueError):
             isns.ImageGrid(None)
 
+    def test_higher_dim_data(self):
+        with pytest.raises(ValueError):
+            isns.ImageGrid(np.random.random(50 * 50 * 4 * 3).reshape((50, 50, 4, 3)))
+
     def test_self_data(self):
         g = isns.ImageGrid(self.data)
         np.testing.assert_array_equal(self.data, g.data)
@@ -61,14 +65,15 @@ class TestImageGrid:
 
         g0 = isns.ImageGrid(self.data)
         assert g0.axes.shape == (1, 1)
+        plt.close()
 
         g1 = isns.ImageGrid(self.img_3d)
         assert g1.axes.shape == (2, 3)
+        plt.close()
 
         g2 = isns.ImageGrid(self.img_list)
         assert g2.axes.shape == (1, 3)
-
-        plt.close("all")
+        plt.close()
 
     def test_col_wrap(self):
 

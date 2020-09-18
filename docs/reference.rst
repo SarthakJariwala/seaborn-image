@@ -18,6 +18,13 @@ imghist
 .. autofunction:: seaborn_image.imghist
 
 
+ImageGrid
+----------
+
+.. autoclass:: seaborn_image.ImageGrid
+   :members:
+
+
 filterplot
 ----------
 
