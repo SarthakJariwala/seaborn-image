@@ -109,6 +109,25 @@ class TestImageGrid:
         isns.ImageGrid(self.img_list, cmap=[None, "inferno", "ice"])
         plt.close()
 
+    def test_robust(self):
+
+        isns.ImageGrid(self.img_list, robust=True)
+        plt.close()
+
+        isns.ImageGrid(self.img_list, robust=True, perc=[(2, 98), (1, 99), (2, 99)])
+        plt.close()
+
+        isns.ImageGrid(
+            self.img_list, robust=[True, False, True], perc=[(2, 98), (1, 99), (2, 99)]
+        )
+        plt.close()
+
+        isns.ImageGrid(self.img_3d, robust=True)
+        plt.close()
+
+        isns.ImageGrid(self.data, robust=True)
+        plt.close()
+
     def test_scalebar_list(self):
 
         isns.ImageGrid(

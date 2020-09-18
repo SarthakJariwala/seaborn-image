@@ -22,6 +22,8 @@ class ImageGrid:
         height=3,
         aspect=1,
         cmap=None,
+        robust=False,
+        perc=(2, 98),
         dx=None,
         units=None,
         dimension=None,
@@ -36,7 +38,7 @@ class ImageGrid:
             raise ValueError("image data can not be None")
 
         if isinstance(
-            data, (list, tuple, set)
+            data, (list, tuple)
         ):  # using 'Iterable' numpy was being picked up
             # check the number of images to be plotted
             _nimages = len(data)
@@ -86,6 +88,8 @@ class ImageGrid:
         self.aspect = aspect
 
         self.cmap = cmap
+        self.robust = robust
+        self.perc = perc
         self.dx = dx
         self.units = units
         self.dimension = dimension
@@ -109,6 +113,8 @@ class ImageGrid:
         """Map image data cube to the image grid."""
 
         _cmap = self.cmap
+        _robust = self.robust
+        _perc = self.perc
         _dx = self.dx
         _units = self.units
         _dimension = self.dimension
@@ -118,7 +124,7 @@ class ImageGrid:
         for i in range(self._nimages):
             ax = self.axes.flat[i]
 
-            if isinstance(self.data, (list, tuple, set)):
+            if isinstance(self.data, (list, tuple)):
                 _d = self.data[i]
 
                 # check if the image has more than 2 dimensions
@@ -127,22 +133,28 @@ class ImageGrid:
                         "can not plot multiple 3D images. Supply an individual 3D image"
                     )
 
-                if isinstance(self.cmap, (list, tuple, set)):
+                if isinstance(self.cmap, (list, tuple)):
                     _cmap = self.cmap[i]
 
-                if isinstance(self.dx, (list, tuple, set)):
+                if isinstance(self.robust, (list, tuple)):
+                    _robust = self.robust[i]
+
+                if isinstance(self.perc, (list)):
+                    _perc = self.perc[i]
+
+                if isinstance(self.dx, (list, tuple)):
                     _dx = self.dx[i]
 
-                if isinstance(self.units, (list, tuple, set)):
+                if isinstance(self.units, (list, tuple)):
                     _units = self.units[i]
 
-                if isinstance(self.dimension, (list, tuple, set)):
+                if isinstance(self.dimension, (list, tuple)):
                     _dimension = self.dimension[i]
 
-                if isinstance(self.cbar, (list, tuple, set)):
+                if isinstance(self.cbar, (list, tuple)):
                     _cbar = self.cbar[i]
 
-                if isinstance(self.cbar_label, (list, tuple, set)):
+                if isinstance(self.cbar_label, (list, tuple)):
                     _cbar_label = self.cbar_label[i]
 
             elif self.data.ndim > 2:
@@ -157,6 +169,8 @@ class ImageGrid:
                 _d,
                 ax=ax,
                 cmap=_cmap,
+                robust=_robust,
+                perc=_perc,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,
