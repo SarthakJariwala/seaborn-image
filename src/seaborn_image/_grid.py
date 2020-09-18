@@ -63,8 +63,8 @@ class ImageGrid:
             col_wrap = 3
 
             # don't create extra columns when there aren't enough images
-            if col_wrap > _nimages:
-                col_wrap = _nimages
+        if col_wrap > _nimages:
+            col_wrap = _nimages
 
         # Compute the grid shape if col_wrap is specified
         ncol = col_wrap
