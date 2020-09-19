@@ -510,7 +510,7 @@ def rgbplot(
 
     # if no cmap, assign reds, greens and blues cmap
     if cmap is None:
-        cmap = ["Reds_r", "Greens_r", "Blues_r"]
+        cmap = ["Reds", "Greens", "Blues"]
 
     # split RGB channels
     _d = [data[:, :, 0], data[:, :, 1], data[:, :, 2]]
