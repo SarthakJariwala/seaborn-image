@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from skimage.data import astronaut
 
 import seaborn_image as isns
 
@@ -219,6 +220,28 @@ class TestImageGrid:
         )
         np.testing.assert_array_equal(g4.fig.get_size_inches(), (3 * 2 * 1.5, 2 * 2))
         plt.close()
+
+
+@pytest.mark.parametrize(
+    "img",
+    [
+        np.random.random(2500).reshape((50, 50)),
+        np.random.random(50 * 50 * 4).reshape((50, 50, 4)),
+    ],
+)
+def test_rgbplot_data(img):
+    with pytest.raises(ValueError):
+        isns.rgbplot(img)
+
+
+def test_rgbplot_cmap():
+    g = isns.rgbplot(astronaut())
+    g.cmap = ["Reds", "Greens", "Blues"]
+    plt.close()
+
+    g = isns.rgbplot(astronaut(), cmap=["inferno", "viridis", "ice"])
+    g.cmap = ["inferno", "viridis", "ice"]
+    plt.close()
 
 
 class TestFilterGrid(object):

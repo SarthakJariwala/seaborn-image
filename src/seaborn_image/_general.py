@@ -13,8 +13,6 @@ from ._core import _SetupImage
 __all__ = ["imgplot", "imghist"]
 
 
-# TODO implement rgbplot() - which has options
-# to split the channels
 def imgplot(
     data,
     ax=None,

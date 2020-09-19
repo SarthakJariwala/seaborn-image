@@ -9,7 +9,7 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-__all__ = ["FilterGrid", "ImageGrid"]
+__all__ = ["FilterGrid", "ImageGrid", "rgbplot"]
 
 
 class ImageGrid:
@@ -377,6 +377,162 @@ class ImageGrid:
                 rem_ax[i].set_xlabel("")
 
                 despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
+
+
+def rgbplot(
+    data,
+    *,
+    col_wrap=3,
+    height=3,
+    aspect=1,
+    cmap=None,
+    dx=None,
+    units=None,
+    dimension=None,
+    cbar=True,
+    orientation="v",
+    cbar_label=None,
+    cbar_ticks=None,
+    showticks=False,
+    despine=True,
+):
+    """Split and plot the red, green and blue channels of an
+    RGB image.
+
+    Parameters
+    ----------
+    data :
+        RGB image data as 3-D array.
+    col_wrap : int, optional
+        Number of columns to display. Defaults to 3.
+    height : int or float, optional
+        Size of the individual images. Defaults to 3.
+    aspect : int or float, optional
+        Aspect ratio of individual images. Defaults to 1.
+    cmap : str or `matplotlib.colors.Colormap` or list, optional
+        Image colormap or a list of colormaps. Defaults to None.
+    dx : float or list, optional
+        Size per pixel of the image data. If scalebar
+        is required, `dx` and `units` must be sepcified.
+        Can be a list of floats.
+        Defaults to None.
+    units : str or list, optional
+        Units of `dx`.
+        Can be a list of str.
+        Defaults to None.
+    dimension : str or list, optional
+        Dimension of `dx` and `units`.
+        Options include :
+            - "si" : scale bar showing km, m, cm, etc.
+            - "imperial" : scale bar showing in, ft, yd, mi, etc.
+            - "si-reciprocal" : scale bar showing 1/m, 1/cm, etc.
+            - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
+            - "pixel" : scale bar showing px, kpx, Mpx, etc.
+        Can be a list of str.
+        Defaults to None.
+    cbar : bool or list, optional
+        Specify if a colorbar is required or not.
+        Can be a list of bools.
+        Defaults to True.
+    orientation : str, optional
+        Specify the orientaion of colorbar.
+        Option include :
+            - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
+            - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+        Defaults to 'v'.
+    cbar_label : str or list, optional
+        Colorbar label.
+        Can be a list of str.
+        Defaults to None.
+    cbar_ticks : list, optional
+        List of colorbar ticks. Defaults to None.
+    showticks : bool, optional
+        Show image x-y axis ticks. Defaults to False.
+    despine : bool, optional
+        Remove axes spines from image axes as well as colorbar axes.
+        Defaults to True.
+
+    Returns
+    -------
+    `seaborn_image.ImageGrid`
+
+    Raises
+    ------
+    ValueError
+        If `data` dimension is not 3
+    ValueError
+        If `data` channels are not 3
+
+    Examples
+    --------
+
+    Split and plot the channels of a RGB image
+
+    .. plot::
+        :context: close-figs
+
+        >>> import seaborn_image as isns; isns.set_image(origin="upper")
+        >>> from skimage.data import astronaut
+        >>> g = isns.rgbplot(astronaut())
+
+    Hide colorbar
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.rgbplot(astronaut(), cbar=False)
+
+    Change colormap
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.rgbplot(astronaut(), cmap="deep")
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.rgbplot(astronaut(), cmap=["inferno", "viridis", "ice"])
+
+    Horizontal colorbar
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.rgbplot(astronaut(), orientation="h")
+    """
+
+    if not data.ndim == 3:
+        raise ValueError("imput image must be a RGB image")
+
+    if data.shape[-1] != 3:
+        raise ValueError("input image must be a RGB image")
+
+    # if no cmap, assign reds, greens and blues cmap
+    if cmap is None:
+        cmap = ["Reds", "Greens", "Blues"]
+
+    # split RGB channels
+    _d = [data[:, :, 0], data[:, :, 1], data[:, :, 2]]
+
+    g = ImageGrid(
+        _d,
+        height=height,
+        aspect=aspect,
+        col_wrap=col_wrap,
+        cmap=cmap,
+        dx=dx,
+        units=units,
+        dimension=dimension,
+        cbar=cbar,
+        orientation=orientation,
+        cbar_label=cbar_label,
+        cbar_ticks=cbar_ticks,
+        showticks=showticks,
+        despine=despine,
+    )
+
+    return g
 
 
 # TODO provide common cbar option
