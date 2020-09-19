@@ -25,6 +25,12 @@ ImageGrid
    :members:
 
 
+rgbplot
+-------
+
+.. autofunction:: seaborn_image.rgbplot
+
+
 filterplot
 ----------
 
