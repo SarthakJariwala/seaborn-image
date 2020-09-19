@@ -396,12 +396,13 @@ def rgbplot(
     showticks=False,
     despine=True,
 ):
-    """[summary]
+    """Split and plot the red, green and blue channels of an
+    RGB image.
 
     Parameters
     ----------
-    data : [type]
-        [description]
+    data :
+        RGB image data as 3-D array.
     col_wrap : int, optional
         Number of columns to display. Defaults to 3.
     height : int or float, optional
