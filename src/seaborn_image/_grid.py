@@ -703,6 +703,9 @@ class FilterGrid(object):
         height=3,
         aspect=1,
         cmap=None,
+        alpha=None,
+        origin=None,
+        interpolation=None,
         dx=None,
         units=None,
         dimension=None,
@@ -803,6 +806,9 @@ class FilterGrid(object):
         self.aspect = aspect
 
         self.cmap = cmap
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
         self.dx = dx
         self.units = units
         self.dimension = dimension
@@ -886,6 +892,9 @@ class FilterGrid(object):
             self.filt,
             ax=ax,
             cmap=self.cmap,
+            alpha=self.alpha,
+            origin=self.origin,
+            interpolation=self.interpolation,
             dx=self.dx,
             units=self.units,
             dimension=self.dimension,
