@@ -57,6 +57,11 @@ def test_cbar_label_type():
         isns.imgplot(data, cbar_label=["Title"])
 
 
+def test_cbar_log_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, cbar_log=matplotlib.colors.LogNorm())
+
+
 def test_showticks_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, showticks="True")
@@ -113,6 +118,20 @@ def test_gray_cmap_interplay(data, gray, cmap):
 def test_imgplot_w_describe(describe):
     _ = isns.imgplot(data, describe=describe)
     plt.close("all")
+
+
+def test_cbar_log_and_norm():
+    # special case of log-norm
+    _ = isns.imgplot(data, cbar_log=True)
+    plt.close()
+
+    # when only norm is specified
+    _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm())
+    plt.close()
+
+    # norm takes preference
+    _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm(), cbar_log=True)
+    plt.close()
 
 
 @pytest.mark.parametrize("bins", ["random", 200.0, -400.13])

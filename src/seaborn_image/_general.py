@@ -23,6 +23,7 @@ def imgplot(
     alpha=None,
     origin=None,
     interpolation=None,
+    norm=None,
     robust=False,
     perc=(2, 98),
     dx=None,
@@ -31,6 +32,7 @@ def imgplot(
     describe=True,
     cbar=True,
     orientation="v",
+    cbar_log=False,
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
@@ -230,6 +232,10 @@ def imgplot(
         if not isinstance(cbar_label, str):
             raise TypeError
 
+    if cbar_log is not None:
+        if not isinstance(cbar_log, bool):
+            raise TypeError("must be a bool")
+
     if not isinstance(showticks, bool):
         raise TypeError
 
@@ -246,6 +252,9 @@ def imgplot(
     if gray is True and cmap is None:  # set colormap to gray only if cmap is None
         cmap = "gray"
 
+    if norm is None and cbar_log is True:
+        norm = "cbar_log"
+
     img_plotter = _SetupImage(
         data=data,
         ax=ax,
@@ -255,6 +264,7 @@ def imgplot(
         alpha=alpha,
         origin=origin,
         interpolation=interpolation,
+        norm=norm,
         robust=robust,
         perc=perc,
         dx=dx,
