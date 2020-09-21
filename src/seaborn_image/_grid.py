@@ -196,6 +196,9 @@ class ImageGrid:
         cmap=None,
         robust=False,
         perc=(2, 98),
+        alpha=None,
+        origin=None,
+        interpolation=None,
         dx=None,
         units=None,
         dimension=None,
@@ -265,6 +268,9 @@ class ImageGrid:
         self.cmap = cmap
         self.robust = robust
         self.perc = perc
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
         self.dx = dx
         self.units = units
         self.dimension = dimension
@@ -346,6 +352,9 @@ class ImageGrid:
                 cmap=_cmap,
                 robust=_robust,
                 perc=_perc,
+                alpha=self.alpha,
+                origin=self.origin,
+                interpolation=self.interpolation,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,
@@ -386,6 +395,9 @@ def rgbplot(
     height=3,
     aspect=1,
     cmap=None,
+    alpha=None,
+    origin=None,
+    interpolation=None,
     dx=None,
     units=None,
     dimension=None,
@@ -521,6 +533,9 @@ def rgbplot(
         aspect=aspect,
         col_wrap=col_wrap,
         cmap=cmap,
+        alpha=alpha,
+        origin=origin,
+        interpolation=interpolation,
         dx=dx,
         units=units,
         dimension=dimension,

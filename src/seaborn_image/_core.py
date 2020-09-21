@@ -24,6 +24,9 @@ class _SetupImage(object):
         cmap=None,
         vmin=None,
         vmax=None,
+        alpha=None,
+        origin=None,
+        interpolation=None,
         robust=False,
         perc=None,
         dx=None,
@@ -42,6 +45,9 @@ class _SetupImage(object):
         self.cmap = cmap
         self.vmin = vmin
         self.vmax = vmax
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
         self.robust = robust
         self.perc = perc
         self.dx = dx
@@ -110,7 +116,15 @@ class _SetupImage(object):
                 self.vmax = np.nanpercentile(self.data, self.perc[1])
 
         # TODO move everything other than data to kwargs
-        _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
+        _map = ax.imshow(
+            self.data,
+            cmap=self.cmap,
+            vmin=self.vmin,
+            vmax=self.vmax,
+            origin=self.origin,
+            alpha=self.alpha,
+            interpolation=self.interpolation,
+        )
 
         if self.dx:
             self._setup_scalebar(ax)
