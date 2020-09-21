@@ -186,12 +186,14 @@ def test_imghist_data_is_same_as_input():
 @pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("despine", [True, False])
+@pytest.mark.parametrize("cbar_log", [True, False])
 def test_imghist_w_all_valid_inputs(
     cmap,
     bins,
     orientation,
     showticks,
     despine,
+    cbar_log,
 ):
     _ = isns.imghist(
         data,
@@ -200,6 +202,7 @@ def test_imghist_w_all_valid_inputs(
         orientation=orientation,
         showticks=showticks,
         despine=despine,
+        cbar_log=cbar_log,
     )
 
     plt.close("all")

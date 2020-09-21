@@ -302,6 +302,7 @@ def imghist(
     alpha=None,
     origin=None,
     interpolation=None,
+    norm=None,
     robust=False,
     perc=(2, 98),
     dx=None,
@@ -310,6 +311,7 @@ def imghist(
     describe=True,
     cbar=True,
     orientation="v",
+    cbar_log=False,
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
@@ -473,6 +475,7 @@ def imghist(
         alpha=alpha,
         origin=origin,
         interpolation=interpolation,
+        norm=norm,
         robust=robust,
         perc=perc,
         dx=dx,
@@ -481,6 +484,7 @@ def imghist(
         describe=describe,
         cbar=cbar,
         orientation=orientation,
+        cbar_log=cbar_log,
         cbar_label=cbar_label,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
@@ -490,18 +494,22 @@ def imghist(
     # get colorbar axes
     cax = f.axes[1]
 
+    _log = False
+    if cbar_log is True:
+        _log = True
+
     if orientation == "vertical":
         ax2 = f.add_subplot(gs[1], sharey=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="horizontal"
+            data.ravel(), bins=bins, density=True, orientation="horizontal", log=_log
         )
 
     elif orientation == "horizontal":
         ax2 = f.add_subplot(gs[1], sharex=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="vertical"
+            data.ravel(), bins=bins, density=True, orientation="vertical", log=_log
         )
 
     if not showticks:
@@ -519,6 +527,10 @@ def imghist(
             cm = plt.cm.get_cmap(cmap)
 
     bin_centers = bins[:-1] + bins[1:]
+
+    # convert to logscale
+    if cbar_log is True:
+        bin_centers = np.log(bin_centers)
 
     # scale values to interval [0,1]
     col = bin_centers - np.min(bin_centers)
