@@ -70,6 +70,13 @@ def test_robust_param():
     plt.close()
 
 
+def test_log_scale_cbar():
+    img_setup = isns._core._SetupImage(data, norm="cbar_log")
+    f, ax, cax = img_setup.plot()
+    assert isinstance(img_setup.norm, matplotlib.colors.LogNorm)
+    plt.close()
+
+
 def test_data_plotted_is_same_as_input():
     img_setup = isns._core._SetupImage(data)
     f, ax, cax = img_setup.plot()

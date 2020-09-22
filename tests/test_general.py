@@ -57,6 +57,11 @@ def test_cbar_label_type():
         isns.imgplot(data, cbar_label=["Title"])
 
 
+def test_cbar_log_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, cbar_log=matplotlib.colors.LogNorm())
+
+
 def test_showticks_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, showticks="True")
@@ -115,6 +120,20 @@ def test_imgplot_w_describe(describe):
     plt.close("all")
 
 
+def test_cbar_log_and_norm():
+    # special case of log-norm
+    _ = isns.imgplot(data, cbar_log=True)
+    plt.close()
+
+    # when only norm is specified
+    _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm())
+    plt.close()
+
+    # norm takes preference
+    _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm(), cbar_log=True)
+    plt.close()
+
+
 @pytest.mark.parametrize("bins", ["random", 200.0, -400.13])
 def test_imghist_bins_type(bins):
     with pytest.raises(TypeError):
@@ -167,12 +186,14 @@ def test_imghist_data_is_same_as_input():
 @pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])
 @pytest.mark.parametrize("showticks", [True, False])
 @pytest.mark.parametrize("despine", [True, False])
+@pytest.mark.parametrize("cbar_log", [True, False])
 def test_imghist_w_all_valid_inputs(
     cmap,
     bins,
     orientation,
     showticks,
     despine,
+    cbar_log,
 ):
     _ = isns.imghist(
         data,
@@ -181,6 +202,7 @@ def test_imghist_w_all_valid_inputs(
         orientation=orientation,
         showticks=showticks,
         despine=despine,
+        cbar_log=cbar_log,
     )
 
     plt.close("all")

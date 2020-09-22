@@ -1,3 +1,4 @@
+import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib_scalebar.scalebar import ScaleBar
@@ -24,6 +25,10 @@ class _SetupImage(object):
         cmap=None,
         vmin=None,
         vmax=None,
+        alpha=None,
+        origin=None,
+        interpolation=None,
+        norm=None,
         robust=False,
         perc=None,
         dx=None,
@@ -42,6 +47,10 @@ class _SetupImage(object):
         self.cmap = cmap
         self.vmin = vmin
         self.vmax = vmax
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
+        self.norm = norm
         self.robust = robust
         self.perc = perc
         self.dx = dx
@@ -109,8 +118,20 @@ class _SetupImage(object):
                 )
                 self.vmax = np.nanpercentile(self.data, self.perc[1])
 
+        if self.norm == "cbar_log":
+            self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)
+
         # TODO move everything other than data to kwargs
-        _map = ax.imshow(self.data, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
+        _map = ax.imshow(
+            self.data,
+            cmap=self.cmap,
+            vmin=self.vmin,
+            vmax=self.vmax,
+            origin=self.origin,
+            alpha=self.alpha,
+            interpolation=self.interpolation,
+            norm=self.norm,
+        )
 
         if self.dx:
             self._setup_scalebar(ax)
@@ -158,11 +179,15 @@ class _SetupImage(object):
             # display only 3 tick marks on colorbar
             if self.orientation in ["vertical"]:
                 cax.yaxis.set_major_locator(plt.MaxNLocator(3))
-                cax.tick_params(axis="y", width=0, length=0)  # remove ytick lines
+                cax.tick_params(
+                    axis="y", width=0, length=0, which="both"
+                )  # remove major and minor ytick
 
             if self.orientation in ["horizontal"]:
                 cax.xaxis.set_major_locator(plt.MaxNLocator(3))
-                cax.tick_params(axis="x", width=0, length=0)  # remove xtick lines
+                cax.tick_params(
+                    axis="x", width=0, length=0, which="both"
+                )  # remove major and minor xticks
 
             # TODO add option for scientific ticks as part of inbuilt functions
             # scientific_ticks(ax=cax)

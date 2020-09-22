@@ -44,6 +44,13 @@ class ImageGrid:
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values. Can be a list of tuples, if
         input data is a list of images
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float or list, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified.
@@ -73,6 +80,8 @@ class ImageGrid:
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
         Defaults to 'v'.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str or list, optional
         Colorbar label.
         Can be a list of str, if input data is a list of images.
@@ -196,11 +205,15 @@ class ImageGrid:
         cmap=None,
         robust=False,
         perc=(2, 98),
+        alpha=None,
+        origin=None,
+        interpolation=None,
         dx=None,
         units=None,
         dimension=None,
         cbar=True,
         orientation="v",
+        cbar_log=False,
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
@@ -265,11 +278,15 @@ class ImageGrid:
         self.cmap = cmap
         self.robust = robust
         self.perc = perc
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
         self.dx = dx
         self.units = units
         self.dimension = dimension
         self.cbar = cbar
         self.orientation = orientation
+        self.cbar_log = cbar_log
         self.cbar_label = cbar_label
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
@@ -294,6 +311,7 @@ class ImageGrid:
         _units = self.units
         _dimension = self.dimension
         _cbar = self.cbar
+        _cbar_log = self.cbar_log
         _cbar_label = self.cbar_label
 
         for i in range(self._nimages):
@@ -329,6 +347,9 @@ class ImageGrid:
                 if isinstance(self.cbar, (list, tuple)):
                     _cbar = self.cbar[i]
 
+                if isinstance(self.cbar_log, (list, tuple)):
+                    _cbar_log = self.cbar_log[i]
+
                 if isinstance(self.cbar_label, (list, tuple)):
                     _cbar_label = self.cbar_label[i]
 
@@ -346,11 +367,15 @@ class ImageGrid:
                 cmap=_cmap,
                 robust=_robust,
                 perc=_perc,
+                alpha=self.alpha,
+                origin=self.origin,
+                interpolation=self.interpolation,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,
                 cbar=_cbar,
                 orientation=self.orientation,
+                cbar_log=_cbar_log,
                 cbar_label=_cbar_label,
                 cbar_ticks=self.cbar_ticks,
                 showticks=self.showticks,
@@ -386,6 +411,9 @@ def rgbplot(
     height=3,
     aspect=1,
     cmap=None,
+    alpha=None,
+    origin=None,
+    interpolation=None,
     dx=None,
     units=None,
     dimension=None,
@@ -411,6 +439,13 @@ def rgbplot(
         Aspect ratio of individual images. Defaults to 1.
     cmap : str or `matplotlib.colors.Colormap` or list, optional
         Image colormap or a list of colormaps. Defaults to None.
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float or list, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified.
@@ -521,6 +556,9 @@ def rgbplot(
         aspect=aspect,
         col_wrap=col_wrap,
         cmap=cmap,
+        alpha=alpha,
+        origin=origin,
+        interpolation=interpolation,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -567,6 +605,13 @@ class FilterGrid(object):
         Aspect ratio of individual images. Defaults to 1.
     cmap : str or `matplotlib.colors.Colormap`, optional
         Image colormap. Defaults to None.
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified. Defaults to None.
@@ -590,6 +635,8 @@ class FilterGrid(object):
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
         Defaults to 'v'.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label. Defaults to None.
     cbar_ticks : list, optional
@@ -688,11 +735,15 @@ class FilterGrid(object):
         height=3,
         aspect=1,
         cmap=None,
+        alpha=None,
+        origin=None,
+        interpolation=None,
         dx=None,
         units=None,
         dimension=None,
         cbar=True,
         orientation="v",
+        cbar_log=False,
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
@@ -788,11 +839,15 @@ class FilterGrid(object):
         self.aspect = aspect
 
         self.cmap = cmap
+        self.alpha = alpha
+        self.origin = origin
+        self.interpolation = interpolation
         self.dx = dx
         self.units = units
         self.dimension = dimension
         self.cbar = cbar
         self.orientation = orientation
+        self.cbar_log = cbar_log
         self.cbar_label = cbar_label
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
@@ -871,11 +926,15 @@ class FilterGrid(object):
             self.filt,
             ax=ax,
             cmap=self.cmap,
+            alpha=self.alpha,
+            origin=self.origin,
+            interpolation=self.interpolation,
             dx=self.dx,
             units=self.units,
             dimension=self.dimension,
             cbar=self.cbar,
             orientation=self.orientation,
+            cbar_log=self.cbar_log,
             cbar_label=self.cbar_label,
             cbar_ticks=self.cbar_ticks,
             showticks=self.showticks,

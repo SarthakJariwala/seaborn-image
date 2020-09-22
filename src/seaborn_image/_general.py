@@ -20,6 +20,10 @@ def imgplot(
     gray=None,
     vmin=None,
     vmax=None,
+    alpha=None,
+    origin=None,
+    interpolation=None,
+    norm=None,
     robust=False,
     perc=(2, 98),
     dx=None,
@@ -28,6 +32,7 @@ def imgplot(
     describe=True,
     cbar=True,
     orientation="v",
+    cbar_log=False,
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
@@ -51,6 +56,16 @@ def imgplot(
         Minimum data value that colormap covers, by default None
     vmax : float, optional
         Maximum data value that colormap covers, by default None
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
+    norm : `matplotlib.colors.Normalize`, optional
+        `matplotlib` Normalize instance used to scale scalar data before
+        mapping to colors using cmap
     robust : bool, optional
         If True and vmin or vmax are None, colormap range is calculated
         based on the percentiles defined in `perc` parameter, by default False
@@ -81,6 +96,8 @@ def imgplot(
         Options include :
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label, by default None
     cbar_ticks : list, optional
@@ -190,15 +207,29 @@ def imgplot(
 
         >>> isns.imgplot(img, cbar_label="Height (nm)")
 
-    Avoid image and colorbar axes despining
+    Avoid despining image and colorbar axes
 
     .. plot::
         :context: close-figs
 
         >>> isns.imgplot(img, despine=False)
+
+    Change colorbar and colormap to log scale
+
+    .. plot::
+        :context: close-figs
+
+        >>> pl = isns.load_image("fluorescence")
+        >>> isns.imgplot(pl, cbar_log=True)
+
+    Change image transparency
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(pl, alpha=0.75)
     """
 
-    # TODO add vmin, vmax, dx, units to checks
     if cmap is not None:
         if not isinstance(cmap, (str, Colormap)):
             raise TypeError
@@ -227,6 +258,10 @@ def imgplot(
         if not isinstance(cbar_label, str):
             raise TypeError
 
+    if cbar_log is not None:
+        if not isinstance(cbar_log, bool):
+            raise TypeError("must be a bool")
+
     if not isinstance(showticks, bool):
         raise TypeError
 
@@ -243,12 +278,19 @@ def imgplot(
     if gray is True and cmap is None:  # set colormap to gray only if cmap is None
         cmap = "gray"
 
+    if norm is None and cbar_log is True:
+        norm = "cbar_log"
+
     img_plotter = _SetupImage(
         data=data,
         ax=ax,
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        alpha=alpha,
+        origin=origin,
+        interpolation=interpolation,
+        norm=norm,
         robust=robust,
         perc=perc,
         dx=dx,
@@ -283,6 +325,10 @@ def imghist(
     bins=None,
     vmin=None,
     vmax=None,
+    alpha=None,
+    origin=None,
+    interpolation=None,
+    norm=None,
     robust=False,
     perc=(2, 98),
     dx=None,
@@ -291,6 +337,7 @@ def imghist(
     describe=True,
     cbar=True,
     orientation="v",
+    cbar_log=False,
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
@@ -319,6 +366,16 @@ def imghist(
         Minimum data value that colormap covers, by default None
     vmax : float, optional
         Maximum data value that colormap covers, by default None
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
+    norm : `matplotlib.colors.Normalize`, optional
+        `matplotlib` Normalize instance used to scale scalar data before
+        mapping to colors using cmap
     robust : bool, optional
         If True and vmin or vmax are None, colormap range is calculated
         based on the percentiles defined in `perc` parameter, by default False
@@ -349,6 +406,8 @@ def imghist(
         Options include :
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label, by default None
     cbar_ticks : list, optional
@@ -451,6 +510,10 @@ def imghist(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        alpha=alpha,
+        origin=origin,
+        interpolation=interpolation,
+        norm=norm,
         robust=robust,
         perc=perc,
         dx=dx,
@@ -459,6 +522,7 @@ def imghist(
         describe=describe,
         cbar=cbar,
         orientation=orientation,
+        cbar_log=cbar_log,
         cbar_label=cbar_label,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
@@ -468,18 +532,22 @@ def imghist(
     # get colorbar axes
     cax = f.axes[1]
 
+    _log = False
+    if cbar_log is True:
+        _log = True
+
     if orientation == "vertical":
         ax2 = f.add_subplot(gs[1], sharey=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="horizontal"
+            data.ravel(), bins=bins, density=True, orientation="horizontal", log=_log
         )
 
     elif orientation == "horizontal":
         ax2 = f.add_subplot(gs[1], sharex=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="vertical"
+            data.ravel(), bins=bins, density=True, orientation="vertical", log=_log
         )
 
     if not showticks:
@@ -497,6 +565,10 @@ def imghist(
             cm = plt.cm.get_cmap(cmap)
 
     bin_centers = bins[:-1] + bins[1:]
+
+    # convert to logscale
+    if cbar_log is True:
+        bin_centers = np.log(bin_centers)
 
     # scale values to interval [0,1]
     col = bin_centers - np.min(bin_centers)
