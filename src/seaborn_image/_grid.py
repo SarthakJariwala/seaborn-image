@@ -605,6 +605,13 @@ class FilterGrid(object):
         Aspect ratio of individual images. Defaults to 1.
     cmap : str or `matplotlib.colors.Colormap`, optional
         Image colormap. Defaults to None.
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified. Defaults to None.
@@ -628,6 +635,8 @@ class FilterGrid(object):
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
         Defaults to 'v'.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label. Defaults to None.
     cbar_ticks : list, optional
@@ -734,6 +743,7 @@ class FilterGrid(object):
         dimension=None,
         cbar=True,
         orientation="v",
+        cbar_log=False,
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
@@ -837,6 +847,7 @@ class FilterGrid(object):
         self.dimension = dimension
         self.cbar = cbar
         self.orientation = orientation
+        self.cbar_log = cbar_log
         self.cbar_label = cbar_label
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
@@ -923,6 +934,7 @@ class FilterGrid(object):
             dimension=self.dimension,
             cbar=self.cbar,
             orientation=self.orientation,
+            cbar_log=self.cbar_log,
             cbar_label=self.cbar_label,
             cbar_ticks=self.cbar_ticks,
             showticks=self.showticks,
