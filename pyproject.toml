@@ -33,7 +33,7 @@ flake8-docstrings = "^1.5.0"
 sphinx = "^3.2.1"
 codecov = "^2.1.9"
 sphinx_bootstrap_theme = "^0.7.1"
-xdoctest = "^0.14.0"
+xdoctest = "^0.15.0"
 sphinx-gallery = "^0.8.1"
 
 [build-system]
