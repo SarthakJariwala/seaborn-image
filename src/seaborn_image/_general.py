@@ -56,6 +56,16 @@ def imgplot(
         Minimum data value that colormap covers, by default None
     vmax : float, optional
         Maximum data value that colormap covers, by default None
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
+    norm : `matplotlib.colors.Normalize`, optional
+        `matplotlib` Normalize instance used to scale scalar data before
+        mapping to colors using cmap
     robust : bool, optional
         If True and vmin or vmax are None, colormap range is calculated
         based on the percentiles defined in `perc` parameter, by default False
@@ -86,6 +96,8 @@ def imgplot(
         Options include :
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label, by default None
     cbar_ticks : list, optional
@@ -195,15 +207,29 @@ def imgplot(
 
         >>> isns.imgplot(img, cbar_label="Height (nm)")
 
-    Avoid image and colorbar axes despining
+    Avoid despining image and colorbar axes
 
     .. plot::
         :context: close-figs
 
         >>> isns.imgplot(img, despine=False)
+
+    Change colorbar and colormap to log scale
+
+    .. plot::
+        :context: close-figs
+
+        >>> pl = isns.load_image("fluorescence")
+        >>> isns.imgplot(pl, cbar_log=True)
+
+    Change image transparency
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(pl, alpha=0.75)
     """
 
-    # TODO add vmin, vmax, dx, units to checks
     if cmap is not None:
         if not isinstance(cmap, (str, Colormap)):
             raise TypeError
@@ -340,6 +366,16 @@ def imghist(
         Minimum data value that colormap covers, by default None
     vmax : float, optional
         Maximum data value that colormap covers, by default None
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
+    norm : `matplotlib.colors.Normalize`, optional
+        `matplotlib` Normalize instance used to scale scalar data before
+        mapping to colors using cmap
     robust : bool, optional
         If True and vmin or vmax are None, colormap range is calculated
         based on the percentiles defined in `perc` parameter, by default False
@@ -370,6 +406,8 @@ def imghist(
         Options include :
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label, by default None
     cbar_ticks : list, optional

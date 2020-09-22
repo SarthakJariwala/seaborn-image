@@ -178,6 +178,18 @@ class TestImageGrid:
 
         isns.ImageGrid(
             self.img_list,
+            cbar_log=[True, True, False],
+        )
+        plt.close()
+
+        isns.ImageGrid(
+            self.img_list,
+            cbar_log=True,
+        )
+        plt.close()
+
+        isns.ImageGrid(
+            self.img_list,
             cbar_label=["X", "A", "B"],
         )
         plt.close()

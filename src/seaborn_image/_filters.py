@@ -47,6 +47,7 @@ def filterplot(
     describe=False,
     cbar=True,
     orientation="v",
+    cbar_log=False,
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
@@ -77,6 +78,13 @@ def filterplot(
         Minimum data value that colormap covers, by default None
     vmax : float, optional
         Maximum data value that colormap covers, by default None
+    alpha : float or array-like, optional
+        `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
+        by default None
+    origin : str, optional
+        Image origin, by default None
+    interpolation : str, optional
+        `matplotlib.pyplot.imshow` interpolation method used, by default None
     robust : bool, optional
         If True and vmin or vmax are None, colormap range is calculated
         based on the percentiles defined in `perc` parameter, by default False
@@ -107,6 +115,8 @@ def filterplot(
         Options include :
             - 'h' or 'horizontal' for a horizontal colorbar to the bottom of the image.
             - 'v' or 'vertical' for a vertical colorbar to the right of the image.
+    cbar_log : bool, optional
+        Log scale colormap and colorbar
     cbar_label : str, optional
         Colorbar label, by default None
     cbar_ticks : list, optional
@@ -210,6 +220,7 @@ def filterplot(
         describe=False,
         cbar=cbar,
         orientation=orientation,
+        cbar_log=cbar_log,
         cbar_label=cbar_label,
         cbar_ticks=cbar_ticks,
         showticks=showticks,
