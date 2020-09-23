@@ -44,6 +44,17 @@ def test_set_image(cmap, origin, interpolation):
     assert mpl.rcParams["image.interpolation"] == interpolation
 
 
+@pytest.mark.parametrize("despine", [True, False])
+def test_image_despine(despine):
+    isns.set_image(despine=despine)
+
+    _d = not despine
+    assert mpl.rcParams["axes.spines.bottom"] == _d
+    assert mpl.rcParams["axes.spines.top"] == _d
+    assert mpl.rcParams["axes.spines.left"] == _d
+    assert mpl.rcParams["axes.spines.right"] == _d
+
+
 @pytest.mark.parametrize("color", ["white", "k", "C4"])
 @pytest.mark.parametrize("height_fraction", [0.025])
 @pytest.mark.parametrize("length_fraction", [0.3])
