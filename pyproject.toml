@@ -8,7 +8,12 @@ readme = "README.md"
 homepage = "https://github.com/SarthakJariwala/seaborn-image"
 repository = "https://github.com/SarthakJariwala/seaborn-image"
 documentation = "https://seaborn-image.readthedocs.io/"
-include = ["data/PolymerImage.txt"]
+classifiers = [
+    "Framework :: Matplotlib",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Scientific/Engineering :: Image Processing"
+]
+include = ["data/PolymerImage.txt", "data/Perovskite.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
