@@ -98,6 +98,38 @@ def test_cbar_despine():
     plt.close()
 
 
+def test_local_despine_wrt_global_despine():
+    # Global despine=False
+    isns.set_image(despine=False)
+
+    img_setup = isns._core._SetupImage(data)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == True
+
+    # if global state is despine=False but local state is despine=True
+    # it should respect local state
+    img_setup = isns._core._SetupImage(data, despine=True)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == False
+
+    # Global despine=True
+    isns.set_image(despine=True)
+
+    img_setup = isns._core._SetupImage(data)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == False
+
+    # if global state is despine=True but local state is despine=False
+    # it should respect local state
+    img_setup = isns._core._SetupImage(data, despine=False)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == True
+
+
 def test_data_plotted_is_same_as_input():
     img_setup = isns._core._SetupImage(data)
     f, ax, cax = img_setup.plot()

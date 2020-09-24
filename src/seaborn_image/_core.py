@@ -189,7 +189,9 @@ class _SetupImage(object):
             if self.despine is True:
                 cb.outline.set_visible(False)  # remove colorbar outline border
             else:
-                self.despine = False
+                self.despine = (
+                    False  # NOTE this is only being set inside self.cbar block
+                )
 
             # display only 3 tick marks on colorbar
             if self.orientation in ["vertical"]:
@@ -224,8 +226,16 @@ class _SetupImage(object):
             # ax.get_yaxis().set_visible(False)
             # ax.get_xaxis().set_visible(False)
 
+        # This block is for handling local despine state
+        # If the state doesn't match the global state,
+        # local despine state will be preferred
         if self.despine:
             despine(ax=ax, which="all")
+
+        elif self.despine is False:  # if despine is False
+            # TODO implement a respine function (?)
+            for spine in ["top", "bottom", "right", "left"]:
+                ax.spines[spine].set_visible(True)
 
         f.tight_layout()
 
