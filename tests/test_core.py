@@ -1,14 +1,15 @@
 import pytest
 
 import matplotlib
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 import seaborn_image as isns
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
 
 
 data = np.random.random(2500).reshape((50, 50))
@@ -75,6 +76,58 @@ def test_log_scale_cbar():
     f, ax, cax = img_setup.plot()
     assert isinstance(img_setup.norm, matplotlib.colors.LogNorm)
     plt.close()
+
+
+def test_cbar_despine():
+    # change the global despine state
+    isns.set_image(despine=False)
+    # cbar needs to be True for this test
+    img_setup = isns._core._SetupImage(data, cbar=True)
+    f, ax, cax = img_setup.plot()
+    # changing the global state should reflect here
+    assert img_setup.despine == False
+    plt.close()
+
+    # change the global despine state
+    isns.set_image(despine=True)
+    # cbar needs to be True for this test
+    img_setup = isns._core._SetupImage(data, cbar=True)
+    _ = img_setup.plot()
+    # changing the global state should reflect here
+    assert img_setup.despine == True
+    plt.close()
+
+
+def test_local_despine_wrt_global_despine():
+    # Global despine=False
+    isns.set_image(despine=False)
+
+    img_setup = isns._core._SetupImage(data)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == True
+
+    # if global state is despine=False but local state is despine=True
+    # it should respect local state
+    img_setup = isns._core._SetupImage(data, despine=True)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == False
+
+    # Global despine=True
+    isns.set_image(despine=True)
+
+    img_setup = isns._core._SetupImage(data)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == False
+
+    # if global state is despine=True but local state is despine=False
+    # it should respect local state
+    img_setup = isns._core._SetupImage(data, despine=False)
+    f, ax, cax = img_setup.plot()
+    for spine in ["top", "bottom", "right", "left"]:
+        assert ax.spines[spine].get_visible() == True
 
 
 def test_data_plotted_is_same_as_input():

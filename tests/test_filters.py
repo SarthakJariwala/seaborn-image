@@ -1,6 +1,9 @@
 import pytest
 
 import matplotlib
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndi
@@ -11,8 +14,6 @@ from skimage.data import astronaut
 from skimage.filters import difference_of_gaussians, window
 
 import seaborn_image as isns
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
 
 
 data = np.random.random(2500).reshape((50, 50))

@@ -2,6 +2,9 @@ import pytest
 
 import matplotlib as mpl
 
+# without this, it suddenly started giving matplotlib backend issues locally
+mpl.use("AGG")
+
 import seaborn_image as isns
 
 
@@ -42,6 +45,17 @@ def test_set_image(cmap, origin, interpolation):
     assert mpl.rcParams["image.cmap"] == cmap
     assert mpl.rcParams["image.origin"] == origin
     assert mpl.rcParams["image.interpolation"] == interpolation
+
+
+@pytest.mark.parametrize("despine", [True, False])
+def test_image_despine(despine):
+    isns.set_image(despine=despine)
+
+    _d = not despine
+    assert mpl.rcParams["axes.spines.bottom"] == _d
+    assert mpl.rcParams["axes.spines.top"] == _d
+    assert mpl.rcParams["axes.spines.left"] == _d
+    assert mpl.rcParams["axes.spines.right"] == _d
 
 
 @pytest.mark.parametrize("color", ["white", "k", "C4"])

@@ -51,7 +51,7 @@ def filterplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
     **kwargs,
 ):
     """
@@ -124,7 +124,7 @@ def filterplot(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes as well as colorbar axes, by default True
+        Remove axes spines from image axes as well as colorbar axes, by default None
     **kwargs : optional
         Any additional parameters to be passed to the specific `filt` chosen.
         For instance, "sigma" or "size" or "mode" etc.
@@ -250,7 +250,7 @@ def fftplot(
     ax=None,
     cmap="viridis",
     showticks=False,
-    despine=False,
+    despine=None,
     **kwargs,
 ):
     """Perform and visualize fast fourier transform of input image.
@@ -276,7 +276,7 @@ def fftplot(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes, by default False
+        Remove axes spines from image axes, by default None
     **kwargs : optional
         Any additional parameters to be passed to `skimage.filters.window`.
         For more information see https://scikit-image.org/docs/stable/api/skimage.filters.html#skimage.filters.window

@@ -98,7 +98,7 @@ def reset_defaults():
     mpl.rcParams.update(mpl.rcParamsDefault)
 
 
-def set_image(cmap="deep", origin="lower", interpolation="nearest"):
+def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=False):
     """
     Set deaults for plotting images
 
@@ -110,17 +110,33 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest"):
         Image origin - same as in `matplotlib.pyplot.imshow`, by default "lower".
     interpolation : str, optional
         Image interpolation - same as in `matplotlib.pyplot.imshow`, by default "nearest".
+    despine : bool, optional
+        Despine image and colorbar axes, by default False.
 
     Examples
     --------
         >>> import seaborn_image as isns
         >>> isns.set_image(cmap="inferno", interpolation="bicubic")
+        >>> isns.set_image(despine=False)
 
     """
 
     if cmap in _CMAP_QUAL.keys():  # doesn't work currently
         cmap_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
         register_cmap(name=cmap, cmap=cmap_mpl)
+
+    # change the axes spines
+    # "not" is required because of the despine parameter name
+    # if depine is True ---> you don't want the axes spines
+    # and therfore, axes.spines.bottom == False (or not True)
+    mpl.rcParams.update(
+        {
+            "axes.spines.bottom": not despine,
+            "axes.spines.left": not despine,
+            "axes.spines.right": not despine,
+            "axes.spines.top": not despine,
+        }
+    )
 
     plt.rc("image", cmap=cmap, origin=origin, interpolation=interpolation)
 

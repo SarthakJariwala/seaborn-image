@@ -36,7 +36,7 @@ def imgplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
@@ -105,7 +105,7 @@ def imgplot(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes as well as colorbar axes, by default True
+        Remove axes spines from image axes as well as colorbar axes, by default None
 
     Returns
     -------
@@ -207,12 +207,12 @@ def imgplot(
 
         >>> isns.imgplot(img, cbar_label="Height (nm)")
 
-    Avoid despining image and colorbar axes
+    Despine image and colorbar
 
     .. plot::
         :context: close-figs
 
-        >>> isns.imgplot(img, despine=False)
+        >>> isns.imgplot(img, despine=True)
 
     Change colorbar and colormap to log scale
 
@@ -265,8 +265,9 @@ def imgplot(
     if not isinstance(showticks, bool):
         raise TypeError
 
-    if not isinstance(despine, bool):
-        raise TypeError
+    if despine is not None:
+        if not isinstance(despine, bool):
+            raise TypeError
 
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
@@ -341,7 +342,7 @@ def imghist(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
     height=5,
     aspect=1.75,
 ):
@@ -415,7 +416,7 @@ def imghist(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes as well as colorbar axes, by default True
+        Remove axes spines from image axes as well as colorbar axes, by default None
     height : int or float, optional
         Size of the individual images, by default 5.
     aspect : int or float, optional

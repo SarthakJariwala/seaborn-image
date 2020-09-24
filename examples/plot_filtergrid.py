@@ -14,6 +14,5 @@ g = isns.FilterGrid(
     col="mode",
     sigma=[2, 3, 4],
     mode=["reflect", "nearest", "mirror"],
-    despine=False,
     cmap="magma",
 )
