@@ -92,7 +92,7 @@ class ImageGrid:
         Show image x-y axis ticks. Defaults to False.
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
-        Defaults to True.
+        Defaults to None.
 
     Returns
     -------
@@ -485,7 +485,7 @@ def rgbplot(
         Show image x-y axis ticks. Defaults to False.
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
-        Defaults to True.
+        Defaults to None.
 
     Returns
     -------
@@ -645,7 +645,7 @@ class FilterGrid(object):
         Show image x-y axis ticks. Defaults to False.
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
-        Defaults to True.
+        Defaults to None.
     **kwargs : Additional parameters as keyword arguments to be passed to the underlying filter specified.
 
      Returns

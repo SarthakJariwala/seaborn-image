@@ -124,7 +124,7 @@ def filterplot(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes as well as colorbar axes, by default True
+        Remove axes spines from image axes as well as colorbar axes, by default None
     **kwargs : optional
         Any additional parameters to be passed to the specific `filt` chosen.
         For instance, "sigma" or "size" or "mode" etc.
@@ -276,7 +276,7 @@ def fftplot(
     showticks : bool, optional
         Show image x-y axis ticks, by default False
     despine : bool, optional
-        Remove axes spines from image axes, by default False
+        Remove axes spines from image axes, by default None
     **kwargs : optional
         Any additional parameters to be passed to `skimage.filters.window`.
         For more information see https://scikit-image.org/docs/stable/api/skimage.filters.html#skimage.filters.window
