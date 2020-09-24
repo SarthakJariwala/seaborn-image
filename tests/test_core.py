@@ -78,6 +78,26 @@ def test_log_scale_cbar():
     plt.close()
 
 
+def test_cbar_despine():
+    # change the global despine state
+    isns.set_image(despine=False)
+    # cbar needs to be True for this test
+    img_setup = isns._core._SetupImage(data, cbar=True)
+    f, ax, cax = img_setup.plot()
+    # changing the global state should reflect here
+    assert img_setup.despine == False
+    plt.close()
+
+    # change the global despine state
+    isns.set_image(despine=True)
+    # cbar needs to be True for this test
+    img_setup = isns._core._SetupImage(data, cbar=True)
+    _ = img_setup.plot()
+    # changing the global state should reflect here
+    assert img_setup.despine == True
+    plt.close()
+
+
 def test_data_plotted_is_same_as_input():
     img_setup = isns._core._SetupImage(data)
     f, ax, cax = img_setup.plot()

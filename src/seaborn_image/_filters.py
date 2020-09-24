@@ -51,7 +51,7 @@ def filterplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
     **kwargs,
 ):
     """
@@ -250,7 +250,7 @@ def fftplot(
     ax=None,
     cmap="viridis",
     showticks=False,
-    despine=False,
+    despine=None,
     **kwargs,
 ):
     """Perform and visualize fast fourier transform of input image.

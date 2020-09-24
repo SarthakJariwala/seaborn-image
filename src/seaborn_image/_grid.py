@@ -217,7 +217,7 @@ class ImageGrid:
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
-        despine=True,
+        despine=None,
     ):
         if data is None:
             raise ValueError("image data can not be None")
@@ -422,7 +422,7 @@ def rgbplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
 ):
     """Split and plot the red, green and blue channels of an
     RGB image.
@@ -747,7 +747,7 @@ class FilterGrid(object):
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
-        despine=True,
+        despine=None,
         **kwargs,
     ):
 

@@ -36,7 +36,7 @@ def imgplot(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
@@ -265,8 +265,9 @@ def imgplot(
     if not isinstance(showticks, bool):
         raise TypeError
 
-    if not isinstance(despine, bool):
-        raise TypeError
+    if despine is not None:
+        if not isinstance(despine, bool):
+            raise TypeError
 
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
@@ -341,7 +342,7 @@ def imghist(
     cbar_label=None,
     cbar_ticks=None,
     showticks=False,
-    despine=True,
+    despine=None,
     height=5,
     aspect=1.75,
 ):

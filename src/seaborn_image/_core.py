@@ -1,3 +1,4 @@
+import matplotlib as mpl
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
@@ -39,7 +40,7 @@ class _SetupImage(object):
         cbar_label=None,
         cbar_ticks=None,
         showticks=False,
-        despine=True,
+        despine=None,
     ):
 
         self.data = data
@@ -173,8 +174,22 @@ class _SetupImage(object):
             else:
                 cb = f.colorbar(_map, cax=cax, orientation=self.orientation)
 
-            if self.despine:
+            if self.despine is None:
+                # if depsine is None, use global settings
+                # if all image axes spines are despined, cbar should also be despined
+                if (
+                    mpl.rcParams["axes.spines.top"] == False
+                    and mpl.rcParams["axes.spines.bottom"] == False
+                    and mpl.rcParams["axes.spines.left"] == False
+                    and mpl.rcParams["axes.spines.right"] == False
+                ):
+                    self.despine = True
+                    print("Here")
+
+            if self.despine is True:
                 cb.outline.set_visible(False)  # remove colorbar outline border
+            else:
+                self.despine = False
 
             # display only 3 tick marks on colorbar
             if self.orientation in ["vertical"]:
