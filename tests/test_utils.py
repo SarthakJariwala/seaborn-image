@@ -1,12 +1,14 @@
 import pytest
 
 import matplotlib
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 import seaborn_image as isns
 
-matplotlib.use("AGG")  # use non-interactive backend for tests
 
 _all = ["top", "bottom", "right", "left"]
 

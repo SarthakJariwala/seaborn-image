@@ -1,6 +1,9 @@
 import pytest
 
 import matplotlib
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
@@ -8,8 +11,6 @@ from matplotlib.figure import Figure
 from skimage.data import astronaut
 
 import seaborn_image as isns
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
 
 
 class TestImageGrid:

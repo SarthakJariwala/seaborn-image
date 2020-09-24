@@ -2,6 +2,9 @@ import pytest
 
 import matplotlib as mpl
 
+# without this, it suddenly started giving matplotlib backend issues locally
+mpl.use("AGG")
+
 import seaborn_image as isns
 
 
