@@ -1,6 +1,6 @@
 """
-FilterGrid
-==========
+Interplay between filter parameters using FilterGrid
+====================================================
 """
 
 import seaborn_image as isns
