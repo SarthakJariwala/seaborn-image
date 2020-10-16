@@ -36,8 +36,7 @@ Seaborn-image provides a high-level API to **draw attractive and informative ima
 It is heavily inspired by `**seaborn** <https://seaborn.pydata.org/>`_, a high-level visualization library
 for drawing attractive statistical graphics in Python.
 
-To get started with ``seaborn_image``, check out the :doc:`quickstart page <quickstart>`.
-To view example images, check out the :doc:`gallery page <auto_examples/index>`.
+To view example images, check out the :doc:`gallery page <auto_examples/index>` and :doc:`reference <reference>`.
 For specific how-to questions, refer to the :doc:`how-to page <how_to>`.
 
 Check out the source code on `github <https://github.com/SarthakJariwala/seaborn-image>`_.
