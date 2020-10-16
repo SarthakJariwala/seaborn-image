@@ -28,14 +28,15 @@ seaborn-image: image data visualization
 Description
 ===========
 
-Seaborn-image is a *seaborn like* Python **image** visualization and processing library
-based on matplotlib, scikit-image and scipy.
+Seaborn-image is a Python **image** visualization library based on matplotlib, scikit-image and scipy.
 
-The aim of seaborn-image is to provide a high-level API to **process and plot attractive images quickly**
+Seaborn-image provides a high-level API to **draw attractive and informative images quickly**
 **and effectively**.
 
-To get started with ``seaborn_image``, check out the :doc:`quickstart page <quickstart>`.
-To view example images, check out the :doc:`gallery page <auto_examples/index>`.
+It is heavily inspired by `**seaborn** <https://seaborn.pydata.org/>`_, a high-level visualization library
+for drawing attractive statistical graphics in Python.
+
+To view example images, check out the :doc:`gallery page <auto_examples/index>` and :doc:`reference <reference>`.
 For specific how-to questions, refer to the :doc:`how-to page <how_to>`.
 
 Check out the source code on `github <https://github.com/SarthakJariwala/seaborn-image>`_.
@@ -52,9 +53,6 @@ Installation
 Usage
 =====
 
-Check out the :doc:`quickstart page <quickstart>` for a walk through
-of the sample features below.
-
 Simple usage
 ************
 
@@ -62,26 +60,35 @@ Simple usage
 
     import seaborn_image as isns
 
-    """Set context like seaborn"""
+    """Global settings for images"""
     isns.set_context("notebook")
+    isns.set_image(cmap="deep", despine=True)
+    isns.set_scalebar(color="red")
 
-    """Plot publishable quality image in one line"""
+    """Plot image"""
     isns.imgplot(data)
 
-    """Add a scalebar"""
+    """Image with a scalebar"""
     isns.imgplot(data, dx=1, units="um")
 
-Apply image filters (from scipy and skimage) and plot
-*****************************************************
+    """Get basic image stats"""
+    isns.imgplot(data, describe=True)
+
+Visualize image distribution
+****************************
+
+..code-block:: python
+
+    isns.imghist(data)
+
+Filter image and plot
+*********************
 
 .. code-block:: python
 
-    import seaborn_image as isns
+    isns.filterplot(data, filt="gaussian", sigma=2.5)
 
-    isns.filterplot(data, filter="gaussian")
-
-
-For more information on getting strated, refer to the :doc:`quickstart guide <quickstart>`.
+For more information check out examples in :doc:`api <reference>` and :doc:`gallery <auto_examples/index>`.
 
 
 Contents
@@ -90,13 +97,12 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   Quickstart <quickstart>
-   How-to? <how_to>
    Gallery <auto_examples/index>
+   Reference <reference>
+   How-to? <how_to>
    License <license>
    Authors <authors>
    Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>
-   Reference <reference>
 
 
 Indices and tables

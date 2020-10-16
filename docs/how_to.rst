@@ -49,10 +49,10 @@ Modify scale bar properties
     import seaborn_image as isns
 
     # change scalebar color
-    isns.set_scalebar(rc={"color": "red"})
+    isns.set_scalebar(color="red")
 
     # change scalebar position
-    isns.set_scalebar(rc={"location": "upper right"})
+    isns.set_scalebar(location="upper right")
 
 
 Add label to colorbar
@@ -75,8 +75,8 @@ Use image filters
     isns.filterplot(data, filter="sobel")
 
 
-Change image plot properties
-----------------------------
+Globally change image plot properties
+-------------------------------------
 
 .. code-block:: python
 

@@ -86,11 +86,10 @@ html_theme_options = {
     "navbar_sidebarrel": False,
     "bootstrap_version": "3",
     "navbar_links": [
-        ("Quickstart", "quickstart"),
-        ("How-to?", "how_to"),
         ("Gallery", "auto_examples/index"),
-        ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
         ("Reference", "reference"),
+        ("How-to?", "how_to"),        
+        ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
     ],
 }
 

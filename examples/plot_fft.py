@@ -7,4 +7,4 @@ import seaborn_image as isns
 
 img = isns.load_image("polymer")
 
-_ = isns.fftplot(img, cmap="viridis")
+ax = isns.fftplot(img, window_type="hann", cmap="viridis")
