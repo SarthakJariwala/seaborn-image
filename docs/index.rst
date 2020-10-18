@@ -29,11 +29,10 @@ Description
 ===========
 
 Seaborn-image is a Python **image** visualization library based on matplotlib, scikit-image and scipy.
-
 Seaborn-image provides a high-level API to **draw attractive and informative images quickly**
 **and effectively**.
 
-It is heavily inspired by `**seaborn** <https://seaborn.pydata.org/>`_, a high-level visualization library
+It is heavily inspired by `seaborn <https://seaborn.pydata.org/>`_, a high-level visualization library
 for drawing attractive statistical graphics in Python.
 
 To view example images, check out the :doc:`gallery page <auto_examples/index>` and :doc:`reference <reference>`.
@@ -77,7 +76,7 @@ Simple usage
 Visualize image distribution
 ****************************
 
-..code-block:: python
+.. code-block:: python
 
     isns.imghist(data)
 
@@ -99,9 +98,11 @@ Contents
 
    Gallery <auto_examples/index>
    Reference <reference>
+   Tutorial <tutorial>
    How-to? <how_to>
    License <license>
    Authors <authors>
+   GitHub <https://github.com/SarthakJariwala/seaborn-image>
    Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>
 
 

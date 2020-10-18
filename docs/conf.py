@@ -10,6 +10,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_gallery.gen_gallery",
     "matplotlib.sphinxext.plot_directive",
+     "nbsphinx",
 ]
 html_static_path = ["_static"]
 
@@ -31,6 +32,15 @@ sphinx_gallery_conf = {
     "thumbnail_size": (500, 500),
 }
 
+# nbsphinx settings
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc={'figure.dpi': 96}",
+]
+
+nbsphinx_prompt_width = 0
+nbsphinx_allow_errors = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -45,7 +55,7 @@ master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build"]
+exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -88,7 +98,9 @@ html_theme_options = {
     "navbar_links": [
         ("Gallery", "auto_examples/index"),
         ("Reference", "reference"),
-        ("How-to?", "how_to"),        
+        ("Tutorial", "tutorial"),
+        ("How-to?", "how_to"),
+        ("GitHub", "https://github.com/SarthakJariwala/seaborn-image", True),        
         ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
     ],
 }
