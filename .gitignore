@@ -45,6 +45,7 @@ docs/api/*
 docs/_rst/*
 docs/_build/*
 docs/auto_examples/*
+docs/Tutorial/.ipynb_checkpoints/*
 cover/*
 MANIFEST
 

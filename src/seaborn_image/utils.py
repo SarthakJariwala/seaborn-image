@@ -195,9 +195,14 @@ def load_image(name):
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
+            try:
+                # if building docstrings
+                path = "../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
+            except OSError:  # pragma: no cover
+                # if building tuorial
+                path = "../../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
 
         img = img * 1e9  # convert height data from m to nm
 
@@ -206,9 +211,14 @@ def load_image(name):
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
+            try:
+                # if building docstrings
+                path = "../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
+            except OSError:  # pragma : no cover
+                # if building tutorial
+                path = "../../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
 
         img = img * 1e9  # convert height data from m to nm
         img[0, 0] = 80  # assign an outlier value to a random pixel
@@ -218,9 +228,14 @@ def load_image(name):
             path = "data/Perovskite.txt"
             img = np.loadtxt(path)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/Perovskite.txt"
-            img = np.loadtxt(path)
+            try:
+                # if building docstrings
+                path = "../data/Perovskite.txt"
+                img = np.loadtxt(path)
+            except OSError:  # pragma: no cover
+                # if building tutorial
+                path = "../../data/Perovskite.txt"
+                img = np.loadtxt(path)
 
     else:
         raise ValueError(f"No '{name}' image dataset")

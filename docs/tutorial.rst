@@ -4,4 +4,6 @@ Tutorial
 .. toctree::
    :maxdepth: 2
 
-   Descriptive Image Visualization <Tutorial/Descriptive Image Visualization.ipynb>
+   Image Visualization <Tutorial/Image Visualization.ipynb>
+   RGB Images <Tutorial/RGB Images.ipynb>
+   Applying Image Filters <Tutorial/Image Filters.ipynb>
