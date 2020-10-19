@@ -2,7 +2,7 @@ Tutorial
 ========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    Image Visualization <Tutorial/Image Visualization.ipynb>
    RGB Images <Tutorial/RGB Images.ipynb>
