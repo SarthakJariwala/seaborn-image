@@ -10,7 +10,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_gallery.gen_gallery",
     "matplotlib.sphinxext.plot_directive",
-     "nbsphinx",
+    "nbsphinx",
 ]
 html_static_path = ["_static"]
 
@@ -100,7 +100,7 @@ html_theme_options = {
         ("Reference", "reference"),
         ("Tutorial", "tutorial"),
         ("How-to?", "how_to"),
-        ("GitHub", "https://github.com/SarthakJariwala/seaborn-image", True),        
+        ("GitHub", "https://github.com/SarthakJariwala/seaborn-image", True),
         ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
     ],
 }

@@ -178,10 +178,10 @@ class _SetupImage(object):
                 # if depsine is None, use global settings
                 # if all image axes spines are despined, cbar should also be despined
                 if (
-                    mpl.rcParams["axes.spines.top"] == False
-                    and mpl.rcParams["axes.spines.bottom"] == False
-                    and mpl.rcParams["axes.spines.left"] == False
-                    and mpl.rcParams["axes.spines.right"] == False
+                    mpl.rcParams["axes.spines.top"] is False
+                    and mpl.rcParams["axes.spines.bottom"] is False
+                    and mpl.rcParams["axes.spines.left"] is False
+                    and mpl.rcParams["axes.spines.right"] is False
                 ):
                     self.despine = True
                     print("Here")
@@ -236,7 +236,5 @@ class _SetupImage(object):
             # TODO implement a respine function (?)
             for spine in ["top", "bottom", "right", "left"]:
                 ax.spines[spine].set_visible(True)
-
-        f.tight_layout()
 
         return f, ax, cax
