@@ -7,7 +7,7 @@ python-versions = "*"
 version = "0.7.12"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
 optional = false
@@ -119,7 +119,7 @@ python-versions = "*"
 version = "2020.6.20"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = false
@@ -340,7 +340,7 @@ version = "3.1.7"
 gitdb = ">=4.0.1,<5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -676,7 +676,7 @@ python-versions = ">=3.6"
 version = "1.19.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -742,6 +742,19 @@ version = ">=0.12"
 
 [package.extras]
 dev = ["pre-commit", "tox"]
+
+[[package]]
+category = "main"
+description = "Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks."
+name = "pooch"
+optional = true
+python-versions = ">=3.5"
+version = "1.2.0"
+
+[package.dependencies]
+appdirs = "*"
+packaging = "*"
+requests = "*"
 
 [[package]]
 category = "dev"
@@ -907,7 +920,7 @@ python-versions = "*"
 version = "2020.7.14"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -1211,7 +1224,7 @@ python-versions = "*"
 version = "3.7.4.3"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -1263,7 +1276,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "2cf5056ad83968f0a9b631113882ec008644720660cf31c2c781b1e484670af4"
+content-hash = "867f3445ef2466189b41cf0ab28da029564d08555bad9008826c2da67ae50a51"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -1656,6 +1669,10 @@ pillow = [
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
+]
+pooch = [
+    {file = "pooch-1.2.0-py3-none-any.whl", hash = "sha256:aee50e16ca143b581bf598890737a5838b1818bc30a5863f0b67ec405bd9081c"},
+    {file = "pooch-1.2.0.tar.gz", hash = "sha256:6a86613604cb0e1f27ee16c02a005a9494e57ba9d33dc3463739c44ad5be4cba"},
 ]
 py = [
     {file = "py-1.9.0-py2.py3-none-any.whl", hash = "sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2"},
