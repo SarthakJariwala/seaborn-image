@@ -41,6 +41,7 @@ nbsphinx_execute_arguments = [
 nbsphinx_prompt_width = 0
 nbsphinx_allow_errors = True
 nbsphinx_execute = "always"
+nbsphinx_kernel_name = 'python3'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
