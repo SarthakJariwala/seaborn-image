@@ -9,7 +9,7 @@ try:
     import pooch
 
     HAS_POOCH = True
-except ImportError:
+except ImportError:  # pragma: no cover
     HAS_POOCH = False
 
 __all__ = ["scientific_ticks", "despine", "load_image"]
