@@ -245,7 +245,7 @@ def load_image(name):
                 path = "../../data/Perovskite.txt"
                 img = np.loadtxt(path)
 
-    elif name == "cells":  # TODO add tests for this
+    elif name == "cells":
         if HAS_POOCH:
             fname = pooch.retrieve(
                 url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
@@ -253,12 +253,11 @@ def load_image(name):
             )
             img = io.imread(fname).T
 
-        elif HAS_POOCH is False:
+        elif HAS_POOCH is False:  # pragma: no cover
             raise ModuleNotFoundError(
                 "The requested file is part of the scikit-image distribution, "
                 "but requires the installation of an optional dependency, pooch. "
-                "To install pooch, use your preferred python package manager. "
-                "`pip install pooch`"
+                "Run - `pip install pooch`"
             )
 
     else:
