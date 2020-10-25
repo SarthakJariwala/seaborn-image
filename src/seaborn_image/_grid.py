@@ -298,6 +298,7 @@ class ImageGrid:
 
         self.map_img_to_grid()
         self._cleanup_extra_axes()
+        self._finalize_grid()
 
         return
 
@@ -402,6 +403,10 @@ class ImageGrid:
                 rem_ax[i].set_xlabel("")
 
                 despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
+
+    def _finalize_grid(self):
+        """Finalize grid with tight layout."""
+        self.fig.tight_layout()
 
 
 def rgbplot(
