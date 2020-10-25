@@ -1,5 +1,5 @@
 """
-ImageGrid: Apply changes to individual images 
+ImageGrid: Apply changes to individual images
 =============================================
 """
 
@@ -11,7 +11,5 @@ pl = isns.load_image("fluorescence")
 pol_out = isns.load_image("polymer outliers")
 
 g = isns.ImageGrid(
-    [pol, pl, pol_out],
-    robust=[False, False, True],
-    perc=[None, None, (2, 99.9)]
+    [pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)]
 )

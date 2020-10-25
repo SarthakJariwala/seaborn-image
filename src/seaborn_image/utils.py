@@ -3,6 +3,14 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import ticker
+from skimage import io
+
+try:
+    import pooch
+
+    HAS_POOCH = True
+except ImportError:  # pragma: no cover
+    HAS_POOCH = False
 
 __all__ = ["scientific_ticks", "despine", "load_image"]
 
@@ -195,9 +203,14 @@ def load_image(name):
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
+            try:
+                # if building docstrings
+                path = "../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
+            except OSError:  # pragma: no cover
+                # if building tuorial
+                path = "../../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
 
         img = img * 1e9  # convert height data from m to nm
 
@@ -206,9 +219,14 @@ def load_image(name):
             path = "data/PolymerImage.txt"
             img = np.loadtxt(path, skiprows=1)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
+            try:
+                # if building docstrings
+                path = "../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
+            except OSError:  # pragma : no cover
+                # if building tutorial
+                path = "../../data/PolymerImage.txt"
+                img = np.loadtxt(path, skiprows=1)
 
         img = img * 1e9  # convert height data from m to nm
         img[0, 0] = 80  # assign an outlier value to a random pixel
@@ -218,9 +236,29 @@ def load_image(name):
             path = "data/Perovskite.txt"
             img = np.loadtxt(path)
         except OSError:  # pragma: no cover
-            # if building docstrings
-            path = "../data/Perovskite.txt"
-            img = np.loadtxt(path)
+            try:
+                # if building docstrings
+                path = "../data/Perovskite.txt"
+                img = np.loadtxt(path)
+            except OSError:  # pragma: no cover
+                # if building tutorial
+                path = "../../data/Perovskite.txt"
+                img = np.loadtxt(path)
+
+    elif name == "cells":
+        if HAS_POOCH:
+            fname = pooch.retrieve(
+                url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
+                known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
+            )
+            img = io.imread(fname).T
+
+        elif HAS_POOCH is False:  # pragma: no cover
+            raise ModuleNotFoundError(
+                "The requested file is part of the scikit-image distribution, "
+                "but requires the installation of an optional dependency, pooch. "
+                "Run - `pip install pooch`"
+            )
 
     else:
         raise ValueError(f"No '{name}' image dataset")
