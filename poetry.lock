@@ -747,7 +747,7 @@ dev = ["pre-commit", "tox"]
 category = "main"
 description = "Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks."
 name = "pooch"
-optional = true
+optional = false
 python-versions = ">=3.5"
 version = "1.2.0"
 
@@ -1276,7 +1276,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "867f3445ef2466189b41cf0ab28da029564d08555bad9008826c2da67ae50a51"
+content-hash = "9c589019b7b277121158fa48af47200a1e3e8f30624d53039d508cec555dc4ac"
 python-versions = "^3.6"
 
 [metadata.files]

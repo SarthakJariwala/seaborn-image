@@ -2,15 +2,9 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pooch
 from matplotlib import ticker
 from skimage import io
-
-try:
-    import pooch
-
-    HAS_POOCH = True
-except ImportError:  # pragma: no cover
-    HAS_POOCH = False
 
 __all__ = ["scientific_ticks", "despine", "load_image"]
 
@@ -246,19 +240,11 @@ def load_image(name):
                 img = np.loadtxt(path)
 
     elif name == "cells":
-        if HAS_POOCH:
-            fname = pooch.retrieve(
-                url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
-                known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
-            )
-            img = io.imread(fname).T
-
-        elif HAS_POOCH is False:  # pragma: no cover
-            raise ModuleNotFoundError(
-                "The requested file is part of the scikit-image distribution, "
-                "but requires the installation of an optional dependency, pooch. "
-                "Run - `pip install pooch`"
-            )
+        fname = pooch.retrieve(
+            url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
+            known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
+        )
+        img = io.imread(fname).T
 
     else:
         raise ValueError(f"No '{name}' image dataset")
