@@ -199,6 +199,10 @@ class ImageGrid:
         data,
         *,
         slices=None,
+        axis=-1,
+        step=1,
+        start=None,
+        stop=None,
         col_wrap=None,
         height=3,
         aspect=1,
@@ -233,7 +237,14 @@ class ImageGrid:
 
         elif data.ndim == 3:
             if slices is None:
-                slices = np.arange(data.shape[-1])
+                if axis not in [0, 1, 2, -1]:
+                    raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, or -1")
+                # slice the image array along specified axis;
+                # if start, stop and step are not provided, default is step=1
+                data = data[
+                    (slice(None),) * (axis % data.ndim) + (slice(start, stop, step),)
+                ]
+                slices = np.arange(data.shape[axis])
 
             # if a single slice is provided and
             # it is not an interable
@@ -244,7 +255,7 @@ class ImageGrid:
 
         else:
             # if data dim is not >2,
-            # TODO issue user warning to use imgplot() instead
+            # TODO issue user warning to use imgplot() instead?
             _nimages = 1
 
         # if no column wrap specified
@@ -271,6 +282,10 @@ class ImageGrid:
         self.fig = fig
         self.axes = axes
         self.slices = slices
+        self.axis = axis
+        self.step = step
+        self.start = start
+        self.stop = stop
         self.col_wrap = col_wrap
         self.height = height
         self.aspect = aspect
@@ -355,7 +370,12 @@ class ImageGrid:
                     _cbar_label = self.cbar_label[i]
 
             elif self.data.ndim == 3:
-                _d = self.data[:, :, self.slices[i]]
+                if self.axis == 0:
+                    _d = self.data[self.slices[i], :, :]
+                elif self.axis == 1:
+                    _d = self.data[:, self.slices[i], :]
+                elif self.axis == 2 or self.axis == -1:
+                    _d = self.data[:, :, self.slices[i]]
 
             else:
                 # if a single 2D image is supplied
