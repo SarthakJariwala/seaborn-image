@@ -155,6 +155,17 @@ class TestImageGrid:
         )  # should be the second image
         plt.close()
 
+    def test_axis_w_start_stop(self):
+        g = isns.ImageGrid(self.img_3d, axis=-1, start=0, stop=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[:, :, 0]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_3d[:, :, 1]
+        )  # should be the second image
+        plt.close()
+
     def test_cbar_list(self):
 
         isns.ImageGrid(self.img_list, cmap=["acton", "inferno", "ice"])
