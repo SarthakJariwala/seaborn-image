@@ -198,6 +198,15 @@ def imgplot(
 
         >>> isns.imgplot(img_out, robust=True, perc=(0.5,99.5))
 
+    Map a function to transform input image
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> cells = isns.load_image("cells")[:, :, 32]
+        >>> isns.imgplot(cells, map_func=adjust_gamma, gamma=0.5)
+
     Convert RGB image to grayscale
 
     .. plot::
@@ -509,6 +518,15 @@ def imghist(
         :context: close-figs
 
         >>> isns.imghist(img, dx=15, units="nm")
+
+    Map a function to transform input image
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> cells = isns.load_image("cells")[:, :, 32]
+        >>> isns.imghist(cells, map_func=adjust_gamma, gamma=0.5)
 
     Change colormaps
 
