@@ -89,31 +89,30 @@ class TestImageGrid:
         g0 = isns.ImageGrid(self.img_3d, map_func=gaussian)
         ax = g0.axes.flat
         np.testing.assert_array_equal(
-            ax[0].images[0].get_array().data, gaussian(self.img_3d[:, :, 0])
+            ax[0].images[0].get_array().data, gaussian(self.img_3d)[:, :, 0]
         )
         np.testing.assert_array_equal(
-            ax[1].images[0].get_array().data, gaussian(self.img_3d[:, :, 1])
+            ax[1].images[0].get_array().data, gaussian(self.img_3d)[:, :, 1]
         )
         plt.close()
 
-        g1 = isns.ImageGrid(self.img_list, map_func=gaussian)
+        pol = isns.load_image("polymer")
+        pl = isns.load_image("fluorescence")
+        new_img_list = [pol, pl]
+        g1 = isns.ImageGrid(new_img_list, map_func=gaussian)
         ax = g1.axes.flat
-        np.testing.assert_array_equal(
-            ax[0].images[0].get_array().data, gaussian(self.img_list[0])
-        )
-        np.testing.assert_array_equal(
-            ax[1].images[0].get_array().data, gaussian(self.img_list[1])
-        )
+        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pl))
         plt.close()
 
         # test kwargs
         g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
         ax = g2.axes.flat
         np.testing.assert_array_equal(
-            ax[0].images[0].get_array().data, gaussian(self.img_3d[:, :, 0], sigma=1.5)
+            ax[0].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 0]
         )
         np.testing.assert_array_equal(
-            ax[1].images[0].get_array().data, gaussian(self.img_3d[:, :, 1], sigma=1.5)
+            ax[1].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 1]
         )
         plt.close()
 
