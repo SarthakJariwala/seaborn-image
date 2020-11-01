@@ -1,9 +1,6 @@
 import pytest
 
 import matplotlib
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
@@ -13,6 +10,7 @@ from skimage.data import astronaut
 
 import seaborn_image as isns
 
+matplotlib.use("AGG")  # use non-interactive backend for tests
 
 data = np.random.random(2500).reshape((50, 50))
 
@@ -150,6 +148,11 @@ def test_imghist_bins_value(bins):
 def test_imghist_orientation_value():
     with pytest.raises(ValueError):
         isns.imghist(data, orientation="right")
+
+
+def test_imghist_3D_data():
+    with pytest.raises(ValueError):
+        isns.imghist(astronaut())
 
 
 def test_imghist_return():

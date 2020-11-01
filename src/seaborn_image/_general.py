@@ -29,7 +29,7 @@ def imgplot(
     dx=None,
     units=None,
     dimension=None,
-    describe=True,
+    describe=False,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -87,7 +87,7 @@ def imgplot(
             - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
-        Brief statistical description of the data, by default True
+        Brief statistical description of the data, by default False
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -149,6 +149,13 @@ def imgplot(
         >>> img = isns.load_image("polymer")
         >>> isns.imgplot(img)
 
+    Get image statistics
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, describe=True)
+
     Add a scalebar
 
     .. plot::
@@ -178,7 +185,14 @@ def imgplot(
     .. plot::
         :context: close-figs
 
-        >>> isns.imgplot(img_out, robust=True, perc=(2,99.99))
+        >>> isns.imgplot(img_out, robust=True)
+
+    Change percentile for robust parameter
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img_out, robust=True, perc=(0.5,99.5))
 
     Convert RGB image to grayscale
 
@@ -335,7 +349,7 @@ def imghist(
     dx=None,
     units=None,
     dimension=None,
-    describe=True,
+    describe=False,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -398,7 +412,7 @@ def imghist(
             - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
-        Brief statistical description of the data, by default True
+        Brief statistical description of the data, by default False
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -465,6 +479,13 @@ def imghist(
 
         >>> isns.imghist(img, height=4, aspect=1.5)
 
+    Get image statistics
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, describe=True)
+
     Add a scalebar
 
     .. plot::
@@ -479,6 +500,12 @@ def imghist(
 
         >>> isns.imghist(img, cmap="ice")
     """
+
+    # NOTE this may be supported in the future
+    if data.ndim > 2:
+        raise ValueError(
+            "Currently, `imghist` does not support images with more than 2 dimensions"
+        )
 
     if bins is None:
         bins = "auto"
