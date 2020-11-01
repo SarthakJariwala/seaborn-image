@@ -26,6 +26,8 @@ class ImageGrid:
     slices : int or list, optional
         If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
         the resulting images. If None, it will plot all the slices from the last axis, by default None
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     col_wrap : int, optional
         Number of columns to display. Defaults to None.
     height : int or float, optional
@@ -203,6 +205,7 @@ class ImageGrid:
         step=1,
         start=None,
         stop=None,
+        map_func=None,
         col_wrap=None,
         height=3,
         aspect=1,
@@ -222,6 +225,7 @@ class ImageGrid:
         cbar_ticks=None,
         showticks=False,
         despine=None,
+        **kwargs,
     ):
         if data is None:
             raise ValueError("image data can not be None")
@@ -257,6 +261,10 @@ class ImageGrid:
             # if data dim is not >2,
             # TODO issue user warning to use imgplot() instead?
             _nimages = 1
+
+        if map_func is not None:
+            if not callable(map_func):
+                raise TypeError("`map_func` must be a callable function object")
 
         # if no column wrap specified
         # set it to default 3
@@ -311,13 +319,17 @@ class ImageGrid:
         self._ncol = ncol
         self._nimages = _nimages
 
-        self.map_img_to_grid()
+        # map function to input data
+        if map_func is not None:
+            self._map_func_to_data(map_func, **kwargs)
+
+        self._map_img_to_grid()
         self._cleanup_extra_axes()
         self._finalize_grid()
 
         return
 
-    def map_img_to_grid(self):
+    def _map_img_to_grid(self):
         """Map image data cube to the image grid."""
 
         _cmap = self.cmap
@@ -408,6 +420,16 @@ class ImageGrid:
         # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
 
         return
+
+    def _map_func_to_data(self, map_func, **kwargs):
+        # if data is a list or tuple of 2D images
+        if isinstance(self.data, (list, tuple)):
+            for i in range(len(self.data)):
+                self.data[i] = map_func(self.data[i], **kwargs)
+
+        # if data is 3D
+        else:
+            self.data = map_func(self.data, **kwargs)
 
     def _cleanup_extra_axes(self):
         """Clean extra axes that are generated if col_wrap is specified."""

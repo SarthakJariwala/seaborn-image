@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from skimage.data import astronaut
+from skimage.filters import gaussian
 
 import seaborn_image as isns
 
@@ -78,6 +79,42 @@ class TestImageGrid:
 
         g2 = isns.ImageGrid(self.img_list)
         assert g2.axes.shape == (1, 3)
+        plt.close()
+
+    def test_map_func(self):
+
+        with pytest.raises(TypeError):
+            isns.ImageGrid(self.img_3d, map_func="gaussian")
+
+        g0 = isns.ImageGrid(self.img_3d, map_func=gaussian)
+        ax = g0.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(self.img_3d[:, :, 0])
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(self.img_3d[:, :, 1])
+        )
+        plt.close()
+
+        g1 = isns.ImageGrid(self.img_list, map_func=gaussian)
+        ax = g1.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(self.img_list[0])
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(self.img_list[1])
+        )
+        plt.close()
+
+        # test kwargs
+        g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
+        ax = g2.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(self.img_3d[:, :, 0], sigma=1.5)
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(self.img_3d[:, :, 1], sigma=1.5)
+        )
         plt.close()
 
     def test_col_wrap(self):
