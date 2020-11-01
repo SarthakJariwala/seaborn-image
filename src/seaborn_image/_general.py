@@ -30,6 +30,7 @@ def imgplot(
     units=None,
     dimension=None,
     describe=False,
+    map_func=None,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -37,6 +38,7 @@ def imgplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
+    **kwargs,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
@@ -88,6 +90,8 @@ def imgplot(
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
         Brief statistical description of the data, by default False
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -296,6 +300,15 @@ def imgplot(
     if norm is None and cbar_log is True:
         norm = "cbar_log"
 
+    if map_func is not None:
+        if not callable(map_func):
+            raise TypeError("`map_func` must be a callable function object")
+
+        map_func_kwargs = {}
+        map_func_kwargs.update(**kwargs)
+
+        data = map_func(data, **map_func_kwargs)
+
     img_plotter = _SetupImage(
         data=data,
         ax=ax,
@@ -350,6 +363,7 @@ def imghist(
     units=None,
     dimension=None,
     describe=False,
+    map_func=None,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -359,6 +373,7 @@ def imghist(
     despine=None,
     height=5,
     aspect=1.75,
+    **kwargs,
 ):
     """Plot data as a 2-D image with histogram showing the distribution of
     the data. Options to add scalebar, colorbar, title.
@@ -413,6 +428,8 @@ def imghist(
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
         Brief statistical description of the data, by default False
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -548,6 +565,7 @@ def imghist(
         units=units,
         dimension=dimension,
         describe=describe,
+        map_func=map_func,
         cbar=cbar,
         orientation=orientation,
         cbar_log=cbar_log,
@@ -555,6 +573,7 @@ def imghist(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
+        **kwargs,
     )
 
     # get colorbar axes

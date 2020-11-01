@@ -7,6 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from skimage.color import rgb2gray
 from skimage.data import astronaut
+from skimage.exposure import adjust_gamma
 
 import seaborn_image as isns
 
@@ -33,6 +34,11 @@ def test_describe_type():
 def test_robust_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, robust="True")
+
+
+def test_map_func_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, map_func="gaussian")
 
 
 @pytest.mark.parametrize("perc", [(2, 10, 88), (45, 40)])
@@ -117,6 +123,15 @@ def test_gray_cmap_interplay(data, gray, cmap):
 def test_imgplot_w_describe(describe):
     _ = isns.imgplot(data, describe=describe)
     plt.close("all")
+
+
+def test_map_func():
+    cells = isns.load_image("cells")[:, :, 32]
+    ax = isns.imgplot(cells, map_func=adjust_gamma, gamma=0.5)
+
+    np.testing.assert_array_equal(
+        ax.images[0].get_array().data, adjust_gamma(cells, gamma=0.5)
+    )
 
 
 def test_cbar_log_and_norm():
