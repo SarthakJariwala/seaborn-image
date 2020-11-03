@@ -36,7 +36,7 @@ safety = "^1.9.0"
 coverage = {extras = ["toml"], version = "^5.3"}
 pytest-cov = "^2.10.1"
 flake8-docstrings = "^1.5.0"
-sphinx = "^3.2.1"
+sphinx = "^3.3.0"
 codecov = "^2.1.9"
 sphinx_bootstrap_theme = "^0.7.1"
 xdoctest = "^0.15.0"
