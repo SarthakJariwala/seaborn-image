@@ -1,18 +1,17 @@
 import pytest
 
 import matplotlib
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from skimage.color import rgb2gray
 from skimage.data import astronaut
+from skimage.exposure import adjust_gamma
 
 import seaborn_image as isns
 
+matplotlib.use("AGG")  # use non-interactive backend for tests
 
 data = np.random.random(2500).reshape((50, 50))
 
@@ -35,6 +34,11 @@ def test_describe_type():
 def test_robust_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, robust="True")
+
+
+def test_map_func_type():
+    with pytest.raises(TypeError):
+        isns.imgplot(data, map_func="gaussian")
 
 
 @pytest.mark.parametrize("perc", [(2, 10, 88), (45, 40)])
@@ -121,6 +125,15 @@ def test_imgplot_w_describe(describe):
     plt.close("all")
 
 
+def test_map_func():
+    cells = isns.load_image("cells")[:, :, 32]
+    ax = isns.imgplot(cells, map_func=adjust_gamma, gamma=0.5)
+
+    np.testing.assert_array_equal(
+        ax.images[0].get_array().data, adjust_gamma(cells, gamma=0.5)
+    )
+
+
 def test_cbar_log_and_norm():
     # special case of log-norm
     _ = isns.imgplot(data, cbar_log=True)
@@ -150,6 +163,11 @@ def test_imghist_bins_value(bins):
 def test_imghist_orientation_value():
     with pytest.raises(ValueError):
         isns.imghist(data, orientation="right")
+
+
+def test_imghist_3D_data():
+    with pytest.raises(ValueError):
+        isns.imghist(astronaut())
 
 
 def test_imghist_return():

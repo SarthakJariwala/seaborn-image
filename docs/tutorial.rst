@@ -1,11 +1,55 @@
 Tutorial
 ========
 
+2-D Image Visualization
+-----------------------
+
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    Image Visualization <Tutorial/Image Visualization.ipynb>
-   RGB Images <Tutorial/RGB Images.ipynb>
+
+
+Visualize the Distribution within Image Data
+--------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
    Visualize Image Distribution <Tutorial/Image Distribution.ipynb>
-   Visualize 3-D images <Tutorial/Image Grid.ipynb>
+
+
+Working with RGB Images
+-----------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   RGB Images <Tutorial/RGB Images.ipynb>
+
+
+Working with Multi-dimensional Images
+-------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   Multi-dimensional images <Tutorial/Multi Dim Images.ipynb>
+
+
+Working with a Collection of Images
+-----------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   Collection of images <Tutorial/Image Collection.ipynb>
+
+
+Image Filters - Individual Filters and Exploring Relationships between Parameters
+---------------------------------------------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
    Applying Image Filters <Tutorial/Image Filters.ipynb>

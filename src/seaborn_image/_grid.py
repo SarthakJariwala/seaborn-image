@@ -14,9 +14,9 @@ __all__ = ["FilterGrid", "ImageGrid", "rgbplot"]
 
 class ImageGrid:
     """
-    Plot multiple images along a grid.
-    This class allows plotting of mulitple images
-    as well as all the different slices of a 3-D image.
+    Figure level : plot a collection of 2-D images or 3-D image data
+    along a grid. This class also supports slicing of the 3-D image
+    along different axis with variable step sizes and start/end indexes.
 
     Parameters
     ----------
@@ -26,6 +26,16 @@ class ImageGrid:
     slices : int or list, optional
         If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
         the resulting images. If None, it will plot all the slices from the last axis, by default None
+    axis : int, optional
+        Axis along which the data will be sliced, by default -1
+    step : int, optional
+        Step along the given axis, by default 1
+    start : int, optional
+        Starting index to select from the the data, by default None
+    stop : int, optional
+        Stopping index to select from the data, by default None
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     col_wrap : int, optional
         Number of columns to display. Defaults to None.
     height : int or float, optional
@@ -106,6 +116,10 @@ class ImageGrid:
         If `data` has more than 3 dimensions
     ValueError
         If `data` contains a 3D image within a list of images
+    ValueError
+        If `axis` is not 0, 1, 2 or -1
+    TypeError
+        If `map_func` is not a callable object
 
     Examples
     --------
@@ -154,29 +168,51 @@ class ImageGrid:
         :context: close-figs
 
         >>> pol_out = isns.load_image("polymer outliers")
-        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)])
+        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (0.5, 99.5)])
 
-    Plot 3-D images
-
-    .. plot::
-        :context: close-figs
-
-        >>> img_3d = np.random.random((50, 50, 4)).reshape((50, 50, 4))
-        >>> g = isns.ImageGrid(img_3d)
-
-    Control number of columns
+    Plot 3-D images; control number of columns
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.ImageGrid(img_3d, col_wrap=2)
+        >>> cells = isns.load_image("cells")
+        >>> g = isns.ImageGrid(cells, col_wrap=5, cbar=False)
 
     Plot specific slices of the 3-D data cube
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.ImageGrid(img_3d, slices=[0, 2, 3])
+        >>> g = isns.ImageGrid(cells, slices=[10, 20, 30], cbar=False)
+
+    Slice along different axis
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(cells, slices=[0, 4, 10, 32], axis=0, cbar=False)
+
+    Select indexes with a specifc step size
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(cells, step=3, cbar=False)
+
+    Map a function to the image data
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> g = isns.ImageGrid(
+                cells,
+                map_func=adjust_gamma,
+                gamma=0.5,
+                cbar=False,
+                height=1,
+                col_wrap=10
+                )
 
     Change colorbar orientation
 
@@ -199,6 +235,11 @@ class ImageGrid:
         data,
         *,
         slices=None,
+        axis=-1,
+        step=1,
+        start=None,
+        stop=None,
+        map_func=None,
         col_wrap=None,
         height=3,
         aspect=1,
@@ -218,6 +259,7 @@ class ImageGrid:
         cbar_ticks=None,
         showticks=False,
         despine=None,
+        **kwargs,
     ):
         if data is None:
             raise ValueError("image data can not be None")
@@ -233,7 +275,14 @@ class ImageGrid:
 
         elif data.ndim == 3:
             if slices is None:
-                slices = np.arange(data.shape[-1])
+                if axis not in [0, 1, 2, -1]:
+                    raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, or -1")
+                # slice the image array along specified axis;
+                # if start, stop and step are not provided, default is step=1
+                data = data[
+                    (slice(None),) * (axis % data.ndim) + (slice(start, stop, step),)
+                ]
+                slices = np.arange(data.shape[axis])
 
             # if a single slice is provided and
             # it is not an interable
@@ -244,8 +293,12 @@ class ImageGrid:
 
         else:
             # if data dim is not >2,
-            # TODO issue user warning to use imgplot() instead
+            # TODO issue user warning to use imgplot() instead?
             _nimages = 1
+
+        if map_func is not None:
+            if not callable(map_func):
+                raise TypeError("`map_func` must be a callable function object")
 
         # if no column wrap specified
         # set it to default 3
@@ -271,6 +324,10 @@ class ImageGrid:
         self.fig = fig
         self.axes = axes
         self.slices = slices
+        self.axis = axis
+        self.step = step
+        self.start = start
+        self.stop = stop
         self.col_wrap = col_wrap
         self.height = height
         self.aspect = aspect
@@ -296,13 +353,17 @@ class ImageGrid:
         self._ncol = ncol
         self._nimages = _nimages
 
-        self.map_img_to_grid()
+        # map function to input data
+        if map_func is not None:
+            self._map_func_to_data(map_func, **kwargs)
+
+        self._map_img_to_grid()
         self._cleanup_extra_axes()
         self._finalize_grid()
 
         return
 
-    def map_img_to_grid(self):
+    def _map_img_to_grid(self):
         """Map image data cube to the image grid."""
 
         _cmap = self.cmap
@@ -355,7 +416,12 @@ class ImageGrid:
                     _cbar_label = self.cbar_label[i]
 
             elif self.data.ndim == 3:
-                _d = self.data[:, :, self.slices[i]]
+                if self.axis == 0:
+                    _d = self.data[self.slices[i], :, :]
+                elif self.axis == 1:
+                    _d = self.data[:, self.slices[i], :]
+                elif self.axis == 2 or self.axis == -1:
+                    _d = self.data[:, :, self.slices[i]]
 
             else:
                 # if a single 2D image is supplied
@@ -388,6 +454,17 @@ class ImageGrid:
         # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
 
         return
+
+    def _map_func_to_data(self, map_func, **kwargs):
+        """Transform image data using the map_func callable object."""
+        # if data is a list or tuple of 2D images
+        if isinstance(self.data, (list, tuple)):
+            for i in range(len(self.data)):
+                self.data[i] = map_func(self.data[i], **kwargs)
+
+        # if data is 3D
+        else:
+            self.data = map_func(self.data, **kwargs)
 
     def _cleanup_extra_axes(self):
         """Clean extra axes that are generated if col_wrap is specified."""

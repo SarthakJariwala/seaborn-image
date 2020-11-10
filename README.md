@@ -48,10 +48,16 @@ Check out the docs [here](https://seaborn-image.readthedocs.io/).
 
 ## Installation
 
+For latest release
 ```bash
 pip install seaborn-image
 ```
 
+For latest commit
+```bash
+pip install git+https://github.com/SarthakJariwala/seaborn-image
+```
+
 ## Usage
 
-Check out the [quickstart guide](https://seaborn-image.readthedocs.io/en/latest/quickstart.html) and [examples](https://seaborn-image.readthedocs.io/auto_examples/index.html).
+Check out the [tutorial](https://seaborn-image.readthedocs.io/en/latest/tutorial.html) and [examples](https://seaborn-image.readthedocs.io/auto_examples/index.html).

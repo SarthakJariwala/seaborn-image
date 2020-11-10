@@ -1,21 +1,21 @@
 import pytest
 
 import matplotlib
-
-matplotlib.use("AGG")  # use non-interactive backend for tests
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from skimage.data import astronaut
+from skimage.filters import gaussian
 
 import seaborn_image as isns
+
+matplotlib.use("AGG")  # use non-interactive backend for tests
 
 
 class TestImageGrid:
 
-    img_3d = np.random.random(50 * 50 * 4).reshape((50, 50, 4))
+    img_3d = np.random.random(4 * 4 * 4).reshape((4, 4, 4))
 
     data = np.random.random(2500).reshape((50, 50))
     img_list = [data, data, data]
@@ -27,6 +27,10 @@ class TestImageGrid:
     def test_higher_dim_data(self):
         with pytest.raises(ValueError):
             isns.ImageGrid(np.random.random(50 * 50 * 4 * 3).reshape((50, 50, 4, 3)))
+
+    def test_incorrect_axis_for_slicing(self):
+        with pytest.raises(ValueError):
+            isns.ImageGrid(self.img_3d, axis=3)
 
     def test_self_data(self):
         g = isns.ImageGrid(self.data)
@@ -77,6 +81,41 @@ class TestImageGrid:
         assert g2.axes.shape == (1, 3)
         plt.close()
 
+    def test_map_func(self):
+
+        with pytest.raises(TypeError):
+            isns.ImageGrid(self.img_3d, map_func="gaussian")
+
+        g0 = isns.ImageGrid(self.img_3d, map_func=gaussian)
+        ax = g0.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(self.img_3d)[:, :, 0]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(self.img_3d)[:, :, 1]
+        )
+        plt.close()
+
+        pol = isns.load_image("polymer")
+        pl = isns.load_image("fluorescence")
+        new_img_list = [pol, pl]
+        g1 = isns.ImageGrid(new_img_list, map_func=gaussian)
+        ax = g1.axes.flat
+        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pl))
+        plt.close()
+
+        # test kwargs
+        g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
+        ax = g2.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 0]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 1]
+        )
+        plt.close()
+
     def test_col_wrap(self):
 
         g0 = isns.ImageGrid(self.data, col_wrap=3)
@@ -94,7 +133,7 @@ class TestImageGrid:
         plt.close()
 
     def test_slices(self):
-
+        # along axis=-1
         g = isns.ImageGrid(self.img_3d, slices=[0, 2])
         ax = g.axes.flat
         np.testing.assert_array_equal(
@@ -103,6 +142,64 @@ class TestImageGrid:
         np.testing.assert_array_equal(
             ax[1].images[0].get_array().data, self.img_3d[:, :, 2]
         )
+        plt.close()
+
+        # along axis=0
+        g = isns.ImageGrid(self.img_3d, slices=2, axis=0)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[2, :, :]
+        )
+        plt.close()
+
+        # along axis=1
+        g = isns.ImageGrid(self.img_3d, slices=2, axis=1)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[:, 2, :]
+        )
+        plt.close()
+
+    def test_axis_w_step(self):
+        g = isns.ImageGrid(self.img_3d, axis=0, step=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[0, :, :]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_3d[2, :, :]
+        )  # should be the second image
+        plt.close()
+
+        g = isns.ImageGrid(self.img_3d, axis=1, step=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[:, 0, :]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_3d[:, 2, :]
+        )  # should be the second image
+        plt.close()
+
+        g = isns.ImageGrid(self.img_3d, axis=-1, step=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[:, :, 0]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_3d[:, :, 2]
+        )  # should be the second image
+        plt.close()
+
+    def test_axis_w_start_stop(self):
+        g = isns.ImageGrid(self.img_3d, axis=-1, start=0, stop=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_3d[:, :, 0]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_3d[:, :, 1]
+        )  # should be the second image
         plt.close()
 
     def test_cbar_list(self):

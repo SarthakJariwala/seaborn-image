@@ -29,7 +29,8 @@ def imgplot(
     dx=None,
     units=None,
     dimension=None,
-    describe=True,
+    describe=False,
+    map_func=None,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -37,6 +38,7 @@ def imgplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
+    **kwargs,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
 
@@ -87,7 +89,9 @@ def imgplot(
             - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
-        Brief statistical description of the data, by default True
+        Brief statistical description of the data, by default False
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -149,6 +153,13 @@ def imgplot(
         >>> img = isns.load_image("polymer")
         >>> isns.imgplot(img)
 
+    Get image statistics
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img, describe=True)
+
     Add a scalebar
 
     .. plot::
@@ -178,7 +189,23 @@ def imgplot(
     .. plot::
         :context: close-figs
 
-        >>> isns.imgplot(img_out, robust=True, perc=(2,99.99))
+        >>> isns.imgplot(img_out, robust=True)
+
+    Change percentile for robust parameter
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imgplot(img_out, robust=True, perc=(0.5,99.5))
+
+    Map a function to transform input image
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> cells = isns.load_image("cells")[:, :, 32]
+        >>> isns.imgplot(cells, map_func=adjust_gamma, gamma=0.5)
 
     Convert RGB image to grayscale
 
@@ -282,6 +309,15 @@ def imgplot(
     if norm is None and cbar_log is True:
         norm = "cbar_log"
 
+    if map_func is not None:
+        if not callable(map_func):
+            raise TypeError("`map_func` must be a callable function object")
+
+        map_func_kwargs = {}
+        map_func_kwargs.update(**kwargs)
+
+        data = map_func(data, **map_func_kwargs)
+
     img_plotter = _SetupImage(
         data=data,
         ax=ax,
@@ -335,7 +371,8 @@ def imghist(
     dx=None,
     units=None,
     dimension=None,
-    describe=True,
+    describe=False,
+    map_func=None,
     cbar=True,
     orientation="v",
     cbar_log=False,
@@ -345,6 +382,7 @@ def imghist(
     despine=None,
     height=5,
     aspect=1.75,
+    **kwargs,
 ):
     """Plot data as a 2-D image with histogram showing the distribution of
     the data. Options to add scalebar, colorbar, title.
@@ -398,7 +436,9 @@ def imghist(
             - "angle" : scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
     describe : bool, optional
-        Brief statistical description of the data, by default True
+        Brief statistical description of the data, by default False
+    map_func : callable, optional
+        Transform input image data using this function. All function arguments must be passed as kwargs.
     cbar : bool, optional
         Specify if a colorbar is to be added to the image, by default True.
         If `data` is RGB image, cbar is False
@@ -465,12 +505,28 @@ def imghist(
 
         >>> isns.imghist(img, height=4, aspect=1.5)
 
+    Get image statistics
+
+    .. plot::
+        :context: close-figs
+
+        >>> isns.imghist(img, describe=True)
+
     Add a scalebar
 
     .. plot::
         :context: close-figs
 
         >>> isns.imghist(img, dx=15, units="nm")
+
+    Map a function to transform input image
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> cells = isns.load_image("cells")[:, :, 32]
+        >>> isns.imghist(cells, map_func=adjust_gamma, gamma=0.5)
 
     Change colormaps
 
@@ -479,6 +535,12 @@ def imghist(
 
         >>> isns.imghist(img, cmap="ice")
     """
+
+    # NOTE this may be supported in the future
+    if data.ndim > 2:
+        raise ValueError(
+            "Currently, `imghist` does not support images with more than 2 dimensions"
+        )
 
     if bins is None:
         bins = "auto"
@@ -521,6 +583,7 @@ def imghist(
         units=units,
         dimension=dimension,
         describe=describe,
+        map_func=map_func,
         cbar=cbar,
         orientation=orientation,
         cbar_log=cbar_log,
@@ -528,6 +591,7 @@ def imghist(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
+        **kwargs,
     )
 
     # get colorbar axes
