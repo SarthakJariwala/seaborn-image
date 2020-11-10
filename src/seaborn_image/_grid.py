@@ -14,9 +14,9 @@ __all__ = ["FilterGrid", "ImageGrid", "rgbplot"]
 
 class ImageGrid:
     """
-    Plot multiple images along a grid.
-    This class allows plotting of mulitple images
-    as well as all the different slices of a 3-D image.
+    Figure level : plot a collection of 2-D images or 3-D image data
+    along a grid. This class also supports slicing of the 3-D image
+    along different axis with variable step sizes and start/end indexes.
 
     Parameters
     ----------
@@ -26,6 +26,14 @@ class ImageGrid:
     slices : int or list, optional
         If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
         the resulting images. If None, it will plot all the slices from the last axis, by default None
+    axis : int, optional
+        Axis along which the data will be sliced, by default -1
+    step : int, optional
+        Step along the given axis, by default 1
+    start : int, optional
+        Starting index to select from the the data, by default None
+    stop : int, optional
+        Stopping index to select from the data, by default None
     map_func : callable, optional
         Transform input image data using this function. All function arguments must be passed as kwargs.
     col_wrap : int, optional
@@ -108,6 +116,10 @@ class ImageGrid:
         If `data` has more than 3 dimensions
     ValueError
         If `data` contains a 3D image within a list of images
+    ValueError
+        If `axis` is not 0, 1, 2 or -1
+    TypeError
+        If `map_func` is not a callable object
 
     Examples
     --------
@@ -158,27 +170,49 @@ class ImageGrid:
         >>> pol_out = isns.load_image("polymer outliers")
         >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)])
 
-    Plot 3-D images
+    Plot 3-D images; control number of columns
 
     .. plot::
         :context: close-figs
 
-        >>> img_3d = np.random.random((50, 50, 4)).reshape((50, 50, 4))
-        >>> g = isns.ImageGrid(img_3d)
-
-    Control number of columns
-
-    .. plot::
-        :context: close-figs
-
-        >>> g = isns.ImageGrid(img_3d, col_wrap=2)
+        >>> cells = isns.load_image("cells")
+        >>> g = isns.ImageGrid(cells, col_wrap=5, cbar=False)
 
     Plot specific slices of the 3-D data cube
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.ImageGrid(img_3d, slices=[0, 2, 3])
+        >>> g = isns.ImageGrid(cells, slices=[10, 20, 30], cbar=False)
+
+    Slice along different axis
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(cells, slices=[0, 4, 10, 32], axis=0, cbar=False)
+
+    Select indexes with a specifc step size
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.load_image(cells, step=3, cbar=False)
+
+    Map a function to the image data
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.exposure import adjust_gamma
+        >>> g = isns.ImageGrid(
+                cells,
+                map_func=adjust_gamma,
+                gamma=0.5,
+                cbar=False,
+                height=1,
+                col_wrap=10
+                )
 
     Change colorbar orientation
 
@@ -422,6 +456,7 @@ class ImageGrid:
         return
 
     def _map_func_to_data(self, map_func, **kwargs):
+        """Transform image data using the map_func callable object."""
         # if data is a list or tuple of 2D images
         if isinstance(self.data, (list, tuple)):
             for i in range(len(self.data)):
