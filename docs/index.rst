@@ -28,18 +28,18 @@ seaborn-image: image data visualization
 Description
 ===========
 
-Seaborn-image is a Python **image** visualization library based on matplotlib, scikit-image and scipy.
-Seaborn-image provides a high-level API to **draw attractive and informative images quickly**
+Seaborn-image is a Python **image** visualization library based on matplotlib
+and provides a high-level API to **draw attractive and informative images quickly**
 **and effectively**.
 
 It is heavily inspired by `seaborn <https://seaborn.pydata.org/>`_, a high-level visualization library
 for drawing attractive statistical graphics in Python.
 
 To view example images, check out the :doc:`gallery page <auto_examples/index>` and :doc:`reference <reference>`.
-For specific how-to questions, refer to the :doc:`how-to page <how_to>`.
+For specific how-to questions, refer to the :doc:`tutorial page <tutorial>`.
 
 Check out the source code on `github <https://github.com/SarthakJariwala/seaborn-image>`_.
-If you come across any bugs, please open an `issue <https://github.com/SarthakJariwala/seaborn-image/issues>`_.
+If you come across any bugs/issues, please open an `issue <https://github.com/SarthakJariwala/seaborn-image/issues>`_.
 
 
 Installation
@@ -49,11 +49,11 @@ Installation
 
     pip install seaborn-image
 
-Usage
-=====
+Quick Usage
+===========
 
-Simple usage
-************
+Visualize 2-D images
+********************
 
 .. code-block:: python
 
@@ -64,11 +64,10 @@ Simple usage
     isns.set_image(cmap="deep", despine=True)
     isns.set_scalebar(color="red")
 
-    """Plot image"""
-    isns.imgplot(data)
+    pol = isns.load_image("polymer")
 
     """Image with a scalebar"""
-    isns.imgplot(data, dx=1, units="um")
+    ax = isns.imgplot(pol, dx=0.01, units="um")
 
     """Get basic image stats"""
     isns.imgplot(data, describe=True)
@@ -78,16 +77,18 @@ Visualize image distribution
 
 .. code-block:: python
 
-    isns.imghist(data)
+    f = isns.imghist(pol)
 
-Filter image and plot
-*********************
+Multi-dimensional images
+************************
 
 .. code-block:: python
 
-    isns.filterplot(data, filt="gaussian", sigma=2.5)
+    cells = isns.load_image("cells")
 
-For more information check out examples in :doc:`api <reference>` and :doc:`gallery <auto_examples/index>`.
+    g = isns.ImageGrid(cells, slices=[10, 20, 30, 40])
+
+For more information check out examples in :doc:`tutorial <tutorial>`, :doc:`api <reference>` and :doc:`gallery <auto_examples/index>`.
 
 
 Contents
@@ -99,7 +100,6 @@ Contents
    Gallery <auto_examples/index>
    Reference <reference>
    Tutorial <tutorial>
-   How-to? <how_to>
    License <license>
    Authors <authors>
    GitHub <https://github.com/SarthakJariwala/seaborn-image>
