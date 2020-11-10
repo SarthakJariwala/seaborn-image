@@ -101,7 +101,6 @@ html_theme_options = {
         ("Gallery", "auto_examples/index"),
         ("Reference", "reference"),
         ("Tutorial", "tutorial"),
-        ("How-to?", "how_to"),
         ("GitHub", "https://github.com/SarthakJariwala/seaborn-image", True),
         ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
     ],

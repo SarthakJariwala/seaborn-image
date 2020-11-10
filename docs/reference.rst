@@ -1,68 +1,54 @@
 Reference
 =========
 
-.. contents::
-    :local:
-    :backlinks: none
-
-
 imgplot
 -------
 
-.. autofunction:: seaborn_image.imgplot
-
+Axes level function to visualize 2-D images. <api/imgplot>
 
 imghist
 -------
 
-.. autofunction:: seaborn_image.imghist
+Figure level function to visualize image data distribution along with the image. <api/imghist>
 
 
 ImageGrid
 ----------
 
-.. autoclass:: seaborn_image.ImageGrid
-   :members:
+Figure level function to visualize multi-dimensional images as well as collection of 2-D images. <api/ImageGrid>
 
 
 rgbplot
 -------
 
-.. autofunction:: seaborn_image.rgbplot
+Figure level function to visualize RGB channels in a RGB image. <api/rgbplot>
 
 
 filterplot
 ----------
 
-.. autofunction:: seaborn_image.filterplot
+Axes level function to apply image filters and visualize them. <api/filterplot>
 
 
 fftplot
 -------
 
-.. autofunction:: seaborn_image.fftplot
+Axes level function to visualize the fast-fourier transform of the input image. <api/fftplot>
 
 
 FilterGrid
 ----------
 
-.. autoclass:: seaborn_image.FilterGrid
-   :members:
+Figure level function to explore interplay between different parameters of the input filter. <api/FilterGrid>
 
 
 seaborn_image._context
 ----------------------
 
-.. automodule:: seaborn_image._context
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Set global context for drawing images. <api/_context>
 
 
 seaborn_image.utils
 -------------------
 
-.. automodule:: seaborn_image.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Handy utils. <api/utils>
