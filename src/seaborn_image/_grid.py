@@ -206,13 +206,12 @@ class ImageGrid:
 
         >>> from skimage.exposure import adjust_gamma
         >>> g = isns.ImageGrid(
-                cells,
-                map_func=adjust_gamma,
-                gamma=0.5,
-                cbar=False,
-                height=1,
-                col_wrap=10
-                )
+        ...             cells,
+        ...             map_func=adjust_gamma,
+        ...             gamma=0.5,
+        ...             cbar=False,
+        ...             height=1,
+        ...             col_wrap=10)
 
     Change colorbar orientation
 
