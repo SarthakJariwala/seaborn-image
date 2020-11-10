@@ -32,19 +32,13 @@
 </div>
 
 
-Seaborn-like image data visualization using matplotlib, scikit-image and scipy.
-
 ## Description
 
-Seaborn-image is a seaborn-like python **image** visualization and processing library
-based on matplotlib, scipy and scikit-image.
+Seaborn-image is a Python **image** visualization library based on matplotlib
+and provides a high-level API to **draw attractive and informative images quickly and effectively**.
 
-The aim of `seaborn-image` is to provide a high-level API to **process and plot attractive images quickly and effectively**.
-
-## Documentation
-
-Check out the docs [here](https://seaborn-image.readthedocs.io/).
-
+It is heavily inspired by [seaborn](https://seaborn.pydata.org/), a high-level visualization library
+for drawing attractive statistical graphics in Python.
 
 ## Installation
 
@@ -57,6 +51,10 @@ For latest commit
 ```bash
 pip install git+https://github.com/SarthakJariwala/seaborn-image
 ```
+
+## Documentation
+
+Refer to the documentation [here](https://seaborn-image.readthedocs.io/).
 
 ## Usage
 

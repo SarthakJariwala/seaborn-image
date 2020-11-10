@@ -1,6 +1,6 @@
 """
-Image plot
-==========
+2-D image visualization
+=======================
 
 """
 
