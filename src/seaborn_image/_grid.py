@@ -168,7 +168,7 @@ class ImageGrid:
         :context: close-figs
 
         >>> pol_out = isns.load_image("polymer outliers")
-        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (2, 99.9)])
+        >>> g = isns.ImageGrid([pol, pl, pol_out], robust=[False, False, True], perc=[None, None, (0.5, 99.5)])
 
     Plot 3-D images; control number of columns
 
