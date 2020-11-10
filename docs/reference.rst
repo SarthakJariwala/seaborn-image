@@ -1,54 +1,54 @@
 Reference
 =========
 
-imgplot
--------
+:doc:`imgplot <api/imgplot>`
+----------------------------
 
-Axes level function to visualize 2-D images. <api/imgplot>
+Axes level function to visualize 2-D images.
 
-imghist
--------
+:doc:`imghist <api/imghist>`
+----------------------------
 
-Figure level function to visualize image data distribution along with the image. <api/imghist>
-
-
-ImageGrid
-----------
-
-Figure level function to visualize multi-dimensional images as well as collection of 2-D images. <api/ImageGrid>
+Figure level function to visualize image data distribution along with the image.
 
 
-rgbplot
--------
+:doc:`ImageGrid <api/ImageGrid>`
+--------------------------------
 
-Figure level function to visualize RGB channels in a RGB image. <api/rgbplot>
-
-
-filterplot
-----------
-
-Axes level function to apply image filters and visualize them. <api/filterplot>
+Figure level function to visualize multi-dimensional images as well as collection of 2-D images.
 
 
-fftplot
--------
+:doc:`rgbplot <api/rgbplot>`
+----------------------------
 
-Axes level function to visualize the fast-fourier transform of the input image. <api/fftplot>
-
-
-FilterGrid
-----------
-
-Figure level function to explore interplay between different parameters of the input filter. <api/FilterGrid>
+Figure level function to visualize RGB channels in a RGB image.
 
 
-seaborn_image._context
-----------------------
+:doc:`filterplot <api/filterplot>`
+----------------------------------
 
-Set global context for drawing images. <api/_context>
+Axes level function to apply image filters and visualize them.
 
 
-seaborn_image.utils
--------------------
+:doc:`fftplot <api/fftplot>`
+----------------------------
 
-Handy utils. <api/utils>
+Axes level function to visualize the fast-fourier transform of the input image.
+
+
+:doc:`FilterGrid <api/FilterGrid>`
+----------------------------------
+
+Figure level function to explore interplay between different parameters of the input filter.
+
+
+:doc:`seaborn_image._context <api/_context>`
+--------------------------------------------
+
+Set global context for drawing images.
+
+
+:doc:`seaborn_image.utils <api/utils>`
+--------------------------------------
+
+Handy utils.
