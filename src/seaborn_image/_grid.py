@@ -197,7 +197,7 @@ class ImageGrid:
     .. plot::
         :context: close-figs
 
-        >>> g = isns.load_image(cells, step=3, cbar=False)
+        >>> g = isns.ImageGrid(cells, step=3, cbar=False)
 
     Map a function to the image data
 
