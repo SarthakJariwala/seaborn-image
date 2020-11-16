@@ -40,6 +40,14 @@ and provides a high-level API to **draw attractive and informative images quickl
 It is heavily inspired by [seaborn](https://seaborn.pydata.org/), a high-level visualization library
 for drawing attractive statistical graphics in Python.
 
+## Documentation
+
+Detailed documentation can be found [here](https://seaborn-image.readthedocs.io/).
+
+- [Tutorial](https://seaborn-image.readthedocs.io/en/latest/tutorial.html)
+- [Examples](https://seaborn-image.readthedocs.io/auto_examples/index.html)
+- [API Reference](https://seaborn-image.readthedocs.io/en/latest/reference.html)
+
 ## Installation
 
 For latest release
@@ -52,10 +60,6 @@ For latest commit
 pip install git+https://github.com/SarthakJariwala/seaborn-image
 ```
 
-## Documentation
+## Contributing
 
-Refer to the documentation [here](https://seaborn-image.readthedocs.io/).
-
-## Usage
-
-Check out the [tutorial](https://seaborn-image.readthedocs.io/en/latest/tutorial.html) and [examples](https://seaborn-image.readthedocs.io/auto_examples/index.html).
+Please see the [contributing guidelines](https://github.com/SarthakJariwala/seaborn-image/blob/master/CONTRIBUTING.rst)
