@@ -1,0 +1,52 @@
+import pytest
+
+import numpy as np
+import pooch
+from skimage import io
+
+import seaborn_image as isns
+
+
+def test_load_image():
+    # test polymer
+    img = isns.load_image("polymer")
+    fname = pooch.retrieve(
+        url="https://raw.githubusercontent.com/SarthakJariwala/seaborn-image/master/data/PolymerImage.txt",
+        known_hash="7b6798865080adf3ecf11e342f3d86d7b52ea0700020a1f062544ee825fb8a0e",
+    )
+    test_img = np.loadtxt(fname, skiprows=1) * 1e9
+    np.testing.assert_array_equal(img, test_img)
+
+    # test polymer
+    img = isns.load_image("polymer outliers")
+    fname = pooch.retrieve(
+        url="https://raw.githubusercontent.com/SarthakJariwala/seaborn-image/master/data/PolymerImage.txt",
+        known_hash="7b6798865080adf3ecf11e342f3d86d7b52ea0700020a1f062544ee825fb8a0e",
+    )
+    test_img = np.loadtxt(fname, skiprows=1) * 1e9
+    test_img[25, 25] = 80
+    np.testing.assert_array_equal(img, test_img)
+
+    img = isns.load_image("fluorescence")
+    fname = pooch.retrieve(
+        url="https://raw.githubusercontent.com/SarthakJariwala/seaborn-image/master/data/Perovskite.txt",
+        known_hash="3228eeade5afec3c2b1ed116b2d4fe35877224d2d9bf7b4a17e04a432e6135c5",
+    )
+    test_img = np.loadtxt(fname)
+    np.testing.assert_array_equal(img, test_img)
+
+
+def test_load_image_from_skimage():
+    img = isns.load_image("cells")
+
+    fname = pooch.retrieve(
+        url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
+        known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
+    )
+    test_img = io.imread(fname).T
+    np.testing.assert_array_equal(img, test_img)
+
+
+def test_load_image_error():
+    with pytest.raises(ValueError):
+        isns.load_image("coins")

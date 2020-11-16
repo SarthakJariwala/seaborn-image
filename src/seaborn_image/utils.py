@@ -6,7 +6,7 @@ import pooch
 from matplotlib import ticker
 from skimage import io
 
-__all__ = ["scientific_ticks", "despine", "load_image"]
+__all__ = ["scientific_ticks", "despine"]
 
 
 def scientific_ticks(ax, which="y"):
@@ -166,87 +166,3 @@ def despine(fig=None, ax=None, which="all"):
     for ax in axes:
         for spine in _to_despine:
             ax.spines[spine].set_visible(False)
-
-
-def load_image(name):
-    """Load image data shippped with seaborn-image.
-
-    Parameters
-    ----------
-    name : str
-        Name of the image dataset
-
-    Raises
-    ------
-    ValueError
-        If the name of the dataset specified doesn't exist
-
-    Returns
-    -------
-    `numpy.ndarray`
-        Image data as a `numpy` array
-
-    Examples
-    --------
-    >>> import seaborn_image as isns
-    >>> img = isns.load_image("polymer")
-    """
-
-    if name == "polymer":
-        try:
-            path = "data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
-        except OSError:  # pragma: no cover
-            try:
-                # if building docstrings
-                path = "../data/PolymerImage.txt"
-                img = np.loadtxt(path, skiprows=1)
-            except OSError:  # pragma: no cover
-                # if building tuorial
-                path = "../../data/PolymerImage.txt"
-                img = np.loadtxt(path, skiprows=1)
-
-        img = img * 1e9  # convert height data from m to nm
-
-    elif name == "polymer outliers":
-        try:  # not very pretty fix to the path issue
-            path = "data/PolymerImage.txt"
-            img = np.loadtxt(path, skiprows=1)
-        except OSError:  # pragma: no cover
-            try:
-                # if building docstrings
-                path = "../data/PolymerImage.txt"
-                img = np.loadtxt(path, skiprows=1)
-            except OSError:  # pragma : no cover
-                # if building tutorial
-                path = "../../data/PolymerImage.txt"
-                img = np.loadtxt(path, skiprows=1)
-
-        img = img * 1e9  # convert height data from m to nm
-        img[0, 0] = 80  # assign an outlier value to a random pixel
-
-    elif name == "fluorescence":
-        try:  # not very pretty fix to the path issue
-            path = "data/Perovskite.txt"
-            img = np.loadtxt(path)
-        except OSError:  # pragma: no cover
-            try:
-                # if building docstrings
-                path = "../data/Perovskite.txt"
-                img = np.loadtxt(path)
-            except OSError:  # pragma: no cover
-                # if building tutorial
-                path = "../../data/Perovskite.txt"
-                img = np.loadtxt(path)
-
-    elif name == "cells":
-        fname = pooch.retrieve(
-            url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
-            known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
-        )
-        img = io.imread(fname).T
-
-    else:
-        raise ValueError(f"No '{name}' image dataset")
-
-    return img
