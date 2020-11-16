@@ -8,6 +8,7 @@ from ._general import *
 from ._filters import *
 from ._grid import *
 from .utils import *
+from ._datasets import *
 
 
 set_context()

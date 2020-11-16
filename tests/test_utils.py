@@ -53,38 +53,6 @@ def test_despine_type():
         isns.despine(which=0)
 
 
-def test_load_image():
-    img = isns.load_image("polymer")
-    np.testing.assert_array_equal(
-        img, np.loadtxt("data/PolymerImage.txt", skiprows=1) * 1e9
-    )
-
-    img = isns.load_image("polymer outliers")
-    test_img = np.loadtxt("data/PolymerImage.txt", skiprows=1) * 1e9
-    test_img[0, 0] = 80
-    np.testing.assert_array_equal(img, test_img)
-
-    img = isns.load_image("fluorescence")
-    test_img = np.loadtxt("data/Perovskite.txt")
-    np.testing.assert_array_equal(img, test_img)
-
-
-def test_load_image_from_skimage():
-    img = isns.load_image("cells")
-
-    fname = pooch.retrieve(
-        url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
-        known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
-    )
-    test_img = io.imread(fname).T
-    np.testing.assert_array_equal(img, test_img)
-
-
-def test_load_image_error():
-    with pytest.raises(ValueError):
-        isns.load_image("coins")
-
-
 def test_scientific_ticks():
     img = isns.load_image("polymer") * 1e-9
 
