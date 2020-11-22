@@ -1,7 +1,7 @@
-seaborn_image.utils
-===================
+Utilities
+=========
 
-.. automodule:: seaborn_image.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autofunction:: seaborn_image.scientific_ticks
+
+
+.. autofunction:: seaborn_image.despine
