@@ -42,7 +42,7 @@ Axes level function to visualize the fast-fourier transform of the input image.
 Figure level function to explore interplay between different parameters of the input filter.
 
 
-:doc:`load_image <api/_datasets>`
+:doc:`load_image <api/datasets>`
 --------------------------------------------
 
 Load sample datasets from seaborn-image.
