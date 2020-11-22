@@ -11,8 +11,9 @@ jobs:
       with:
         python-version: '3.8'
         architecture: x64
-    - run: pip install nox==2020.5.24
-    - run: pip install poetry==1.0.9
+    - run: pip install --constraint=.github/workflows/constraints.txt pip
+    - run: pip install --constraint=.github/workflows/constraints.txt nox
+    - run: pip install --constraint=.github/workflows/constraints.txt poetry
     - run: nox
     - run: poetry build
     - run: poetry publish --username=__token__ --password=${{ secrets.PYPI_TOKEN }}
