@@ -1,7 +1,16 @@
-seaborn_image._context
-======================
+Global Settings
+===============
 
-.. automodule:: seaborn_image._context
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autofunction:: seaborn_image.set_context
+
+
+.. autofunction:: seaborn_image.set_image
+
+
+.. autofunction:: seaborn_image.set_scalebar
+
+
+.. autofunction:: seaborn_image.set_save_context
+
+
+.. autofunction:: seaborn_image.reset_defaults

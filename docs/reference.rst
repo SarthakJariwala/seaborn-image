@@ -42,13 +42,19 @@ Axes level function to visualize the fast-fourier transform of the input image.
 Figure level function to explore interplay between different parameters of the input filter.
 
 
-:doc:`seaborn_image._context <api/_context>`
+:doc:`load_image <api/_datasets>`
 --------------------------------------------
 
-Set global context for drawing images.
+Load sample datasets from seaborn-image.
 
 
-:doc:`seaborn_image.utils <api/utils>`
+:doc:`Settings <api/_context>`
+--------------------------------------------
+
+Set global settings for drawing images.
+
+
+:doc:`Utilities <api/utils>`
 --------------------------------------
 
-Handy utils.
+Handy utility functions for despining axes, setting scientific ticks, etc.
