@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - run: pip install --constraint=.github/workflows/constraints.txt pip
+      - run: pip install --constraint=.github/workflows/constraints.txt pip --user
       - run: pip install --constraint=.github/workflows/constraints.txt nox
       - run: pip install --constraint=.github/workflows/constraints.txt poetry
       - run: nox
