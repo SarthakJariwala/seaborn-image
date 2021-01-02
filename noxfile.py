@@ -83,6 +83,7 @@ def safety(session):
             "export",
             "--dev",
             "--format=requirements.txt",
+            "--without-hashes",
             f"--output={requirements}",
             external=True,
         )
