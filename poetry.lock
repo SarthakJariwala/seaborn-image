@@ -504,7 +504,7 @@ python-dateutil = ">=2.1"
 
 [[package]]
 name = "matplotlib-scalebar"
-version = "0.6.2"
+version = "0.7.0"
 description = "Artist for matplotlib to display a scale bar"
 category = "main"
 optional = false
@@ -1248,7 +1248,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "1e35eaa3b05fcc8232fbf72b2b3868807dae0e0dbcf437e9e8ce4be6e5ab3612"
+content-hash = "9d6707e753071cc3951eba01eb73badfcd103c0088d9f273dc5c100059d33eb1"
 
 [metadata.files]
 alabaster = [
@@ -1529,8 +1529,8 @@ matplotlib = [
     {file = "matplotlib-3.3.3.tar.gz", hash = "sha256:b1b60c6476c4cfe9e5cf8ab0d3127476fd3d5f05de0f343a452badaad0e4bdec"},
 ]
 matplotlib-scalebar = [
-    {file = "matplotlib-scalebar-0.6.2.tar.gz", hash = "sha256:b0aa1a732c961e1fa50c59b45d0e067977b912d9be3378233081db2a1bd75c20"},
-    {file = "matplotlib_scalebar-0.6.2-py2.py3-none-any.whl", hash = "sha256:33642cd995f85e08845dd6395c0d8c5400d9683cd00360071e25d5adf7877f4a"},
+    {file = "matplotlib-scalebar-0.7.0.tar.gz", hash = "sha256:a62122d0756c9e588565e19daded4ebadf705782c72f343931814850753741d4"},
+    {file = "matplotlib_scalebar-0.7.0-py2.py3-none-any.whl", hash = "sha256:661ae4ec4fec8d43b401daa4bc5abdb5beec04ff43d7ab5240ae9d5872bd077d"},
 ]
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
