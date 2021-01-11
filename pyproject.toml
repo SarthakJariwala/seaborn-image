@@ -39,7 +39,7 @@ sphinx = "^3.3.1"
 codecov = "^2.1.10"
 sphinx_bootstrap_theme = "^0.7.1"
 xdoctest = "^0.15.0"
-sphinx-gallery = "^0.8.1"
+sphinx-gallery = "^0.8.2"
 nbsphinx = "^0.8.0"
 
 [build-system]

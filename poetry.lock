@@ -1029,7 +1029,7 @@ python-versions = "*"
 
 [[package]]
 name = "sphinx-gallery"
-version = "0.8.1"
+version = "0.8.2"
 description = "A Sphinx extension that builds an HTML version of any Python script and puts it into an examples gallery."
 category = "dev"
 optional = false
@@ -1248,7 +1248,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "9d6707e753071cc3951eba01eb73badfcd103c0088d9f273dc5c100059d33eb1"
+content-hash = "91d0bf3deab216d5bbf9bc98e3ee4c6e1af5c7b33716831daac91fa655feaefc"
 
 [metadata.files]
 alabaster = [
@@ -1884,7 +1884,7 @@ sphinx-bootstrap-theme = [
     {file = "sphinx-bootstrap-theme-0.7.1.tar.gz", hash = "sha256:571e43ccb76d4c6c06576aa24a826b6ebc7adac45a5b54985200128806279d08"},
 ]
 sphinx-gallery = [
-    {file = "sphinx-gallery-0.8.1.tar.gz", hash = "sha256:92b7ae7850f770c3f605cfbadc116f1177771f6eb50e22052e4226ebba9f3449"},
+    {file = "sphinx-gallery-0.8.2.tar.gz", hash = "sha256:74feba1af9b88cc1674bb1c927f56683ba4b1c78326c97106716ff360ede4462"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
