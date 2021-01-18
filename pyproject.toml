@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "seaborn-image"
 version = "0.4.1"
-description = "seaborn-image: image data visualization and processing like seaborrn using matplotlib, scipy and scikit-image"
+description = "Attractive, descriptive and effective image visualization with seaborn-like API built on top of matplotlib"
 authors = ["Sarthak Jariwala <jariwala@uw.edu>"]
 license = "MIT"
 readme = "README.md"
