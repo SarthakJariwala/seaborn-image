@@ -166,3 +166,13 @@ def despine(fig=None, ax=None, which="all"):
     for ax in axes:
         for spine in _to_despine:
             ax.spines[spine].set_visible(False)
+
+
+def is_documented_by(original):
+    "Wrapper to document alias functions"
+
+    def wrapper(target):
+        target.__doc__ = original.__doc__
+        return target
+
+    return wrapper
