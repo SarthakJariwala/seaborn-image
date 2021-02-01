@@ -1,3 +1,5 @@
+import warnings
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.cm import register_cmap
@@ -144,7 +146,8 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
 def set_scalebar(
     color="white",
     location="lower right",
-    height_fraction=0.025,
+    width_fraction=0.025,
+    height_fraction=None,
     length_fraction=0.3,
     scale_loc="top",
     box_alpha=0,
@@ -163,8 +166,10 @@ def set_scalebar(
         location : str, optional
             Scalebar location on the image (same as `matplotlib` legend).
             by default "lower right".
-        height_fraction : float, optional
+        width_fraction : float, optional
             By default 0.025.
+        height_fraction : float, optional
+            Deprecated - use `width_fraction` instead.
         length_fraction : float, optional
             By default 0.3
         scale_loc :str, optional
@@ -183,8 +188,15 @@ def set_scalebar(
         >>> isns.set_scalebar(scale_loc = "bottom")
 
     """
+    if height_fraction:
+        warnings.warn(
+            "`height_fraction` is deprecated. Use `width_fraction` instead.",
+            DeprecationWarning,
+        )
+        width_fraction = height_fraction
+
     mpl.rcParams.update({"scalebar.color": color})
-    mpl.rcParams.update({"scalebar.height_fraction": height_fraction})
+    mpl.rcParams.update({"scalebar.width_fraction": width_fraction})
     mpl.rcParams.update({"scalebar.length_fraction": length_fraction})
     mpl.rcParams.update({"scalebar.scale_loc": scale_loc})
     mpl.rcParams.update({"scalebar.location": location})
