@@ -47,7 +47,7 @@ Installation
 
 .. code-block:: bash
 
-    pip install seaborn-image
+    pip install -U seaborn-image
 
 Quick Usage
 ===========
