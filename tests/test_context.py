@@ -2,10 +2,10 @@ import pytest
 
 import matplotlib as mpl
 
+import seaborn_image as isns
+
 # without this, it suddenly started giving matplotlib backend issues locally
 mpl.use("AGG")
-
-import seaborn_image as isns
 
 
 @pytest.mark.parametrize(
@@ -59,17 +59,17 @@ def test_image_despine(despine):
 
 
 @pytest.mark.parametrize("color", ["white", "k", "C4"])
-@pytest.mark.parametrize("height_fraction", [0.025])
+@pytest.mark.parametrize("width_fraction", [0.025])
 @pytest.mark.parametrize("length_fraction", [0.3])
 @pytest.mark.parametrize("scale_loc", ["top", "bottom"])
 @pytest.mark.parametrize("location", ["upper right", "center"])
 @pytest.mark.parametrize("box_alpha", [0, 0.4])
 def test_set_scalebar(
-    color, height_fraction, length_fraction, scale_loc, location, box_alpha
+    color, width_fraction, length_fraction, scale_loc, location, box_alpha
 ):
     isns.set_scalebar(
         color=color,
-        height_fraction=height_fraction,
+        width_fraction=width_fraction,
         length_fraction=length_fraction,
         scale_loc=scale_loc,
         location=location,
@@ -77,11 +77,16 @@ def test_set_scalebar(
     )
 
     assert mpl.rcParams["scalebar.color"] == color
-    assert mpl.rcParams["scalebar.height_fraction"] == height_fraction
+    assert mpl.rcParams["scalebar.width_fraction"] == width_fraction
     assert mpl.rcParams["scalebar.length_fraction"] == length_fraction
     assert mpl.rcParams["scalebar.scale_loc"] == scale_loc
     assert mpl.rcParams["scalebar.location"] == location
     assert mpl.rcParams["scalebar.box_alpha"] == box_alpha
+
+
+def test_height_fraction_deprecation():
+    with pytest.deprecated_call():
+        isns.set_scalebar(height_fraction=0.2)
 
 
 def test_set_context_w_rc():
@@ -99,7 +104,7 @@ def test_scalebar_w_rc():
     isns.set_scalebar(
         rc={
             "color": "red",
-            "height_fraction": 0.01,
+            "width_fraction": 0.01,
             "length_fraction": 0.5,
             "scale_loc": "bottom",
             "location": "upper right",
@@ -109,7 +114,7 @@ def test_scalebar_w_rc():
     )
 
     assert mpl.rcParams["scalebar.color"] == "red"
-    assert mpl.rcParams["scalebar.height_fraction"] == 0.01
+    assert mpl.rcParams["scalebar.width_fraction"] == 0.01
     assert mpl.rcParams["scalebar.length_fraction"] == 0.5
     assert mpl.rcParams["scalebar.scale_loc"] == "bottom"
     assert mpl.rcParams["scalebar.location"] == "upper right"
