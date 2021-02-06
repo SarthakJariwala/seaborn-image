@@ -133,6 +133,13 @@ def test_map_func():
         ax.images[0].get_array().data, adjust_gamma(cells, gamma=0.5)
     )
 
+    # imshow with kwargs to test if they are passed on to imgplot
+    ax = isns.imshow(cells, map_func=adjust_gamma, gamma=0.5)
+
+    np.testing.assert_array_equal(
+        ax.images[0].get_array().data, adjust_gamma(cells, gamma=0.5)
+    )
+
 
 def test_cbar_log_and_norm():
     # special case of log-norm

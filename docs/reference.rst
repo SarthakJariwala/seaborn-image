@@ -6,6 +6,13 @@ Reference
 
 Axes level function to visualize 2-D images.
 
+
+:doc:`imshow <api/imshow>`
+----------------------------
+
+Alias for ``imgplot``. Axes level function to visualize 2-D image data.
+
+
 :doc:`imghist <api/imghist>`
 ----------------------------
 

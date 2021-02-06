@@ -9,8 +9,9 @@ from skimage.color import rgb2gray
 
 from ._colormap import _CMAP_QUAL
 from ._core import _SetupImage
+from .utils import is_documented_by
 
-__all__ = ["imgplot", "imghist"]
+__all__ = ["imgplot", "imghist", "imshow"]
 
 
 def imgplot(
@@ -351,6 +352,14 @@ def imgplot(
         print(f"Mean : {result.mean}")
         print(f"Variance : {result.variance}")
         print(f"Skewness : {result.skewness}")
+
+    return ax
+
+
+@is_documented_by(imgplot)
+def imshow(data, **kwargs):
+
+    ax = imgplot(data, **kwargs)
 
     return ax
 
