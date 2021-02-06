@@ -84,6 +84,11 @@ def test_set_scalebar(
     assert mpl.rcParams["scalebar.box_alpha"] == box_alpha
 
 
+def test_height_fraction_deprecation():
+    with pytest.deprecated_call():
+        isns.set_scalebar(height_fraction=0.2)
+
+
 def test_set_context_w_rc():
     isns.set_context(
         rc={"axes.edgecolor": "red", "axes.labelweight": "normal", "axes.labelsize": 30}
