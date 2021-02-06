@@ -88,7 +88,13 @@ def safety(session):
             external=True,
         )
         install_with_constraints(session, "safety")
-        session.run("safety", "check", f"--file={requirements}", "--full-report")
+        session.run(
+            "safety",
+            "check",
+            f"--file={requirements}",
+            "--full-report",
+            "--ignore=39462",
+        )
 
 
 @nox.session()
