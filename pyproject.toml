@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "seaborn-image"
-version = "0.4.2"
+version = "0.4.3"
 description = "Attractive, descriptive and effective image visualization with seaborn-like API built on top of matplotlib"
 authors = ["Sarthak Jariwala <jariwala@uw.edu>"]
 license = "MIT"
@@ -18,7 +18,7 @@ classifiers = [
 python = "^3.6"
 matplotlib = "^3.2.2"
 scikit-image = "^0.17.2"
-matplotlib-scalebar = ">=0.6.2,<0.8.0"
+matplotlib-scalebar = ">=0.7.0,<0.8.0"
 palettable = "^3.3.0"
 scipy = "^1.5.1"
 importlib_metadata = {version = "^1.7.0", python = "<3.8"}
@@ -30,7 +30,7 @@ black = "^20.8b1"
 flake8 = "^3.8.4"
 flake8-bandit = "^2.1.2"
 flake8-black = "^0.2.1"
-flake8-bugbear = "^20.11.1"
+flake8-bugbear = "^21.3.2"
 safety = "^1.10.2"
 coverage = {extras = ["toml"], version = "^5.3"}
 pytest-cov = "^2.10.1"
