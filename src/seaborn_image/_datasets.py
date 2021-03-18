@@ -15,6 +15,7 @@ POOCH = pooch.create(
         # The registry is a dict with file names and their SHA256 hashes
         "PolymerImage.txt": "7b6798865080adf3ecf11e342f3d86d7b52ea0700020a1f062544ee825fb8a0e",
         "Perovskite.txt": "3228eeade5afec3c2b1ed116b2d4fe35877224d2d9bf7b4a17e04a432e6135c5",
+        "cells.tif": "2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
     },
 )
 
@@ -59,13 +60,12 @@ def load_image(name):
         img = np.loadtxt(path)
 
     elif name == "cells":
-        fname = pooch.retrieve(
-            url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
-            known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
-        )
-        img = io.imread(fname).T
+        path = POOCH.fetch("cells.tif")
+        img = io.imread(path).T
 
     else:
-        raise ValueError(f"No '{name}' image dataset")
+        raise ValueError(
+            f"No '{name}' image dataset. Available image datasets include: polymer, polymer outliers, fluorescence, cells"
+        )
 
     return img
