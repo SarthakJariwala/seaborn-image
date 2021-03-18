@@ -40,7 +40,7 @@ def test_load_image_from_skimage():
     img = isns.load_image("cells")
 
     fname = pooch.retrieve(
-        url="https://github.com/scikit-image/skimage-tutorials/raw/master/images/cells.tif",
+        url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/cells.tif",
         known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
     )
     test_img = io.imread(fname).T
