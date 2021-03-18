@@ -9,7 +9,7 @@ POOCH = pooch.create(
     # Use the default cache folder for the OS
     path=pooch.os_cache("seaborn-image"),
     # The remote data is on Github
-    base_url="https://raw.githubusercontent.com/SarthakJariwala/seaborn-image/master/data/",
+    base_url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/",
     # The registry specifies the files that can be fetched
     registry={
         # The registry is a dict with file names and their SHA256 hashes
