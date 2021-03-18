@@ -18,7 +18,7 @@ classifiers = [
 python = "^3.6"
 matplotlib = "^3.2.2"
 scikit-image = "^0.17.2"
-matplotlib-scalebar = ">=0.6.2,<0.8.0"
+matplotlib-scalebar = ">=0.7.0,<0.8.0"
 palettable = "^3.3.0"
 scipy = "^1.5.1"
 importlib_metadata = {version = "^1.7.0", python = "<3.8"}
