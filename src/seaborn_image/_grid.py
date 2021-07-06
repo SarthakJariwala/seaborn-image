@@ -387,33 +387,6 @@ class ImageGrid:
                         "can not plot multiple 3D images. Supply an individual 3D image"
                     )
 
-                if isinstance(self.cmap, (list, tuple)):
-                    _cmap = self.cmap[i]
-
-                if isinstance(self.robust, (list, tuple)):
-                    _robust = self.robust[i]
-
-                if isinstance(self.perc, (list)):
-                    _perc = self.perc[i]
-
-                if isinstance(self.dx, (list, tuple)):
-                    _dx = self.dx[i]
-
-                if isinstance(self.units, (list, tuple)):
-                    _units = self.units[i]
-
-                if isinstance(self.dimension, (list, tuple)):
-                    _dimension = self.dimension[i]
-
-                if isinstance(self.cbar, (list, tuple)):
-                    _cbar = self.cbar[i]
-
-                if isinstance(self.cbar_log, (list, tuple)):
-                    _cbar_log = self.cbar_log[i]
-
-                if isinstance(self.cbar_label, (list, tuple)):
-                    _cbar_label = self.cbar_label[i]
-
             elif self.data.ndim == 3:
                 if self.axis == 0:
                     _d = self.data[self.slices[i], :, :]
@@ -426,6 +399,42 @@ class ImageGrid:
                 # if a single 2D image is supplied
                 # TODO issue a warning and direct the user to imgplot()
                 _d = self.data
+
+            if isinstance(self.cmap, (list, tuple)):
+                self._check_len_wrt_n_images(self.cmap)
+                _cmap = self.cmap[i]
+
+            if isinstance(self.robust, (list, tuple)):
+                self._check_len_wrt_n_images(self.robust)
+                _robust = self.robust[i]
+
+            if isinstance(self.perc, (list)):
+                self._check_len_wrt_n_images(self.perc)
+                _perc = self.perc[i]
+
+            if isinstance(self.dx, (list, tuple)):
+                self._check_len_wrt_n_images(self.dx)
+                _dx = self.dx[i]
+
+            if isinstance(self.units, (list, tuple)):
+                self._check_len_wrt_n_images(self.units)
+                _units = self.units[i]
+
+            if isinstance(self.dimension, (list, tuple)):
+                self._check_len_wrt_n_images(self.dimension)
+                _dimension = self.dimension[i]
+
+            if isinstance(self.cbar, (list, tuple)):
+                self._check_len_wrt_n_images(self.cbar)
+                _cbar = self.cbar[i]
+
+            if isinstance(self.cbar_log, (list, tuple)):
+                self._check_len_wrt_n_images(self.cbar_log)
+                _cbar_log = self.cbar_log[i]
+
+            if isinstance(self.cbar_label, (list, tuple)):
+                self._check_len_wrt_n_images(self.cbar_label)
+                _cbar_label = self.cbar_label[i]
 
             imgplot(
                 _d,
@@ -452,7 +461,15 @@ class ImageGrid:
         # FIXME - for common colorbar
         # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
 
-        return
+    def _check_len_wrt_n_images(self, param_list):
+        """If a specific parameter is supplied as a list/tuple, check that the
+        length of the parameter list is the same as the number of images that the parameter is mapped onto
+        """
+
+        if len(param_list) != self._nimages:
+            raise AssertionError(
+                f"If supplying a list/tuple, length of {param_list} must be {self._nimages}."
+            )
 
     def _map_func_to_data(self, map_func, **kwargs):
         """Transform image data using the map_func callable object."""
