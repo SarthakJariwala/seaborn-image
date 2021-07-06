@@ -207,6 +207,30 @@ def test_imghist_data_is_same_as_input():
     np.testing.assert_array_equal(f.axes[0].images[0].get_array().data, data)
 
 
+def test_imghist_robust_hist_cmap():
+    """Check if the min/max patch color in histogram matches
+    the min/max colors in the colorbar after robust"""
+
+    polymer = isns.load_image("polymer")
+
+    f = isns.imghist(polymer, robust=True, perc=(0.5, 50))
+
+    _min = np.nanpercentile(polymer, 0.5)
+    _max = np.nanpercentile(polymer, 50)
+
+    # check the max patch facecolor and check it against the image cmap max
+    np.testing.assert_array_equal(
+        f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
+    )
+
+    # check the min patch facecolor and check it against the image cmap min
+    np.testing.assert_array_equal(
+        f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
+    )
+
+    plt.close()
+
+
 @pytest.mark.parametrize("cmap", [None, "acton"])
 @pytest.mark.parametrize("bins", [None, 100])
 @pytest.mark.parametrize("orientation", ["horizontal", "h", "vertical", "v"])

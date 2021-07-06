@@ -610,18 +610,37 @@ def imghist(
     if cbar_log is True:
         _log = True
 
+    # if robust is True, then the histogram only needs to account for the data
+    # that are within the limits of the colorbar axis
+    # This will be the same as percentile value used to set the colorbar min and max
+    if robust:
+        _data_min = np.nanpercentile(data, perc[0])
+        _data_max = np.nanpercentile(data, perc[1])
+
+        data_robust = data[(data > _data_min) & (data < _data_max)]
+    else:
+        data_robust = data
+
     if orientation == "vertical":
         ax2 = f.add_subplot(gs[1], sharey=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="horizontal", log=_log
+            data_robust.ravel(),
+            bins=bins,
+            density=True,
+            orientation="horizontal",
+            log=_log,
         )
 
     elif orientation == "horizontal":
         ax2 = f.add_subplot(gs[1], sharex=cax)
 
         n, bins, patches = ax2.hist(
-            data.ravel(), bins=bins, density=True, orientation="vertical", log=_log
+            data_robust.ravel(),
+            bins=bins,
+            density=True,
+            orientation="vertical",
+            log=_log,
         )
 
     if not showticks:
