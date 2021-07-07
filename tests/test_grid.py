@@ -213,6 +213,10 @@ class TestImageGrid:
         isns.ImageGrid(self.img_list, cmap=[None, "inferno", "ice"])
         plt.close()
 
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, cmap=["Reds"])
+            plt.close()
+
     def test_robust(self):
 
         isns.ImageGrid(self.img_list, robust=True)
@@ -231,6 +235,14 @@ class TestImageGrid:
 
         isns.ImageGrid(self.data, robust=True)
         plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, robust=[True, False])
+            plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, perc=[(2, 98), (1, 99)])
+            plt.close()
 
     def test_scalebar_list(self):
 
@@ -265,6 +277,33 @@ class TestImageGrid:
             dimension=["si", None, "si"],
         )
         plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(
+                self.img_3d,
+                dx=[1, 3],
+                units=["m", "m", "m"],
+                dimension=["si", "si", "si"],
+            )
+            plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(
+                self.img_3d,
+                dx=[1, 2, 3],
+                units=["m", "m"],
+                dimension=["si", "si"],
+            )
+            plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(
+                self.img_3d,
+                dx=[1, 2, 3],
+                units=["m", "m", "m"],
+                dimension=["si", "si"],
+            )
+            plt.close()
 
     def test_cbar(self):
 
@@ -304,6 +343,18 @@ class TestImageGrid:
             cbar_label=[None, "A", "B"],
         )
         plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, cbar=[True, False])
+            plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, cbar_label=["A", "B"])
+            plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, cbar_log=[True, False])
+            plt.close()
 
     def test_figure_size(self):
 
