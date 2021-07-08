@@ -130,6 +130,14 @@ class TestImageGrid:
         np.testing.assert_array_equal(ax[3].images[0].get_array().data, gaussian(pl))
         plt.close()
 
+        # 3 Image with list of map_func
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_3d, map_func=[gaussian, gaussian])
+
+        # List of map_func must all be callables
+        with pytest.raises(TypeError):
+            g = isns.ImageGrid([pol, pl], map_func=[gaussian, "hessian"])
+
         # test kwargs for a single map_func
         g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
         ax = g2.axes.flat
