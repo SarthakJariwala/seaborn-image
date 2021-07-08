@@ -460,6 +460,20 @@ class TestFilterGrid(object):
         assert isinstance(g.fig, Figure)
         plt.close()
 
+    def test_rows(self):
+        with pytest.raises(TypeError):
+            _ = isns.FilterGrid(self.data, "gaussian", row=gaussian, sigma=[1, 2, 3])
+
+        with pytest.raises(ValueError):
+            _ = isns.FilterGrid(self.data, "gaussian", row="sigma")
+
+    def test_cols(self):
+        with pytest.raises(TypeError):
+            _ = isns.FilterGrid(self.data, "gaussian", col=gaussian, sigma=[1, 2, 3])
+
+        with pytest.raises(ValueError):
+            _ = isns.FilterGrid(self.data, "gaussian", col="sigma")
+
     def test_self_axes(self):
 
         g0 = isns.FilterGrid(self.data, "sobel")
