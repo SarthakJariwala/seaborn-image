@@ -269,6 +269,12 @@ class ImageGrid:
             # check the number of images to be plotted
             _nimages = len(data)
 
+            # --- List/Tuple of 2D images with a List/Tuple of map_func ---
+            # change the number of images on the grid accordingly
+            map_func_type = self._check_map_func(map_func)
+            if map_func_type == "list/tuple":
+                _nimages = len(data) * len(map_func)
+
         elif data.ndim > 3:
             raise ValueError("image data can not have more than 3 dimensions")
 
@@ -290,14 +296,25 @@ class ImageGrid:
 
             _nimages = len(slices)
 
+            # ---- 3D image with an individual map_func ----
+            map_func_type = self._check_map_func(map_func)
+            # raise a ValueError if a list of map_func is provided for 3d image
+            # TODO - support multiple map_func if "chaining"?
+            if map_func_type == "list/tuple":
+                raise ValueError(
+                    "Can not map multiple functions to a 3D image. Please provide a single `map_func`"
+                )
+
         else:
             # if data dim is not >2,
-            # TODO issue user warning to use imgplot() instead?
             _nimages = 1
 
-        if map_func is not None:
-            if not callable(map_func):
-                raise TypeError("`map_func` must be a callable function object")
+            # ---- 2D image with a list/tuple of map_func or individual map_func ------
+            # check if map_func is a list/tuple of callables
+            # and assign the new number of images
+            map_func_type = self._check_map_func(map_func)
+            if map_func_type == "list/tuple":
+                _nimages = len(map_func)
 
         # if no column wrap specified
         # set it to default 3
@@ -361,6 +378,24 @@ class ImageGrid:
         self._finalize_grid()
 
         return
+
+    def _check_map_func(self, map_func):
+        "Check if `map_func` passed is a list/tuple of callables or individual callable"
+
+        if map_func is not None:
+            if isinstance(map_func, (list, tuple)):
+                for func in map_func:
+                    if not callable(func):
+                        raise TypeError(f"{func} must be a callable function object")
+                return "list/tuple"
+
+            elif callable(map_func):
+                return "callable"
+
+            else:
+                raise TypeError(
+                    "`map_func` must either be a callable object or a list/tuple of callable objects"
+                )
 
     def _map_img_to_grid(self):
         """Map image data cube to the image grid."""
@@ -475,12 +510,22 @@ class ImageGrid:
         """Transform image data using the map_func callable object."""
         # if data is a list or tuple of 2D images
         if isinstance(self.data, (list, tuple)):
-            for i in range(len(self.data)):
-                self.data[i] = map_func(self.data[i], **kwargs)
+            if self._check_map_func(map_func) == "list/tuple":
+                _d = self.data
+                # for img in _d:
+                self.data = [func(img, **kwargs) for func in map_func for img in _d]
+            else:  # if map_func is callable
+                for i in range(len(self.data)):
+                    self.data[i] = map_func(self.data[i], **kwargs)
 
-        # if data is 3D
+        # if data is 3D or 2D and map_func is single callable
         else:
-            self.data = map_func(self.data, **kwargs)
+            if self._check_map_func(map_func) == "callable":
+                self.data = map_func(self.data, **kwargs)
+            # list of callables -- only for 2D image
+            else:
+                _d = self.data
+                self.data = [func(_d, **kwargs) for func in map_func]
 
     def _cleanup_extra_axes(self):
         """Clean extra axes that are generated if col_wrap is specified."""

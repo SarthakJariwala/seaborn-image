@@ -83,9 +83,11 @@ class TestImageGrid:
 
     def test_map_func(self):
 
+        # test map_func is callable
         with pytest.raises(TypeError):
             isns.ImageGrid(self.img_3d, map_func="gaussian")
 
+        # 3D image with single map_func
         g0 = isns.ImageGrid(self.img_3d, map_func=gaussian)
         ax = g0.axes.flat
         np.testing.assert_array_equal(
@@ -96,6 +98,7 @@ class TestImageGrid:
         )
         plt.close()
 
+        # List of 2D images with single map_func
         pol = isns.load_image("polymer")
         pl = isns.load_image("fluorescence")
         new_img_list = [pol, pl]
@@ -105,7 +108,29 @@ class TestImageGrid:
         np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pl))
         plt.close()
 
-        # test kwargs
+        # Single 2D image with a single map_func
+        g = isns.ImageGrid(pol, map_func=gaussian)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+        plt.close()
+
+        # Single 2D image with a list of map_func
+        g = isns.ImageGrid(pol, map_func=[gaussian, gaussian])
+        ax = g.axes.flat
+        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pol))
+        plt.close()
+
+        # List of 2D images with a list of map_func
+        g = isns.ImageGrid([pol, pl], map_func=[gaussian, gaussian])
+        ax = g.axes.flat
+        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pl))
+        np.testing.assert_array_equal(ax[2].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[3].images[0].get_array().data, gaussian(pl))
+        plt.close()
+
+        # test kwargs for a single map_func
         g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
         ax = g2.axes.flat
         np.testing.assert_array_equal(
