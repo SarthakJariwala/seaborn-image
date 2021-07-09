@@ -119,7 +119,9 @@ class ImageGrid:
     ValueError
         If `axis` is not 0, 1, 2 or -1
     TypeError
-        If `map_func` is not a callable object
+        If `map_func` is not a callable object or a list/tuple of callable objects
+    ValueError
+        If `map_func` is a list/tuple of callable objects when `data` is 3D
 
     Examples
     --------
@@ -212,6 +214,20 @@ class ImageGrid:
         ...             cbar=False,
         ...             height=1,
         ...             col_wrap=10)
+
+    Map a list of functions to the input data
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.filters import meijering, sato, frangi, hessian
+        >>> retina = isns.load_image("retina-gray")
+        >>> g = isns.ImageGrid(
+        ...             retina,
+        ...             map_func=[meijering, sato, frangi, hessian],
+        ...             col_wrap=4,
+        ...             mode="reflect",
+        ...             sigmas=[1])
 
     Change colorbar orientation
 
