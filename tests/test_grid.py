@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from scipy import ndimage as ndi
 from skimage.data import astronaut
 from skimage.filters import gaussian
 
@@ -138,9 +139,13 @@ class TestImageGrid:
         with pytest.raises(TypeError):
             g = isns.ImageGrid([pol, pl], map_func=[gaussian, "hessian"])
 
-        # test kwargs for a single map_func
-        g2 = isns.ImageGrid(self.img_3d, map_func=gaussian, sigma=1.5)
-        ax = g2.axes.flat
+    def test_map_func_kwargs(self):
+
+        # kwargs for a single map_func for 3D image
+        g = isns.ImageGrid(
+            self.img_3d, map_func=gaussian, map_func_kwargs={"sigma": 1.5}
+        )
+        ax = g.axes.flat
         np.testing.assert_array_equal(
             ax[0].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 0]
         )
@@ -148,6 +153,83 @@ class TestImageGrid:
             ax[1].images[0].get_array().data, gaussian(self.img_3d, sigma=1.5)[:, :, 1]
         )
         plt.close()
+
+        # kwargs for single map_func for list of 2D images
+        pol = isns.load_image("polymer")
+        pl = isns.load_image("fluorescence")
+        g = isns.ImageGrid([pol, pl], map_func=gaussian, map_func_kwargs={"sigma": 1.5})
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(pl, sigma=1.5)
+        )
+        plt.close()
+
+        # kwargs for single map_func for a single 2D image
+        g = isns.ImageGrid(pol, map_func=gaussian, map_func_kwargs={"sigma": 1.5})
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+        )
+        plt.close()
+
+        # kwargs for a list of map_func for a single 2D image
+        # Also, test for any None elements in map_func_kwargs list
+        map_func = [gaussian, ndi.median_filter, gaussian]
+        map_func_kwargs = [{"sigma": 1.5}, {"size": 10}, None]
+        g = isns.ImageGrid(pol, map_func=map_func, map_func_kwargs=map_func_kwargs)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, ndi.median_filter(pol, size=10)
+        )
+        np.testing.assert_array_equal(ax[2].images[0].get_array().data, gaussian(pol))
+        plt.close()
+
+        # List of 2D images with a list of map_func and list of map_func_kwargs
+        g = isns.ImageGrid(
+            [pol, pl], map_func=map_func, map_func_kwargs=map_func_kwargs
+        )
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, gaussian(pl, sigma=1.5)
+        )
+        np.testing.assert_array_equal(
+            ax[2].images[0].get_array().data, ndi.median_filter(pol, size=10)
+        )
+        np.testing.assert_array_equal(
+            ax[3].images[0].get_array().data, ndi.median_filter(pl, size=10)
+        )
+        np.testing.assert_array_equal(ax[4].images[0].get_array().data, gaussian(pol))
+        np.testing.assert_array_equal(ax[5].images[0].get_array().data, gaussian(pl))
+        plt.close()
+
+        # `map_func_kwargs` must be list/tuple of dictionaries if map_func is a list/tuple
+        with pytest.raises(TypeError):
+            g = isns.ImageGrid(
+                [pol, pl], map_func=map_func, map_func_kwargs={"sigma": 1.5}
+            )
+
+        # number of `map_func_kwargs` passed must be the same as the number of `map_func` objects"
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(
+                [pol, pl],
+                map_func=map_func,
+                map_func_kwargs=[{"sigma": 1.5}, {"sigma": 1.5}],
+            )
+
+        # map_func_kwargs` must be a dictionary when a single `map_func` is passed as input
+        with pytest.raises(TypeError):
+            g = isns.ImageGrid(
+                [pol, pl], map_func=gaussian, map_func_kwargs=[{"sigma": 1.5}]
+            )
 
     def test_col_wrap(self):
 

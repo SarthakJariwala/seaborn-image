@@ -210,7 +210,7 @@ class ImageGrid:
         >>> g = isns.ImageGrid(
         ...             cells,
         ...             map_func=adjust_gamma,
-        ...             gamma=0.5,
+        ...             map_func_kwargs={"gamma" : 0.5},
         ...             cbar=False,
         ...             height=1,
         ...             col_wrap=10)
@@ -226,8 +226,7 @@ class ImageGrid:
         ...             retina,
         ...             map_func=[meijering, sato, frangi, hessian],
         ...             col_wrap=4,
-        ...             mode="reflect",
-        ...             sigmas=[1])
+        ...             map_func_kwargs=[{"mode" : "reflect", "sigmas" : [1]} for _ in range(4)])
 
     Change colorbar orientation
 
@@ -255,6 +254,7 @@ class ImageGrid:
         start=None,
         stop=None,
         map_func=None,
+        map_func_kwargs=None,
         col_wrap=None,
         height=3,
         aspect=1,
@@ -287,7 +287,7 @@ class ImageGrid:
 
             # --- List/Tuple of 2D images with a List/Tuple of map_func ---
             # change the number of images on the grid accordingly
-            map_func_type = self._check_map_func(map_func)
+            map_func_type = self._check_map_func(map_func, map_func_kwargs)
             if map_func_type == "list/tuple":
                 _nimages = len(data) * len(map_func)
 
@@ -313,7 +313,7 @@ class ImageGrid:
             _nimages = len(slices)
 
             # ---- 3D image with an individual map_func ----
-            map_func_type = self._check_map_func(map_func)
+            map_func_type = self._check_map_func(map_func, map_func_kwargs)
             # raise a ValueError if a list of map_func is provided for 3d image
             # TODO - support multiple map_func if "chaining"?
             if map_func_type == "list/tuple":
@@ -328,7 +328,7 @@ class ImageGrid:
             # ---- 2D image with a list/tuple of map_func or individual map_func ------
             # check if map_func is a list/tuple of callables
             # and assign the new number of images
-            map_func_type = self._check_map_func(map_func)
+            map_func_type = self._check_map_func(map_func, map_func_kwargs)
             if map_func_type == "list/tuple":
                 _nimages = len(map_func)
 
@@ -387,7 +387,7 @@ class ImageGrid:
 
         # map function to input data
         if map_func is not None:
-            self._map_func_to_data(map_func, **kwargs)
+            self._map_func_to_data(map_func, map_func_kwargs)
 
         self._map_img_to_grid()
         self._cleanup_extra_axes()
@@ -395,17 +395,30 @@ class ImageGrid:
 
         return
 
-    def _check_map_func(self, map_func):
+    def _check_map_func(self, map_func, map_func_kwargs):
         "Check if `map_func` passed is a list/tuple of callables or individual callable"
-
         if map_func is not None:
             if isinstance(map_func, (list, tuple)):
                 for func in map_func:
                     if not callable(func):
                         raise TypeError(f"{func} must be a callable function object")
+                if map_func_kwargs is not None:
+                    if not isinstance(map_func_kwargs, (list, tuple)):
+                        raise TypeError(
+                            "`map_func_kwargs` must be list/tuple of dictionaries"
+                        )
+                    if len(map_func_kwargs) != len(map_func):
+                        raise ValueError(
+                            "number of `map_func_kwargs` passed must be the same as the number of `map_func` objects"
+                        )
                 return "list/tuple"
 
             elif callable(map_func):
+                if map_func_kwargs is not None:
+                    if not isinstance(map_func_kwargs, dict):
+                        raise TypeError(
+                            "`map_func_kwargs` must be a dictionary when a single `map_func` is passed as input"
+                        )
                 return "callable"
 
             else:
@@ -522,26 +535,58 @@ class ImageGrid:
                 f"If supplying a list/tuple, length of {param_list} must be {self._nimages}."
             )
 
-    def _map_func_to_data(self, map_func, **kwargs):
+    def _map_func_to_data(self, map_func, map_func_kwargs):
         """Transform image data using the map_func callable object."""
         # if data is a list or tuple of 2D images
         if isinstance(self.data, (list, tuple)):
-            if self._check_map_func(map_func) == "list/tuple":
+            if self._check_map_func(map_func, map_func_kwargs) == "list/tuple":
                 _d = self.data
-                # for img in _d:
-                self.data = [func(img, **kwargs) for func in map_func for img in _d]
+                # only pass on kwargs if not None
+                if map_func_kwargs is not None:
+                    # check if one of the supplied kwargs in the list is None
+                    # if None - change it to empty {}
+                    map_func_kwargs = [
+                        {} if kw is None else kw for kw in map_func_kwargs
+                    ]
+                    self.data = [
+                        func(img, **kwargs)
+                        for func, kwargs in zip(map_func, map_func_kwargs)
+                        for img in _d
+                    ]
+                else:
+                    self.data = [func(img) for func in map_func for img in _d]
             else:  # if map_func is callable
                 for i in range(len(self.data)):
-                    self.data[i] = map_func(self.data[i], **kwargs)
+                    # only pass on kwargs if not None
+                    if map_func_kwargs is not None:
+                        self.data[i] = map_func(self.data[i], **map_func_kwargs)
+                    else:
+                        self.data[i] = map_func(self.data[i])
 
         # if data is 3D or 2D and map_func is single callable
         else:
-            if self._check_map_func(map_func) == "callable":
-                self.data = map_func(self.data, **kwargs)
+            if self._check_map_func(map_func, map_func_kwargs) == "callable":
+                # only pass on kwargs if not None
+                if map_func_kwargs is not None:
+                    self.data = map_func(self.data, **map_func_kwargs)
+                else:
+                    self.data = map_func(self.data)
             # list of callables -- only for 2D image
             else:
                 _d = self.data
-                self.data = [func(_d, **kwargs) for func in map_func]
+                # only pass on kwargs if not None
+                if map_func_kwargs is not None:
+                    # check if one of the supplied kwargs in the list is None
+                    # if None - change it to empty {}
+                    map_func_kwargs = [
+                        {} if kw is None else kw for kw in map_func_kwargs
+                    ]
+                    self.data = [
+                        func(_d, **kwargs)
+                        for func, kwargs in zip(map_func, map_func_kwargs)
+                    ]
+                else:
+                    self.data = [func(_d) for func in map_func]
 
     def _cleanup_extra_axes(self):
         """Clean extra axes that are generated if col_wrap is specified."""
