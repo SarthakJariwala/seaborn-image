@@ -34,8 +34,10 @@ class ImageGrid:
         Starting index to select from the the data, by default None
     stop : int, optional
         Stopping index to select from the data, by default None
-    map_func : callable, optional
-        Transform input image data using this function. All function arguments must be passed as kwargs.
+    map_func : callable or list/tuple or callables, optional
+        Transform input image data using this function. All function arguments must be passed as map_func_kwargs.
+    map_func_kwargs : dict or list/tuple of dict, optional
+        kwargs to pass on to `map_func`. Must be dict for a single `map_func` and a list/tuple of dicts for a list/tuple of `map_func`
     col_wrap : int, optional
         Number of columns to display. Defaults to None.
     height : int or float, optional
@@ -215,7 +217,7 @@ class ImageGrid:
         ...             height=1,
         ...             col_wrap=10)
 
-    Map a list of functions to the input data
+    Map a list of functions to the input data. Pass function kwargs to `map_func_kwargs`.
 
     .. plot::
         :context: close-figs
@@ -227,6 +229,17 @@ class ImageGrid:
         ...             map_func=[meijering, sato, frangi, hessian],
         ...             col_wrap=4,
         ...             map_func_kwargs=[{"mode" : "reflect", "sigmas" : [1]} for _ in range(4)])
+
+    If no kwargs are required for one or more of the functions, use `None`.
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(
+        ...             retina,
+        ...             map_func=[meijering, sato, frangi, hessian],
+        ...             col_wrap=4,
+        ...             map_func_kwargs=[{"mode" : "reflect", "sigmas" : [1]}, None, None, None])
 
     Change colorbar orientation
 
@@ -274,7 +287,6 @@ class ImageGrid:
         cbar_ticks=None,
         showticks=False,
         despine=None,
-        **kwargs,
     ):
         if data is None:
             raise ValueError("image data can not be None")
