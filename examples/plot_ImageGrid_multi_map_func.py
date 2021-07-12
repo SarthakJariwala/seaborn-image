@@ -12,7 +12,7 @@ cells = isns.load_image("cells")
 g = isns.ImageGrid(
     cells,
     map_func=adjust_gamma,
-    gamma=0.5,
+    map_func_kwargs={"gamma": 0.5},
     cbar=False,
     height=1,
     col_wrap=10,
