@@ -1,5 +1,5 @@
 ipykernel==6.0.1
 nbsphinx==0.8.6
-sphinx==4.0.3
+sphinx==4.1.0
 sphinx-gallery==0.8.1
 sphinx_bootstrap_theme==0.7.1
