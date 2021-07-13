@@ -7,7 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from scipy import ndimage as ndi
 from skimage.data import astronaut
-from skimage.filters import gaussian
+from skimage.filters import gaussian, hessian
 
 import seaborn_image as isns
 
@@ -245,6 +245,32 @@ class TestImageGrid:
 
         g2 = isns.ImageGrid(self.img_3d, col_wrap=3)
         assert g2.axes.shape == (2, 3)
+        plt.close()
+
+        # test col_wrap with map_func
+        pol = isns.load_image("polymer")
+        pl = isns.load_image("fluorescence")
+        map_func = [gaussian, ndi.median_filter, hessian]
+        map_func_kwargs = [{"sigma": 1.5}, {"size": 10}, None]
+
+        g = isns.ImageGrid(pl, map_func=map_func, map_func_kwargs=map_func_kwargs)
+        assert g.axes.shape == (1, 3)
+        plt.close()
+
+        g = isns.ImageGrid(
+            [pl, pol], map_func=map_func, map_func_kwargs=map_func_kwargs
+        )
+        assert g.axes.shape == (2, 3)
+        plt.close()
+
+        g = isns.ImageGrid(
+            [pl, pol], map_func=map_func, map_func_kwargs=map_func_kwargs, col_wrap=2
+        )
+        assert g.axes.shape == (3, 2)
+        plt.close()
+
+        g = isns.ImageGrid([pl, pol], map_func=gaussian)
+        assert g.axes.shape == (1, 2)
         plt.close()
 
     def test_slices(self):

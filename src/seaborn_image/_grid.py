@@ -302,6 +302,12 @@ class ImageGrid:
             map_func_type = self._check_map_func(map_func, map_func_kwargs)
             if map_func_type == "list/tuple":
                 _nimages = len(data) * len(map_func)
+                # no of columns should either be len of data list or len of map_func list
+                # whichever is higher
+                if col_wrap is None:
+                    col_wrap = (
+                        len(map_func) if len(map_func) >= len(data) else len(data)
+                    )
 
         elif data.ndim > 3:
             raise ValueError("image data can not have more than 3 dimensions")
@@ -343,6 +349,8 @@ class ImageGrid:
             map_func_type = self._check_map_func(map_func, map_func_kwargs)
             if map_func_type == "list/tuple":
                 _nimages = len(map_func)
+                # no of columns should now be len of map_func list
+                col_wrap = len(map_func) if col_wrap is None else col_wrap
 
         # if no column wrap specified
         # set it to default 3
