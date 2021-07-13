@@ -20,6 +20,4 @@ g = isns.ImageGrid(
     map_func_kwargs=map_func_kwargs,
     col_wrap=2,
     cmap="inferno",
-    dx=[100, 15],
-    units="nm",
 )
