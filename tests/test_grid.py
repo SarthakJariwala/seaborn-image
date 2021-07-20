@@ -7,7 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from scipy import ndimage as ndi
 from skimage.data import astronaut
-from skimage.filters import gaussian, hessian
+from skimage.filters import gaussian, hessian, median
 
 import seaborn_image as isns
 
@@ -230,6 +230,40 @@ class TestImageGrid:
             g = isns.ImageGrid(
                 [pol, pl], map_func=gaussian, map_func_kwargs=[{"sigma": 1.5}]
             )
+
+    def test_param_list_with_map_func(self):
+        """
+        If the input data and map_func are both list-like,
+        modify the parameter list such as dx, units, etc such that
+        the length of new parameter list is the same as the number of images.
+
+        # For example -
+        # if data -> [img1, img2], map_func -> [func1, func2, func3]
+        # and dx = [dx1, dx2] # same as len(data)
+        # then for plotting, dx needs to be expanded such that the len(dx) == len(data) * len(map_func)
+        # so, new dx -> [dx1, dx2] * len(map_func)
+        # and len(dx) == len(nimages)
+        """
+        # when param is passed as list/tuple and data as well as map_func is a list
+        pol = isns.load_image("polymer")
+        pl = isns.load_image("fluorescence")
+        g = isns.ImageGrid(
+            [pol, pl],
+            dx=[15, 100],
+            units=["nm", "nm"],
+            dimension=["si", "si"],
+            cbar=[True, True],
+            cbar_label=["Height (nm)", "Intensity (au)"],
+            cbar_log=[False, True],
+            map_func=[gaussian, median, hessian],
+        )
+
+        assert len(g.dx) == g._nimages
+        assert len(g.units) == g._nimages
+        assert len(g.dimension) == g._nimages
+        assert len(g.cbar) == g._nimages
+        assert len(g.cbar_label) == g._nimages
+        assert len(g.cbar_log) == g._nimages
 
     def test_col_wrap(self):
 

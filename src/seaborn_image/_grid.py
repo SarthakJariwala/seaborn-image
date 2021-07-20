@@ -413,8 +413,6 @@ class ImageGrid:
         self._cleanup_extra_axes()
         self._finalize_grid()
 
-        return
-
     def _check_map_func(self, map_func, map_func_kwargs):
         "Check if `map_func` passed is a list/tuple of callables or individual callable"
         if map_func is not None:
@@ -555,11 +553,42 @@ class ImageGrid:
                 f"If supplying a list/tuple, length of {param_list} must be {self._nimages}."
             )
 
+    def _adjust_param_list_len(self, map_func):
+        """
+        If the input data and map_func are both list-like,
+        modify the parameter list such as dx, units, etc such that
+        the length of new parameter list is the same as the number of images.
+
+        # For example -
+        # if data -> [img1, img2], map_func -> [func1, func2, func3]
+        # and dx = [dx1, dx2] # same as len(data)
+        # then for plotting, dx needs to be expanded such that the len(dx) == len(data) * len(map_func)
+        # so, new dx -> [dx1, dx2] * len(map_func)
+        """
+        if isinstance(self.dx, (list, tuple)):
+            self.dx = self.dx * len(map_func)
+
+        if isinstance(self.units, (list, tuple)):
+            self.units = self.units * len(map_func)
+
+        if isinstance(self.dimension, (list, tuple)):
+            self.dimension = self.dimension * len(map_func)
+
+        if isinstance(self.cbar, (list, tuple)):
+            self.cbar = self.cbar * len(map_func)
+
+        if isinstance(self.cbar_label, (list, tuple)):
+            self.cbar_label = self.cbar_label * len(map_func)
+
+        if isinstance(self.cbar_log, (list, tuple)):
+            self.cbar_log = self.cbar_log * len(map_func)
+
     def _map_func_to_data(self, map_func, map_func_kwargs):
         """Transform image data using the map_func callable object."""
         # if data is a list or tuple of 2D images
         if isinstance(self.data, (list, tuple)):
             if self._check_map_func(map_func, map_func_kwargs) == "list/tuple":
+                self._adjust_param_list_len(map_func)
                 _d = self.data
                 # only pass on kwargs if not None
                 if map_func_kwargs is not None:
