@@ -241,6 +241,18 @@ class ImageGrid:
         ...             col_wrap=4,
         ...             map_func_kwargs=[{"mode" : "reflect", "sigmas" : [1]}, None, None, None])
 
+    Apply a list of filters to a list of input images.
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.filters import gaussian, median
+        >>> g = isns.ImageGrid(
+        ...             [pol, pl, retina],
+        ...             map_func=[gaussian, median, hessian],
+        ...             dx=[15, 100, None],
+        ...             units="nm")
+
     Change colorbar orientation
 
     .. plot::
