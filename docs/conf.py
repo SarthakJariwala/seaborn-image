@@ -94,19 +94,26 @@ html_theme = "pydata_sphinx_theme"
 # documentation.
 html_theme_options = {
     "source_link_position": "footer",
-    "bootswatch_theme": "lumen",  # united, simplex
-    "navbar_sidebarrel": False,
-    "bootstrap_version": "3",
     "navbar_links": [
         ("Gallery", "auto_examples/index"),
-        ("Reference", "reference"),
+        ("API Reference", "reference"),
         ("Tutorial", "tutorial"),
-        ("GitHub", "https://github.com/SarthakJariwala/seaborn-image", True),
         ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
     ],
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/SarthakJariwala/seaborn-image",
+            "icon": "fab fa-github-square",
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/JariwalaSarthak",
+            "icon": "fab fa-twitter-square",
+        },
+    ],
+    "use_edit_page_button": True,
 }
-
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
