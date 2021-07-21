@@ -41,6 +41,7 @@ sphinx_bootstrap_theme = "^0.7.1"
 xdoctest = "^0.15.5"
 sphinx-gallery = "^0.9.0"
 nbsphinx = "^0.8.0"
+pydata-sphinx-theme = "^0.6.3"
 
 [build-system]
 requires = ["poetry>=0.12"]
