@@ -13,5 +13,5 @@ g = isns.ImageGrid(
     retina,
     map_func=[meijering, sato, frangi, hessian],
     col_wrap=4,
-    map_func_kwargs=[{"mode": "reflect", "sigmas": [1]} for _ in range(4)],
+    map_func_kw=[{"mode": "reflect", "sigmas": [1]} for _ in range(4)],
 )
