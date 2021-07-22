@@ -1,6 +1,6 @@
 import numpy as np
 import pooch
-from skimage import io
+from skimage import color, data, io
 
 __all__ = ["load_image"]
 
@@ -62,6 +62,9 @@ def load_image(name):
     elif name == "cells":
         path = POOCH.fetch("cells.tif")
         img = io.imread(path).T
+
+    elif name == "retina-gray":
+        img = color.rgb2gray(data.retina())[300:700, 700:900]
 
     else:
         raise ValueError(

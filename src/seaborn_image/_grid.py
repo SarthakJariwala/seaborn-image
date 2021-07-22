@@ -34,8 +34,10 @@ class ImageGrid:
         Starting index to select from the the data, by default None
     stop : int, optional
         Stopping index to select from the data, by default None
-    map_func : callable, optional
-        Transform input image data using this function. All function arguments must be passed as kwargs.
+    map_func : callable or list/tuple or callables, optional
+        Transform input image data using this function. All function arguments must be passed as map_func_kw.
+    map_func_kw : dict or list/tuple of dict, optional
+        kwargs to pass on to `map_func`. Must be dict for a single `map_func` and a list/tuple of dicts for a list/tuple of `map_func`
     col_wrap : int, optional
         Number of columns to display. Defaults to None.
     height : int or float, optional
@@ -119,7 +121,9 @@ class ImageGrid:
     ValueError
         If `axis` is not 0, 1, 2 or -1
     TypeError
-        If `map_func` is not a callable object
+        If `map_func` is not a callable object or a list/tuple of callable objects
+    ValueError
+        If `map_func` is a list/tuple of callable objects when `data` is 3D
 
     Examples
     --------
@@ -208,10 +212,46 @@ class ImageGrid:
         >>> g = isns.ImageGrid(
         ...             cells,
         ...             map_func=adjust_gamma,
-        ...             gamma=0.5,
+        ...             map_func_kw={"gamma" : 0.5},
         ...             cbar=False,
         ...             height=1,
         ...             col_wrap=10)
+
+    Map a list of functions to the input data. Pass function kwargs to `map_func_kw`.
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.filters import meijering, sato, frangi, hessian
+        >>> retina = isns.load_image("retina-gray")
+        >>> g = isns.ImageGrid(
+        ...             retina,
+        ...             map_func=[meijering, sato, frangi, hessian],
+        ...             col_wrap=4,
+        ...             map_func_kw=[{"mode" : "reflect", "sigmas" : [1]} for _ in range(4)])
+
+    If no kwargs are required for one or more of the functions, use `None`.
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(
+        ...             retina,
+        ...             map_func=[meijering, sato, frangi, hessian],
+        ...             col_wrap=4,
+        ...             map_func_kw=[{"mode" : "reflect", "sigmas" : [1]}, None, None, None])
+
+    Apply a list of filters to a list of input images.
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.filters import gaussian, median
+        >>> g = isns.ImageGrid(
+        ...             [pol, pl, retina],
+        ...             map_func=[gaussian, median, hessian],
+        ...             dx=[15, 100, None],
+        ...             units="nm")
 
     Change colorbar orientation
 
@@ -239,6 +279,7 @@ class ImageGrid:
         start=None,
         stop=None,
         map_func=None,
+        map_func_kw=None,
         col_wrap=None,
         height=3,
         aspect=1,
@@ -258,7 +299,6 @@ class ImageGrid:
         cbar_ticks=None,
         showticks=False,
         despine=None,
-        **kwargs,
     ):
         if data is None:
             raise ValueError("image data can not be None")
@@ -268,6 +308,18 @@ class ImageGrid:
         ):  # using 'Iterable' numpy was being picked up
             # check the number of images to be plotted
             _nimages = len(data)
+
+            # --- List/Tuple of 2D images with a List/Tuple of map_func ---
+            # change the number of images on the grid accordingly
+            map_func_type = self._check_map_func(map_func, map_func_kw)
+            if map_func_type == "list/tuple":
+                _nimages = len(data) * len(map_func)
+                # no of columns should either be len of data list or len of map_func list
+                # whichever is higher
+                if col_wrap is None:
+                    col_wrap = (
+                        len(map_func) if len(map_func) >= len(data) else len(data)
+                    )
 
         elif data.ndim > 3:
             raise ValueError("image data can not have more than 3 dimensions")
@@ -290,14 +342,27 @@ class ImageGrid:
 
             _nimages = len(slices)
 
+            # ---- 3D image with an individual map_func ----
+            map_func_type = self._check_map_func(map_func, map_func_kw)
+            # raise a ValueError if a list of map_func is provided for 3d image
+            # TODO - support multiple map_func if "chaining"?
+            if map_func_type == "list/tuple":
+                raise ValueError(
+                    "Can not map multiple functions to a 3D image. Please provide a single `map_func`"
+                )
+
         else:
             # if data dim is not >2,
-            # TODO issue user warning to use imgplot() instead?
             _nimages = 1
 
-        if map_func is not None:
-            if not callable(map_func):
-                raise TypeError("`map_func` must be a callable function object")
+            # ---- 2D image with a list/tuple of map_func or individual map_func ------
+            # check if map_func is a list/tuple of callables
+            # and assign the new number of images
+            map_func_type = self._check_map_func(map_func, map_func_kw)
+            if map_func_type == "list/tuple":
+                _nimages = len(map_func)
+                # no of columns should now be len of map_func list
+                col_wrap = len(map_func) if col_wrap is None else col_wrap
 
         # if no column wrap specified
         # set it to default 3
@@ -354,13 +419,42 @@ class ImageGrid:
 
         # map function to input data
         if map_func is not None:
-            self._map_func_to_data(map_func, **kwargs)
+            self._map_func_to_data(map_func, map_func_kw)
 
         self._map_img_to_grid()
         self._cleanup_extra_axes()
         self._finalize_grid()
 
-        return
+    def _check_map_func(self, map_func, map_func_kw):
+        "Check if `map_func` passed is a list/tuple of callables or individual callable"
+        if map_func is not None:
+            if isinstance(map_func, (list, tuple)):
+                for func in map_func:
+                    if not callable(func):
+                        raise TypeError(f"{func} must be a callable function object")
+                if map_func_kw is not None:
+                    if not isinstance(map_func_kw, (list, tuple)):
+                        raise TypeError(
+                            "`map_func_kw` must be list/tuple of dictionaries"
+                        )
+                    if len(map_func_kw) != len(map_func):
+                        raise ValueError(
+                            "number of `map_func_kw` passed must be the same as the number of `map_func` objects"
+                        )
+                return "list/tuple"
+
+            elif callable(map_func):
+                if map_func_kw is not None:
+                    if not isinstance(map_func_kw, dict):
+                        raise TypeError(
+                            "`map_func_kw` must be a dictionary when a single `map_func` is passed as input"
+                        )
+                return "callable"
+
+            else:
+                raise TypeError(
+                    "`map_func` must either be a callable object or a list/tuple of callable objects"
+                )
 
     def _map_img_to_grid(self):
         """Map image data cube to the image grid."""
@@ -471,16 +565,85 @@ class ImageGrid:
                 f"If supplying a list/tuple, length of {param_list} must be {self._nimages}."
             )
 
-    def _map_func_to_data(self, map_func, **kwargs):
+    def _adjust_param_list_len(self, map_func):
+        """
+        If the input data and map_func are both list-like,
+        modify the parameter list such as dx, units, etc such that
+        the length of new parameter list is the same as the number of images.
+
+        # For example -
+        # if data -> [img1, img2], map_func -> [func1, func2, func3]
+        # and dx = [dx1, dx2] # same as len(data)
+        # then for plotting, dx needs to be expanded such that the len(dx) == len(data) * len(map_func)
+        # so, new dx -> [dx1, dx2] * len(map_func)
+        """
+        if isinstance(self.dx, (list, tuple)):
+            self.dx = self.dx * len(map_func)
+
+        if isinstance(self.units, (list, tuple)):
+            self.units = self.units * len(map_func)
+
+        if isinstance(self.dimension, (list, tuple)):
+            self.dimension = self.dimension * len(map_func)
+
+        if isinstance(self.cbar, (list, tuple)):
+            self.cbar = self.cbar * len(map_func)
+
+        if isinstance(self.cbar_label, (list, tuple)):
+            self.cbar_label = self.cbar_label * len(map_func)
+
+        if isinstance(self.cbar_log, (list, tuple)):
+            self.cbar_log = self.cbar_log * len(map_func)
+
+    def _map_func_to_data(self, map_func, map_func_kw):
         """Transform image data using the map_func callable object."""
         # if data is a list or tuple of 2D images
         if isinstance(self.data, (list, tuple)):
-            for i in range(len(self.data)):
-                self.data[i] = map_func(self.data[i], **kwargs)
+            if self._check_map_func(map_func, map_func_kw) == "list/tuple":
+                self._adjust_param_list_len(map_func)
+                _d = self.data
+                # only pass on kwargs if not None
+                if map_func_kw is not None:
+                    # check if one of the supplied kwargs in the list is None
+                    # if None - change it to empty {}
+                    map_func_kw = [{} if kw is None else kw for kw in map_func_kw]
+                    self.data = [
+                        func(img, **kwargs)
+                        for func, kwargs in zip(map_func, map_func_kw)
+                        for img in _d
+                    ]
+                else:
+                    self.data = [func(img) for func in map_func for img in _d]
+            else:  # if map_func is callable
+                for i in range(len(self.data)):
+                    # only pass on kwargs if not None
+                    if map_func_kw is not None:
+                        self.data[i] = map_func(self.data[i], **map_func_kw)
+                    else:
+                        self.data[i] = map_func(self.data[i])
 
-        # if data is 3D
+        # if data is 3D or 2D and map_func is single callable
         else:
-            self.data = map_func(self.data, **kwargs)
+            if self._check_map_func(map_func, map_func_kw) == "callable":
+                # only pass on kwargs if not None
+                if map_func_kw is not None:
+                    self.data = map_func(self.data, **map_func_kw)
+                else:
+                    self.data = map_func(self.data)
+            # list of callables -- only for 2D image
+            else:
+                _d = self.data
+                # only pass on kwargs if not None
+                if map_func_kw is not None:
+                    # check if one of the supplied kwargs in the list is None
+                    # if None - change it to empty {}
+                    map_func_kw = [{} if kw is None else kw for kw in map_func_kw]
+                    self.data = [
+                        func(_d, **kwargs)
+                        for func, kwargs in zip(map_func, map_func_kw)
+                    ]
+                else:
+                    self.data = [func(_d) for func in map_func]
 
     def _cleanup_extra_axes(self):
         """Clean extra axes that are generated if col_wrap is specified."""

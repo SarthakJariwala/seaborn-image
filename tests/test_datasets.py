@@ -2,7 +2,7 @@ import pytest
 
 import numpy as np
 import pooch
-from skimage import io
+from skimage import color, data, io
 
 import seaborn_image as isns
 
@@ -44,6 +44,10 @@ def test_load_image_from_skimage():
         known_hash="2120cfe08e0396324793a10a905c9bbcb64b117215eb63b2c24b643e1600c8c9",
     )
     test_img = io.imread(fname).T
+    np.testing.assert_array_equal(img, test_img)
+
+    img = isns.load_image("retina-gray")
+    test_img = color.rgb2gray(data.retina())[300:700, 700:900]
     np.testing.assert_array_equal(img, test_img)
 
 
