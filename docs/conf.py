@@ -4,7 +4,7 @@ import sphinx_bootstrap_theme
 
 project = "seaborn-image"
 author = "Sarthak Jariwala"
-copyright = f"{datetime.now().year}, {author}"
+copyright = f"2020 - {datetime.now().year}, {author}"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
@@ -94,12 +94,6 @@ html_theme = "pydata_sphinx_theme"
 # documentation.
 html_theme_options = {
     "source_link_position": "footer",
-    "navbar_links": [
-        ("Gallery", "auto_examples/index"),
-        ("API Reference", "reference"),
-        ("Tutorial", "tutorial"),
-        ("Releases", "https://github.com/SarthakJariwala/seaborn-image/releases", True),
-    ],
     "icon_links": [
         {
             "name": "GitHub",
@@ -115,6 +109,13 @@ html_theme_options = {
     "use_edit_page_button": True,
 }
 
+html_context = {
+    "github_url": "https://github.com",
+    "github_user": "SarthakJariwala",
+    "github_repo": "seaborn-image",
+    "github_version": "master",
+    "doc_path": "docs",
+}
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
 
