@@ -3,4 +3,3 @@ nbsphinx==0.8.6
 pydata-sphinx-theme==0.6.3
 sphinx==4.0.3
 sphinx-gallery==0.8.1
-sphinx_bootstrap_theme==0.7.1

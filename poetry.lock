@@ -1083,14 +1083,6 @@ lint = ["flake8 (>=3.5.0)", "isort", "mypy (>=0.900)", "docutils-stubs", "types-
 test = ["pytest", "pytest-cov", "html5lib", "cython", "typed-ast"]
 
 [[package]]
-name = "sphinx-bootstrap-theme"
-version = "0.7.1"
-description = "Sphinx Bootstrap Theme."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "sphinx-gallery"
 version = "0.9.0"
 description = "A Sphinx extension that builds an HTML version of any Python script and puts it into an examples gallery."
@@ -1311,7 +1303,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "bf4d6988db057d86ec84210055edb753db4a1e33daa0003db8629072b5472397"
+content-hash = "a6dd4fa039e735e8284f80396f9caa255af2bf254b2b9a1d1c956bc6fe645daf"
 
 [metadata.files]
 alabaster = [
@@ -2088,9 +2080,6 @@ soupsieve = [
 sphinx = [
     {file = "Sphinx-4.0.3-py3-none-any.whl", hash = "sha256:5747f3c855028076fcff1e4df5e75e07c836f0ac11f7df886747231092cfe4ad"},
     {file = "Sphinx-4.0.3.tar.gz", hash = "sha256:dff357e6a208eb7edb2002714733ac21a9fe597e73609ff417ab8cf0c6b4fbb8"},
-]
-sphinx-bootstrap-theme = [
-    {file = "sphinx-bootstrap-theme-0.7.1.tar.gz", hash = "sha256:571e43ccb76d4c6c06576aa24a826b6ebc7adac45a5b54985200128806279d08"},
 ]
 sphinx-gallery = [
     {file = "sphinx-gallery-0.9.0.tar.gz", hash = "sha256:14a2ecbfc172a5623f11d1cb9a5a9e21d5e2e65b76bb6f2174ca8a544f86fe93"},

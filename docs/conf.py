@@ -1,5 +1,4 @@
 from datetime import datetime
-import sphinx_bootstrap_theme
 
 
 project = "seaborn-image"
@@ -29,7 +28,7 @@ sphinx_gallery_conf = {
     "download_all_examples": False,
     "line_numbers": False,
     "show_memory": False,
-    "thumbnail_size": (500, 500),
+    "thumbnail_size": (1000, 1000),
 }
 
 # nbsphinx settings
