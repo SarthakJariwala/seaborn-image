@@ -98,11 +98,9 @@ Contents
    :maxdepth: 1
 
    Gallery <auto_examples/index>
-   Reference <reference>
+   API Reference <reference>
    Tutorial <tutorial>
    License <license>
-   Authors <authors>
-   GitHub <https://github.com/SarthakJariwala/seaborn-image>
    Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>
 
 
