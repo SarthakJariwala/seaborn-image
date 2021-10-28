@@ -908,9 +908,9 @@ class FilterGrid(object):
         by default None
     origin : str, optional
         Image origin, by default None
-    vmin : float, optional
+    vmin : float or list of floats, optional
         Minimum data value that colormap covers, by default None
-    vmax : float, optional
+    vmax : float or list of floats, optional
         Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
