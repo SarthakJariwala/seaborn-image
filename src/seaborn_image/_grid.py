@@ -555,7 +555,7 @@ class ImageGrid:
                 self._check_len_wrt_n_images(self.cbar_label)
                 _cbar_label = self.cbar_label[i]
 
-            _im = imgplot(
+            _ = imgplot(
                 _d,
                 ax=ax,
                 cmap=_cmap,
@@ -580,9 +580,9 @@ class ImageGrid:
             )
 
         # FIXME - for common colorbar
-        if self.cbar and self.vmin is not None and self.vmax is not None:
-            print("here")
-            self.fig.colorbar(_im.images[0], ax=list(self.axes.ravel()), orientation=self.orientation)
+        # if self.cbar and self.vmin is not None and self.vmax is not None:
+        #     print("here")
+        #     self.fig.colorbar(_im.images[0], ax=list(self.axes.ravel()), orientation=self.orientation)
 
     def _check_len_wrt_n_images(self, param_list):
         """If a specific parameter is supplied as a list/tuple, check that the
