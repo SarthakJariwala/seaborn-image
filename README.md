@@ -50,9 +50,18 @@ Detailed documentation can be found [here](https://seaborn-image.readthedocs.io/
 
 ## Installation
 
-For latest release
+For latest release:
+
+Using `pip`
+
 ```bash
-pip install seaborn-image
+pip install -U seaborn-image
+```
+
+Using `conda`
+
+```bash
+conda install seaborn-image -c conda-forge
 ```
 
 For latest commit

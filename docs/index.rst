@@ -45,9 +45,18 @@ If you come across any bugs/issues, please open an `issue <https://github.com/Sa
 Installation
 ============
 
+Using `pip`
+
 .. code-block:: bash
 
     pip install -U seaborn-image
+
+Using `conda`
+
+.. code-block:: bash
+
+    conda install -c conda-forge seaborn-image
+
 
 Getting Started
 ===============
