@@ -13,6 +13,8 @@ import seaborn_image as isns
 
 matplotlib.use("AGG")  # use non-interactive backend for tests
 
+cells = isns.load_image("cells")
+
 
 class TestImageGrid:
 
@@ -549,6 +551,35 @@ class TestImageGrid:
         np.testing.assert_array_equal(g4.fig.get_size_inches(), (3 * 2 * 1.5, 2 * 2))
         plt.close()
 
+    def test_vmin_vmax(self):
+
+        g = isns.ImageGrid(cells, vmin=0.5, vmax=0.75)
+        for ax in g.axes.ravel():
+            assert ax.images[0].colorbar.vmin == 0.5
+            assert ax.images[0].colorbar.vmax == 0.75
+        plt.close()
+
+        g = isns.ImageGrid(astronaut(), vmin=[10, 20, 30], vmax=[200, 200, 200])
+        ax = g.axes.ravel()
+
+        assert ax[0].images[0].colorbar.vmin == 10
+        assert ax[0].images[0].colorbar.vmax == 200
+
+        assert ax[1].images[0].colorbar.vmin == 20
+        assert ax[1].images[0].colorbar.vmax == 200
+
+        assert ax[2].images[0].colorbar.vmin == 30
+        assert ax[2].images[0].colorbar.vmax == 200
+        plt.close()
+
+        # when vmin/vmax provided as a list of floats,
+        # length must be equal to the number of images
+        with pytest.raises(AssertionError):
+            _ = isns.ImageGrid(cells, vmin=[12, 23])
+
+        with pytest.raises(AssertionError):
+            _ = isns.ImageGrid(cells, vmax=[12, 23])
+
 
 @pytest.mark.parametrize(
     "img",
@@ -569,6 +600,14 @@ def test_rgbplot_cmap():
 
     g = isns.rgbplot(astronaut(), cmap=["inferno", "viridis", "ice"])
     g.cmap = ["inferno", "viridis", "ice"]
+    plt.close()
+
+
+def test_rgbplot_vmin_vmax():
+    g = isns.rgbplot(astronaut(), vmin=10, vmax=200)
+    for ax in g.axes.ravel():
+        assert ax.images[0].colorbar.vmin == 10
+        assert ax.images[0].colorbar.vmax == 200
     plt.close()
 
 
@@ -756,3 +795,18 @@ class TestFilterGrid(object):
         np.testing.assert_array_equal(g4.fig.get_size_inches(), (4 * 1.5, 6))
 
         plt.close("all")
+
+    def test_vmin_vmax(self):
+        g = isns.FilterGrid(
+            self.data,
+            "gaussian",
+            row="sigma",
+            sigma=[1, 2, 3],
+            mode="reflect",
+            vmin=0,
+            vmax=2,
+        )
+        for ax in g.axes.ravel():
+            assert ax.images[0].colorbar.vmin == 0
+            assert ax.images[0].colorbar.vmax == 2
+        plt.close()

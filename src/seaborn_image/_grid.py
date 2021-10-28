@@ -61,6 +61,10 @@ class ImageGrid:
         by default None
     origin : str, optional
         Image origin, by default None
+    vmin : float or list of floats, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float or list of floats, optional
+        Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float or list, optional
@@ -203,6 +207,13 @@ class ImageGrid:
 
         >>> g = isns.ImageGrid(cells, step=3, cbar=False)
 
+    Visulaize image intensities relative to other images on the grid
+
+    .. plot::
+        :context: close-figs
+
+        >>> g = isns.ImageGrid(cells, vmin=0, vmax=1, height=1, col_wrap=5)
+
     Map a function to the image data
 
     .. plot::
@@ -288,6 +299,8 @@ class ImageGrid:
         perc=(2, 98),
         alpha=None,
         origin=None,
+        vmin=None,
+        vmax=None,
         interpolation=None,
         dx=None,
         units=None,
@@ -401,6 +414,8 @@ class ImageGrid:
         self.perc = perc
         self.alpha = alpha
         self.origin = origin
+        self.vmin = vmin
+        self.vmax = vmax
         self.interpolation = interpolation
         self.dx = dx
         self.units = units
@@ -462,6 +477,8 @@ class ImageGrid:
         _cmap = self.cmap
         _robust = self.robust
         _perc = self.perc
+        _vmin = self.vmin
+        _vmax = self.vmax
         _dx = self.dx
         _units = self.units
         _dimension = self.dimension
@@ -502,6 +519,14 @@ class ImageGrid:
                 self._check_len_wrt_n_images(self.robust)
                 _robust = self.robust[i]
 
+            if isinstance(self.vmin, (list, tuple)):
+                self._check_len_wrt_n_images(self.vmin)
+                _vmin = self.vmin[i]
+
+            if isinstance(self.vmax, (list, tuple)):
+                self._check_len_wrt_n_images(self.vmax)
+                _vmax = self.vmax[i]
+
             if isinstance(self.perc, (list)):
                 self._check_len_wrt_n_images(self.perc)
                 _perc = self.perc[i]
@@ -530,12 +555,14 @@ class ImageGrid:
                 self._check_len_wrt_n_images(self.cbar_label)
                 _cbar_label = self.cbar_label[i]
 
-            imgplot(
+            _ = imgplot(
                 _d,
                 ax=ax,
                 cmap=_cmap,
                 robust=_robust,
                 perc=_perc,
+                vmin=_vmin,
+                vmax=_vmax,
                 alpha=self.alpha,
                 origin=self.origin,
                 interpolation=self.interpolation,
@@ -553,7 +580,9 @@ class ImageGrid:
             )
 
         # FIXME - for common colorbar
-        # self.fig.colorbar(ax.images[0], ax=list(self.axes.flat), orientation=self.orientation)
+        # if self.cbar and self.vmin is not None and self.vmax is not None:
+        #     print("here")
+        #     self.fig.colorbar(_im.images[0], ax=list(self.axes.ravel()), orientation=self.orientation)
 
     def _check_len_wrt_n_images(self, param_list):
         """If a specific parameter is supplied as a list/tuple, check that the
@@ -674,6 +703,8 @@ def rgbplot(
     cmap=None,
     alpha=None,
     origin=None,
+    vmin=None,
+    vmax=None,
     interpolation=None,
     dx=None,
     units=None,
@@ -705,6 +736,10 @@ def rgbplot(
         by default None
     origin : str, optional
         Image origin, by default None
+    vmin : float or list of floats, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float or list of floats, optional
+        Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float or list, optional
@@ -819,6 +854,8 @@ def rgbplot(
         cmap=cmap,
         alpha=alpha,
         origin=origin,
+        vmin=vmin,
+        vmax=vmax,
         interpolation=interpolation,
         dx=dx,
         units=units,
@@ -871,6 +908,10 @@ class FilterGrid(object):
         by default None
     origin : str, optional
         Image origin, by default None
+    vmin : float or list of floats, optional
+        Minimum data value that colormap covers, by default None
+    vmax : float or list of floats, optional
+        Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
     dx : float, optional
@@ -998,6 +1039,8 @@ class FilterGrid(object):
         cmap=None,
         alpha=None,
         origin=None,
+        vmin=None,
+        vmax=None,
         interpolation=None,
         dx=None,
         units=None,
@@ -1102,6 +1145,8 @@ class FilterGrid(object):
         self.cmap = cmap
         self.alpha = alpha
         self.origin = origin
+        self.vmin = vmin
+        self.vmax = vmax
         self.interpolation = interpolation
         self.dx = dx
         self.units = units
@@ -1189,6 +1234,8 @@ class FilterGrid(object):
             cmap=self.cmap,
             alpha=self.alpha,
             origin=self.origin,
+            vmin=self.vmin,
+            vmax=self.vmax,
             interpolation=self.interpolation,
             dx=self.dx,
             units=self.units,
