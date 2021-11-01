@@ -1,4 +1,4 @@
-ipykernel==6.0.1
+ipykernel==6.5.0
 nbsphinx==0.8.6
 pydata-sphinx-theme==0.6.3
 sphinx==4.0.3
