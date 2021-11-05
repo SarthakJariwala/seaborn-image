@@ -1,6 +1,6 @@
 """
-Interplay between filter parameters using FilterGrid
-====================================================
+Interplay between function parameters using ParamGrid
+=====================================================
 """
 
 import seaborn_image as isns
