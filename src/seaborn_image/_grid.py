@@ -9,7 +9,7 @@ from ._filters import filterplot
 from ._general import imgplot
 from .utils import despine
 
-__all__ = ["FilterGrid", "ImageGrid", "rgbplot"]
+__all__ = ["ParamGrid", "ImageGrid", "rgbplot", "FilterGrid"]
 
 
 class ImageGrid:
@@ -875,19 +875,24 @@ def rgbplot(
 # TODO allow gridspec_kws and subplot_kws
 
 
-class FilterGrid(object):
-    """Generate a grid of images with the specific filter applied to all
-    the images. This class allows exploration of different parameters of
-    the filters across the rows and columns of the grid. Additional filter
+class ParamGrid(object):
+    """This class allows exploration of different parameters of
+    a function across the rows and columns of the grid. Additional function
     parameters that are not to be varied can also be passed.
+
+    Generates a grid of images with the specific function applied to all
+    the images.
 
     Parameters
     ----------
     data :
         Image data (array-like). Supported array shapes are all
         `matplotlib.pyplot.imshow` array shapes
-    filt : str or callable
-        Filter name or function to be applied.
+    map_func : callable or str
+        Function to be applied/mapped to data. Can be any callable that accepts data
+        as the the first input parameter.
+        If using a `str`, must one of the implemented filter functions in `seaborn_image`.
+        You can check implemented filters using `seaborn_image.implemented_filters()`.
     row : str, optional
         Parameter name that is to be displayed
         along the row. Defaults to None.
@@ -952,7 +957,7 @@ class FilterGrid(object):
 
      Returns
     -------
-        A `seabron_image.FilterGrid` object
+        A `seabron_image.ParamGrid` object
 
     Raises
     ------
@@ -976,28 +981,28 @@ class FilterGrid(object):
 
         >>> import seaborn_image as isns
         >>> img = isns.load_image("polymer")
-        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5])
+        >>> g = isns.ParamGrid(img, "median", col="size", size=[2,3,4,5])
 
     Or rows
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.FilterGrid(img, "median", row="size", size=[2,3,4,5])
+        >>> g = isns.ParamGrid(img, "median", row="size", size=[2,3,4,5])
 
     Use `col_wrap` to control column display
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], col_wrap=3)
+        >>> g = isns.ParamGrid(img, "median", col="size", size=[2,3,4,5], col_wrap=3)
 
     Use `col` and `row` to display different parameters along the columns and rows
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.FilterGrid(img,
+        >>> g = isns.ParamGrid(img,
         ...                     "percentile",
         ...                     row="percentile",
         ...                     col="size",
@@ -1009,14 +1014,14 @@ class FilterGrid(object):
     .. plot::
         :context: close-figs
 
-        >>> g = isns.FilterGrid(img, "median", col="size", size=[2,3,4,5], mode="reflect")
+        >>> g = isns.ParamGrid(img, "median", col="size", size=[2,3,4,5], mode="reflect")
 
     General image controls such as changing colormap, scalebar, etc.
 
     .. plot::
         :context: close-figs
 
-        >>> g = isns.FilterGrid(
+        >>> g = isns.ParamGrid(
         ...                     img,
         ...                     "median",
         ...                     col="size",
@@ -1029,7 +1034,7 @@ class FilterGrid(object):
     def __init__(
         self,
         data,
-        filt,
+        map_func,
         *,
         row=None,
         col=None,
@@ -1058,8 +1063,8 @@ class FilterGrid(object):
         if data is None:
             raise ValueError("image data can not be None")
 
-        if filt is None:
-            raise ValueError("'filt' can not be None; must be a string or callable")
+        if map_func is None:
+            raise ValueError("'map_func' can not be None; must be a string or callable")
 
         row_params = []
         if row is not None:
@@ -1131,7 +1136,7 @@ class FilterGrid(object):
 
         # Public API
         self.data = data
-        self.filt = filt
+        self.map_func = map_func
         self.fig = fig
         self.axes = axes
         self.row = row
@@ -1229,7 +1234,7 @@ class FilterGrid(object):
 
         filterplot(
             self.data,
-            self.filt,
+            self.map_func,
             ax=ax,
             cmap=self.cmap,
             alpha=self.alpha,
@@ -1272,3 +1277,15 @@ class FilterGrid(object):
     def _finalize_grid(self):
         """Finalize grid with tight layout."""
         self.fig.tight_layout()
+
+
+class FilterGrid:
+    """Deprecated - use `ParamGrid` instead."""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "FilterGrid is depracted and will be removed in a future release."
+            "Use ParamGrid instead with the same arguments.",
+            UserWarning,
+        )
+        ParamGrid(*args, **kwargs)
