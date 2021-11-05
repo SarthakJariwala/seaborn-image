@@ -7,7 +7,7 @@ import seaborn_image as isns
 
 img = isns.load_image("polymer")
 
-g = isns.FilterGrid(
+g = isns.ParamGrid(
     img,
     "gaussian",
     row="sigma",
