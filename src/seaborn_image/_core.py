@@ -184,7 +184,6 @@ class _SetupImage(object):
                     and mpl.rcParams["axes.spines.right"] is False
                 ):
                     self.despine = True
-                    print("Here")
 
             if self.despine is True:
                 cb.outline.set_visible(False)  # remove colorbar outline border
