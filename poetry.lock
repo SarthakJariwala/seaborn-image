@@ -755,16 +755,21 @@ dev = ["pre-commit", "tox"]
 
 [[package]]
 name = "pooch"
-version = "1.5.2"
-description = "Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks."
+version = "1.6.0"
+description = "\"Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks.\""
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-appdirs = "*"
-packaging = "*"
-requests = "*"
+appdirs = ">=1.3.0"
+packaging = ">=20.0"
+requests = ">=2.19.0"
+
+[package.extras]
+progress = ["tqdm (>=4.41.0,<5.0.0)"]
+sftp = ["paramiko (>=2.7.0)"]
+xxhash = ["xxhash (>=1.4.3)"]
 
 [[package]]
 name = "py"
@@ -792,7 +797,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "pydata-sphinx-theme"
-version = "0.6.3"
+version = "0.7.2"
 description = "Bootstrap-based Sphinx theme from the PyData community"
 category = "dev"
 optional = false
@@ -800,12 +805,12 @@ python-versions = ">=3.5"
 
 [package.dependencies]
 beautifulsoup4 = "*"
-docutils = "<0.17"
+docutils = "!=0.17.0"
 sphinx = "*"
 
 [package.extras]
-coverage = ["pytest-cov", "codecov", "sphinx", "numpydoc", "recommonmark", "pandas", "pytest", "pytest-regressions", "beautifulsoup4", "jupyter-sphinx", "plotly", "numpy", "xarray", "docutils (==0.16)"]
-test = ["sphinx", "numpydoc", "recommonmark", "pandas", "pytest", "pytest-regressions", "beautifulsoup4", "jupyter-sphinx", "plotly", "numpy", "xarray", "docutils (==0.16)"]
+coverage = ["pytest-cov", "codecov", "sphinx", "numpydoc", "recommonmark", "pandas", "pytest", "pytest-regressions", "beautifulsoup4", "sphinx-sitemap", "jupyter-sphinx", "plotly", "numpy", "xarray", "docutils (==0.16)"]
+test = ["sphinx", "numpydoc", "recommonmark", "pandas", "pytest", "pytest-regressions", "beautifulsoup4", "sphinx-sitemap", "jupyter-sphinx", "plotly", "numpy", "xarray", "docutils (==0.16)"]
 
 [[package]]
 name = "pydocstyle"
@@ -1053,7 +1058,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "sphinx"
-version = "4.0.3"
+version = "4.3.2"
 description = "Python documentation generator"
 category = "dev"
 optional = false
@@ -1072,14 +1077,14 @@ requests = ">=2.5.0"
 snowballstemmer = ">=1.1"
 sphinxcontrib-applehelp = "*"
 sphinxcontrib-devhelp = "*"
-sphinxcontrib-htmlhelp = "*"
+sphinxcontrib-htmlhelp = ">=2.0.0"
 sphinxcontrib-jsmath = "*"
 sphinxcontrib-qthelp = "*"
-sphinxcontrib-serializinghtml = "*"
+sphinxcontrib-serializinghtml = ">=1.1.5"
 
 [package.extras]
 docs = ["sphinxcontrib-websupport"]
-lint = ["flake8 (>=3.5.0)", "isort", "mypy (>=0.900)", "docutils-stubs", "types-typed-ast", "types-pkg-resources", "types-requests"]
+lint = ["flake8 (>=3.5.0)", "isort", "mypy (>=0.920)", "docutils-stubs", "types-typed-ast", "types-pkg-resources", "types-requests"]
 test = ["pytest", "pytest-cov", "html5lib", "cython", "typed-ast"]
 
 [[package]]
@@ -1119,11 +1124,11 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxcontrib-htmlhelp"
-version = "1.0.3"
+version = "2.0.0"
 description = "sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files"
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.extras]
 lint = ["flake8", "mypy", "docutils-stubs"]
@@ -1154,7 +1159,7 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxcontrib-serializinghtml"
-version = "1.1.4"
+version = "1.1.5"
 description = "sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)."
 category = "dev"
 optional = false
@@ -1272,7 +1277,7 @@ python-versions = "*"
 
 [[package]]
 name = "xdoctest"
-version = "0.15.5"
+version = "0.15.10"
 description = "A rewrite of the builtin doctest module"
 category = "dev"
 optional = false
@@ -1303,7 +1308,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "a6dd4fa039e735e8284f80396f9caa255af2bf254b2b9a1d1c956bc6fe645daf"
+content-hash = "612725bf8f35f47c63e46de9a972ed628a828a0eee8e610e8c9d6cded22edd94"
 
 [metadata.files]
 alabaster = [
@@ -1823,8 +1828,8 @@ pluggy = [
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
 pooch = [
-    {file = "pooch-1.5.2-py3-none-any.whl", hash = "sha256:debb159655de9eeccc366deb111fe1e33e76efac19724436b6878c09deca4293"},
-    {file = "pooch-1.5.2.tar.gz", hash = "sha256:5969b2f1defbdc405df932767e05e0b536e2771c27f1f95d7f260bc99bf13581"},
+    {file = "pooch-1.6.0-py3-none-any.whl", hash = "sha256:3bf0e20027096836b8dbce0152dbb785a269abeb621618eb4bdd275ff1e23c9c"},
+    {file = "pooch-1.6.0.tar.gz", hash = "sha256:57d20ec4b10dd694d2b05bb64bc6b109c6e85a6c1405794ce87ed8b341ab3f44"},
 ]
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
@@ -1839,8 +1844,8 @@ pycparser = [
     {file = "pycparser-2.20.tar.gz", hash = "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0"},
 ]
 pydata-sphinx-theme = [
-    {file = "pydata-sphinx-theme-0.6.3.tar.gz", hash = "sha256:32e0580ef985734d652eec2bf25e0995a330a9d4f76deaa353571ce8e180ab14"},
-    {file = "pydata_sphinx_theme-0.6.3-py3-none-any.whl", hash = "sha256:f0fee20dc33fa5efa6b9be57368be760d236d8b9c1486b14ad1d17b7e7e0db04"},
+    {file = "pydata-sphinx-theme-0.7.2.tar.gz", hash = "sha256:671df35fcdd290eafbd23d0595e6d359dbe90b2e64e6c3f4dc88276eed4a065e"},
+    {file = "pydata_sphinx_theme-0.7.2-py3-none-any.whl", hash = "sha256:bc1abc45e103b254c6c7a8f2ddabbaf8aa1f0817d85cae65dd163dd554c52700"},
 ]
 pydocstyle = [
     {file = "pydocstyle-5.1.1-py3-none-any.whl", hash = "sha256:aca749e190a01726a4fb472dd4ef23b5c9da7b9205c0a7857c06533de13fd678"},
@@ -2092,8 +2097,8 @@ soupsieve = [
     {file = "soupsieve-2.2.1.tar.gz", hash = "sha256:052774848f448cf19c7e959adf5566904d525f33a3f8b6ba6f6f8f26ec7de0cc"},
 ]
 sphinx = [
-    {file = "Sphinx-4.0.3-py3-none-any.whl", hash = "sha256:5747f3c855028076fcff1e4df5e75e07c836f0ac11f7df886747231092cfe4ad"},
-    {file = "Sphinx-4.0.3.tar.gz", hash = "sha256:dff357e6a208eb7edb2002714733ac21a9fe597e73609ff417ab8cf0c6b4fbb8"},
+    {file = "Sphinx-4.3.2-py3-none-any.whl", hash = "sha256:6a11ea5dd0bdb197f9c2abc2e0ce73e01340464feaece525e64036546d24c851"},
+    {file = "Sphinx-4.3.2.tar.gz", hash = "sha256:0a8836751a68306b3fe97ecbe44db786f8479c3bf4b80e3a7f5c838657b4698c"},
 ]
 sphinx-gallery = [
     {file = "sphinx-gallery-0.9.0.tar.gz", hash = "sha256:14a2ecbfc172a5623f11d1cb9a5a9e21d5e2e65b76bb6f2174ca8a544f86fe93"},
@@ -2107,8 +2112,8 @@ sphinxcontrib-devhelp = [
     {file = "sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl", hash = "sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e"},
 ]
 sphinxcontrib-htmlhelp = [
-    {file = "sphinxcontrib-htmlhelp-1.0.3.tar.gz", hash = "sha256:e8f5bb7e31b2dbb25b9cc435c8ab7a79787ebf7f906155729338f3156d93659b"},
-    {file = "sphinxcontrib_htmlhelp-1.0.3-py2.py3-none-any.whl", hash = "sha256:3c0bc24a2c41e340ac37c85ced6dafc879ab485c095b1d65d2461ac2f7cca86f"},
+    {file = "sphinxcontrib-htmlhelp-2.0.0.tar.gz", hash = "sha256:f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2"},
+    {file = "sphinxcontrib_htmlhelp-2.0.0-py2.py3-none-any.whl", hash = "sha256:d412243dfb797ae3ec2b59eca0e52dac12e75a241bf0e4eb861e450d06c6ed07"},
 ]
 sphinxcontrib-jsmath = [
     {file = "sphinxcontrib-jsmath-1.0.1.tar.gz", hash = "sha256:a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"},
@@ -2119,8 +2124,8 @@ sphinxcontrib-qthelp = [
     {file = "sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl", hash = "sha256:bd9fc24bcb748a8d51fd4ecaade681350aa63009a347a8c14e637895444dfab6"},
 ]
 sphinxcontrib-serializinghtml = [
-    {file = "sphinxcontrib-serializinghtml-1.1.4.tar.gz", hash = "sha256:eaa0eccc86e982a9b939b2b82d12cc5d013385ba5eadcc7e4fed23f4405f77bc"},
-    {file = "sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl", hash = "sha256:f242a81d423f59617a8e5cf16f5d4d74e28ee9a66f9e5b637a18082991db5a9a"},
+    {file = "sphinxcontrib-serializinghtml-1.1.5.tar.gz", hash = "sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952"},
+    {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 stevedore = [
     {file = "stevedore-3.3.0-py3-none-any.whl", hash = "sha256:50d7b78fbaf0d04cd62411188fa7eedcb03eb7f4c4b37005615ceebe582aa82a"},
@@ -2231,9 +2236,8 @@ webencodings = [
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
 xdoctest = [
-    {file = "xdoctest-0.15.5-py2.py3-none-any.whl", hash = "sha256:bbf92c11e29ac5acab6d0381e9d4bcfdce7f2ed3b516e38e71a181d3d210d460"},
-    {file = "xdoctest-0.15.5-py3-none-any.whl", hash = "sha256:49e16058d53138f3f20db3935c0e6e111d60a2c8739c017fb45c4486f4f8e8f1"},
-    {file = "xdoctest-0.15.5.tar.gz", hash = "sha256:3d4966651c2eaa3b7c48307e484e6aa0428388d46842c3639d51757f0df56f56"},
+    {file = "xdoctest-0.15.10-py3-none-any.whl", hash = "sha256:7666bd0511df59275dfe94ef94b0fde9654afd14f00bf88902fdc9bcee77d527"},
+    {file = "xdoctest-0.15.10.tar.gz", hash = "sha256:5f16438f2b203860e75ec594dbc38020df7524db0b41bb88467ea0a6030e6685"},
 ]
 zipp = [
     {file = "zipp-3.4.0-py3-none-any.whl", hash = "sha256:102c24ef8f171fd729d46599845e95c7ab894a4cf45f5de11a44cc7444fb1108"},
