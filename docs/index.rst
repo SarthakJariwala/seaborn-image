@@ -16,7 +16,7 @@ seaborn-image: image data visualization
     :width: 120px
     :height: 120px
 
-.. |img4| image:: /auto_examples/images/thumb/sphx_glr_plot_filtergrid_thumb.png
+.. |img4| image:: /auto_examples/images/thumb/sphx_glr_plot_paramgrid_thumb.png
     :width: 140px
     :height: 140px
 
