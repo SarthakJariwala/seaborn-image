@@ -955,7 +955,7 @@ class ParamGrid(object):
         Defaults to None.
     **kwargs : Additional parameters as keyword arguments to be passed to the underlying filter specified.
 
-     Returns
+    Returns
     -------
         A `seabron_image.ParamGrid` object
 
