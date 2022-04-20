@@ -43,10 +43,11 @@ Axes level function to apply image filters and visualize them.
 Axes level function to visualize the fast-fourier transform of the input image.
 
 
-:doc:`FilterGrid <api/FilterGrid>`
+:doc:`ParamGrid <api/ParamGrid>`
 ----------------------------------
 
-Figure level function to explore interplay between different parameters of the input filter.
+Figure level function that maps a function to input image and
+allows exploration of the interplay between different parameters of the mapped function.
 
 
 :doc:`load_image <api/datasets>`
@@ -65,3 +66,12 @@ Set global settings for drawing images.
 --------------------------------------
 
 Handy utility functions for despining axes, setting scientific ticks, etc.
+
+
+Deprecated
+++++++++++
+
+:doc:`FilterGrid <api/FilterGrid>`
+----------------------------------
+
+`FilterGrid` is deprecated. Use :doc:`ParamGrid <api/ParamGrid>` instead.

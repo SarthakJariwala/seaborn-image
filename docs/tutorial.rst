@@ -46,6 +46,15 @@ Working with a Collection of Images
    Collection of images <Tutorial/Image Collection.ipynb>
 
 
+Exploring Relationships between Parameters
+------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   Explore Parameter Interplays <Tutorial/ParamGrid.ipynb>
+
+
 Image Filters - Individual Filters and Exploring Relationships between Parameters
 ---------------------------------------------------------------------------------
 
