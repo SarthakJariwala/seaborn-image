@@ -268,14 +268,14 @@ pyflakes = ">=2.3.0,<2.4.0"
 
 [[package]]
 name = "flake8-bandit"
-version = "2.1.2"
+version = "3.0.0"
 description = "Automated security testing with bandit and flake8."
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-bandit = "*"
+bandit = ">=1.7.3"
 flake8 = "*"
 flake8-polyfill = "*"
 pycodestyle = "*"
@@ -1369,7 +1369,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "65f6d3535ad8441d328d87eda30a1100f970c57fd21a05dc2949d8df4e2700a9"
+content-hash = "83909a9735b250d71d38c5d49c9f8f7a261545fce3a0da9801455978764a701d"
 
 [metadata.files]
 alabaster = [
@@ -1563,7 +1563,8 @@ flake8 = [
     {file = "flake8-3.9.2.tar.gz", hash = "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b"},
 ]
 flake8-bandit = [
-    {file = "flake8_bandit-2.1.2.tar.gz", hash = "sha256:687fc8da2e4a239b206af2e54a90093572a60d0954f3054e23690739b0b0de3b"},
+    {file = "flake8_bandit-3.0.0-py2.py3-none-any.whl", hash = "sha256:61b617f4f7cdaa0e2b1e6bf7b68afb2b619a227bb3e3ae00dd36c213bd17900a"},
+    {file = "flake8_bandit-3.0.0.tar.gz", hash = "sha256:54d19427e6a8d50322a7b02e1841c0a7c22d856975f3459803320e0e18e2d6a1"},
 ]
 flake8-black = [
     {file = "flake8-black-0.2.5.tar.gz", hash = "sha256:fb6372cc90da129eec492989485a4f99d976f41d4072536470c18e0da0164724"},
