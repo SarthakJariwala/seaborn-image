@@ -40,7 +40,7 @@ codecov = "^2.1.10"
 xdoctest = "^0.15.10"
 sphinx-gallery = "^0.9.0"
 nbsphinx = "^0.8.0"
-pydata-sphinx-theme = "^0.7.2"
+pydata-sphinx-theme = "^0.9.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
