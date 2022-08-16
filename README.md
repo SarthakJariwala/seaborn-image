@@ -45,7 +45,7 @@ for drawing attractive statistical graphics in Python.
 Detailed documentation can be found [here](https://seaborn-image.readthedocs.io/).
 
 - [Tutorial](https://seaborn-image.readthedocs.io/en/latest/tutorial.html)
-- [Examples](https://seaborn-image.readthedocs.io/auto_examples/index.html)
+- [Examples](https://seaborn-image.sarthakjariwala.com/en/latest/auto_examples/index.html)
 - [API Reference](https://seaborn-image.readthedocs.io/en/latest/reference.html)
 
 ## Installation
