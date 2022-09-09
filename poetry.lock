@@ -484,11 +484,11 @@ setuptools_scm = ">=4,<7"
 
 [[package]]
 name = "matplotlib-scalebar"
-version = "0.7.2"
+version = "0.8.1"
 description = "Artist for matplotlib to display a scale bar"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = "~=3.7"
 
 [package.dependencies]
 matplotlib = "*"
@@ -1289,7 +1289,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "4e57c098c055bcce4faef4395f8fba884da0459644594ca301f942d37b77d473"
+content-hash = "2fbbfc6c2bc83b242af0955a5c78ea398e6e5f69a6f321d3feee2b9276a16174"
 
 [metadata.files]
 alabaster = [
@@ -1405,10 +1405,7 @@ markupsafe = [
     {file = "MarkupSafe-2.1.1.tar.gz", hash = "sha256:7f91197cc9e48f989d12e4e6fbc46495c446636dfc81b9ccf50bb0ec74b91d4b"},
 ]
 matplotlib = []
-matplotlib-scalebar = [
-    {file = "matplotlib-scalebar-0.7.2.tar.gz", hash = "sha256:36cfb6444e2e9ef7bc1cffe5d942b8b56bb45a65586eb00952812d599fbb14d0"},
-    {file = "matplotlib_scalebar-0.7.2-py2.py3-none-any.whl", hash = "sha256:2b7f886f1d34c0c4fa16d4ff4bfd1e5f92c0a5925a8e2c954fdb97f42a2dbd02"},
-]
+matplotlib-scalebar = []
 mccabe = []
 mistune = []
 mypy-extensions = [
