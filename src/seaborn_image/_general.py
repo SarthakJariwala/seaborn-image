@@ -402,8 +402,6 @@ def imghist(
         Image data. Supported array shapes are all `matplotlib.pyplot.imshow` array shapes
     bins : int, optional
         Histogram bins, by default None. If None, `auto` is used.
-    ax : `matplotlib.axes.Axes`, optional
-        Matplotlib axes to plot image on. If None, figure and axes are auto-generated, by default None
     cmap : str or `matplotlib.colors.Colormap`, optional
         Colormap for image. Can be a seaborn-image colormap or default matplotlib colormaps or
         any other colormap converted to a matplotlib colormap, by default None

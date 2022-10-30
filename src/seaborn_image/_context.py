@@ -125,7 +125,11 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
 
     if cmap in _CMAP_QUAL.keys():  # doesn't work currently
         cmap_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
-        register_cmap(name=cmap, cmap=cmap_mpl)
+        try:
+            register_cmap(name=cmap, cmap=cmap_mpl)
+        # above line will raise ValueError in matplotlib>3.6 if cmap already registered
+        except ValueError:  # pragma: no cover
+            pass
 
     # change the axes spines
     # "not" is required because of the despine parameter name
