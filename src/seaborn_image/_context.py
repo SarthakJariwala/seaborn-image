@@ -128,7 +128,7 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
         try:
             register_cmap(name=cmap, cmap=cmap_mpl)
         # above line will raise ValueError in matplotlib>3.6 if cmap already registered
-        except ValueError: # noqa
+        except ValueError:  # pragma: no cover
             pass
 
     # change the axes spines
