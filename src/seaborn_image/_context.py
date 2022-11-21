@@ -99,7 +99,7 @@ def reset_defaults():
     mpl.rcParams.update(mpl.rcParamsDefault)
 
 
-def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=False):
+def set_image(cmap="deep", origin="upper", interpolation="nearest", despine=False):
     """
     Set deaults for plotting images
 
@@ -108,7 +108,7 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
     cmap : str, optional
         Colormap to use accross images, by default to "deep".
     origin : str, optional
-        Image origin - same as in `matplotlib.pyplot.imshow`, by default "lower".
+        Image origin - same as in `matplotlib.pyplot.imshow`, by default "upper".
     interpolation : str, optional
         Image interpolation - same as in `matplotlib.pyplot.imshow`, by default "nearest".
     despine : bool, optional
