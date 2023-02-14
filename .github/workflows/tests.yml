@@ -26,4 +26,4 @@ jobs:
       - run: python -m pip install --constraint=.github/workflows/constraints.txt nox
       - run: python -m pip install --constraint=.github/workflows/constraints.txt poetry
       - run: python -m pip install --constraint=.github/workflows/constraints.txt nox-poetry
-      - run: nox --python=${{"{{"}} matrix.python-version {{"}}"}}
+      - run: nox --python=${{ matrix.python-version }}
