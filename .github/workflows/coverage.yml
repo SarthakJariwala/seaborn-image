@@ -7,12 +7,12 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
+        python-version: '3.10'
         architecture: x64
     - run: pip install --constraint=.github/workflows/constraints.txt pip
     - run: pip install --constraint=.github/workflows/constraints.txt nox
     - run: pip install --constraint=.github/workflows/constraints.txt poetry
     - run: python -m pip install --constraint=.github/workflows/constraints.txt nox-poetry
-    - run: nox --sessions tests coverage xdoctest
+    - run: nox --python=3.10 --sessions tests coverage xdoctest 
       env:
         CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
