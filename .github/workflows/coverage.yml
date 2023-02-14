@@ -12,6 +12,7 @@ jobs:
     - run: pip install --constraint=.github/workflows/constraints.txt pip
     - run: pip install --constraint=.github/workflows/constraints.txt nox
     - run: pip install --constraint=.github/workflows/constraints.txt poetry
+    - run: python -m pip install --constraint=.github/workflows/constraints.txt nox-poetry
     - run: nox --sessions tests coverage xdoctest
       env:
         CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
