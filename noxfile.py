@@ -1,90 +1,112 @@
-"""Nox Sessions."""
-import tempfile
+"""Nox sessions."""
+import os
+import shutil
+import sys
 from pathlib import Path
+from textwrap import dedent
 
 import nox
 
+
+try:
+    from nox_poetry import Session
+    from nox_poetry import session
+except ImportError:
+    message = f"""\
+    Nox failed to import the 'nox-poetry' package.
+
+    Please install it using the following command:
+
+    {sys.executable} -m pip install nox-poetry"""
+    raise SystemExit(dedent(message)) from None
+
+
+package = "seaborn_image"
+python_versions = ["3.10", "3.9", "3.8"]
+nox.needs_version = ">= 2021.6.6"
+nox.options.sessions = (
+    "safety",
+    "tests",
+    "xdoctest",
+)
 locations = "src", "tests", "noxfile.py", "docs/conf.py", "examples"
 nox.options.sessions = "safety", "tests", "xdoctest"
 
 
-def install_with_constraints(session, *args, **kwargs):
-    """Install packages constrained by Poetry's lock file."""
-    with tempfile.TemporaryDirectory() as directory:
-        requirements = Path(directory) / "requirements.txt"
-        session.run(
-            "poetry",
-            "export",
-            "--dev",
-            "--format=requirements.txt",
-            "--without-hashes",
-            f"--output={requirements}",
-            external=True,
-        )
-        session.install(f"--constraint={requirements}", *args, **kwargs)
-
-
-@nox.session()
-def tests(session):
-    """Run the test suite."""
-    args = session.posargs or ["--cov", "-m", "not e2e"]
-    session.run("poetry", "install", external=True)
-    install_with_constraints(session, "coverage[toml]", "pytest", "pytest-cov")
-    session.run("pytest", *args)
-
-
-@nox.session()
-def coverage(session):
-    """Upload coverage data."""
-    install_with_constraints(session, "coverage[toml]", "codecov")
-    session.run("coverage", "xml", "--fail-under=0")
-    session.run("codecov", *session.posargs)
-
-
-@nox.session()
-def xdoctest(session):
-    """Run examples with xdoctest."""
-    args = session.posargs or ["all"]
-    session.run("poetry", "install", "--no-dev", external=True)
-    install_with_constraints(session, "xdoctest")
-    session.run("python", "-m", "xdoctest", "seaborn_image", *args)
-
-
-@nox.session()
-def black(session):
-    """Run black code formatter."""
-    args = session.posargs or locations
-    install_with_constraints(session, "black")
-    session.run("black", *args)
-
-
-@nox.session()
-def safety(session):
+@session(python=python_versions[0])
+def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
-    with tempfile.TemporaryDirectory() as directory:
-        requirements = Path(directory) / "requirements.txt"
-        session.run(
-            "poetry",
-            "export",
-            "--dev",
-            "--format=requirements.txt",
-            "--without-hashes",
-            f"--output={requirements}",
-            external=True,
-        )
-        install_with_constraints(session, "safety")
-        session.run(
-            "safety",
-            "check",
-            f"--file={requirements}",
-            "--full-report",
-            "--ignore=39462",
-        )
+    requirements = session.poetry.export_requirements()
+    session.install("safety")
+    session.run("safety", "check", "--full-report", f"--file={requirements}")
 
 
-@nox.session()
-def docs(session):
+@session(python=python_versions)
+def tests(session: Session) -> None:
+    """Run the test suite."""
+    session.install(".")
+    session.install("coverage[toml]", "pytest", "pygments")
+    try:
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
+
+
+@session(python=python_versions[0])
+def coverage(session: Session) -> None:
+    """Produce the coverage report."""
+    args = session.posargs or ["report"]
+
+    session.install("coverage[toml]")
+
+    if not session.posargs and any(Path().glob(".coverage.*")):
+        session.run("coverage", "combine")
+
+    session.run("coverage", *args)
+
+
+@session(python=python_versions)
+def xdoctest(session: Session) -> None:
+    """Run examples with xdoctest."""
+    if session.posargs:
+        args = [package, *session.posargs]
+    else:
+        args = [f"--modname={package}", "--command=all"]
+        if "FORCE_COLOR" in os.environ:
+            args.append("--colored=1")
+
+    session.install(".")
+    session.install("xdoctest[colors]")
+    session.run("python", "-m", "xdoctest", *args)
+
+
+@session(name="docs-build", python=python_versions[0])
+def docs_build(session: Session) -> None:
     """Build the documentation."""
-    session.run("poetry", "install", external=True)
-    install_with_constraints(session, "sphinx")
-    session.run("sphinx-build", "docs", "docs/_build")
+    args = session.posargs or ["docs", "docs/_build"]
+    if not session.posargs and "FORCE_COLOR" in os.environ:
+        args.insert(0, "--color")
+
+    session.install(".")
+    session.install("sphinx", "sphinx-click", "furo", "myst-parser")
+
+    build_dir = Path("docs", "_build")
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
+
+    session.run("sphinx-build", *args)
+
+
+@session(python=python_versions[0])
+def docs(session: Session) -> None:
+    """Build and serve the documentation with live reloading on file changes."""
+    args = session.posargs or ["--open-browser", "docs", "docs/_build"]
+    session.install(".")
+    session.install("sphinx", "sphinx-autobuild", "sphinx-click", "furo", "myst-parser")
+
+    build_dir = Path("docs", "_build")
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
+
+    session.run("sphinx-autobuild", *args)
