@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from matplotlib import colormaps as mpl_colormaps
 
 import seaborn_image as isns
 
@@ -140,8 +141,8 @@ def test_data_plotted_is_same_as_input():
 
 
 @pytest.mark.parametrize(
-    "cmap", [None, "acton"]
-)  # test if seaborn-image supplied cmaps are working
+    "cmap", [None, "acton", mpl_colormaps["inferno"]]
+)  # test if seaborn-image supplied cmaps and mpl Colormaps type are working
 @pytest.mark.parametrize(
     "dx, units, dimension",
     [(None, None, None), (1, "nm", "si"), (1, "1/um", "si-reciprocal")],

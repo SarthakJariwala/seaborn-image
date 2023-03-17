@@ -102,7 +102,7 @@ class _SetupImage(object):
     def plot(self):
         f, ax = self._setup_figure()
 
-        if self.cmap in _CMAP_QUAL.keys():
+        if isinstance(self.cmap, str) and self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
 
         if self.robust:
