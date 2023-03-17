@@ -123,7 +123,7 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
 
     """
 
-    if cmap in _CMAP_QUAL.keys():  # doesn't work currently
+    if isinstance(cmap, str) and cmap in _CMAP_QUAL.keys():
         cmap_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
         try:
             register_cmap(name=cmap, cmap=cmap_mpl)
