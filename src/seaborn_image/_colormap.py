@@ -1,7 +1,6 @@
 import inspect
 
 import matplotlib as mpl
-# import matplotlib.pyplot as plt
 
 from palettable.cartocolors.sequential import *
 from palettable.cmocean.sequential import *
@@ -62,7 +61,7 @@ _CMAP_QUAL = {
 }
 
  
-# For plotting image channels 
+# Extra color maps for various purposes like showing RGB channels of an image
 _CMAP_EXTRA = {
     "R": mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]),
     "G": mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]),
@@ -71,12 +70,3 @@ _CMAP_EXTRA = {
     "M": mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]),
     "Y": mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]),
 }
-
-# For image channels
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]))
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]))
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("B", ["#000000", "#0000FF"]))
-
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("C", ["#FFFFFF", "#00FFFF"]))
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]))
-# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]))

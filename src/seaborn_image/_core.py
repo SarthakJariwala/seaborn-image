@@ -106,7 +106,7 @@ class _SetupImage(object):
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
         
         if isinstance(self.cmap, str) and self.cmap in _CMAP_EXTRA.keys():
-            self.cmap = _CMAP_EXTRA.get(cmap)
+            self.cmap = _CMAP_EXTRA.get(self.cmap)
 
         if self.robust:
             min_robust = False

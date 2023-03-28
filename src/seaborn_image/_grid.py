@@ -4,7 +4,6 @@ from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
-import skimage.color
 
 from ._filters import filterplot
 from ._general import imgplot
