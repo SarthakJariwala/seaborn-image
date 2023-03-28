@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib_scalebar.scalebar import ScaleBar
 from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
 
-from ._colormap import _CMAP_QUAL
+from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 from .utils import despine, scientific_ticks
 
 # dimensions for scalebar
@@ -104,6 +104,9 @@ class _SetupImage(object):
 
         if isinstance(self.cmap, str) and self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
+        
+        if isinstance(self.cmap, str) and self.cmap in _CMAP_EXTRA.keys():
+            self.cmap = _CMAP_EXTRA.get(cmap)
 
         if self.robust:
             min_robust = False

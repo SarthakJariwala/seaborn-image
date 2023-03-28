@@ -4,6 +4,7 @@ from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
+import skimage.color
 
 from ._filters import filterplot
 from ._general import imgplot
@@ -67,6 +68,10 @@ class ImageGrid:
         Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
+    norm : `matplotlib.colors.Normalize`, optional
+        `matplotlib` Normalize instance used to scale scalar data before
+        mapping to colors using cmap.
+        For the moment being the same normalization is used for all images in the grid.
     dx : float or list, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified.
@@ -302,6 +307,7 @@ class ImageGrid:
         vmin=None,
         vmax=None,
         interpolation=None,
+        norm=None,
         dx=None,
         units=None,
         dimension=None,
@@ -417,6 +423,7 @@ class ImageGrid:
         self.vmin = vmin
         self.vmax = vmax
         self.interpolation = interpolation
+        self.norm = norm
         self.dx = dx
         self.units = units
         self.dimension = dimension
@@ -566,6 +573,7 @@ class ImageGrid:
                 alpha=self.alpha,
                 origin=self.origin,
                 interpolation=self.interpolation,
+                norm=self.norm,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,
@@ -834,14 +842,14 @@ def rgbplot(
     """
 
     if not data.ndim == 3:
-        raise ValueError("imput image must be a RGB image")
+        raise ValueError("input image must be a RGB image")
 
     if data.shape[-1] != 3:
         raise ValueError("input image must be a RGB image")
 
     # if no cmap, assign reds, greens and blues cmap
     if cmap is None:
-        cmap = ["Reds", "Greens", "Blues"]
+        cmap = ["R", "G", "B"]
 
     # split RGB channels
     _d = [data[:, :, 0], data[:, :, 1], data[:, :, 2]]

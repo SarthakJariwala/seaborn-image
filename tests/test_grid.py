@@ -595,11 +595,11 @@ def test_rgbplot_data(img):
 
 def test_rgbplot_cmap():
     g = isns.rgbplot(astronaut())
-    g.cmap = ["Reds", "Greens", "Blues"]
+    assert g.cmap == ["R", "G", "B"]
     plt.close()
 
     g = isns.rgbplot(astronaut(), cmap=["inferno", "viridis", "ice"])
-    g.cmap = ["inferno", "viridis", "ice"]
+    assert g.cmap == ["inferno", "viridis", "ice"]
     plt.close()
 
 

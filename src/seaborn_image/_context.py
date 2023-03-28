@@ -2,9 +2,8 @@ import warnings
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib.cm import register_cmap
 
-from ._colormap import _CMAP_QUAL
+from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 
 __all__ = [
     "set_context",
@@ -123,13 +122,18 @@ def set_image(cmap="deep", origin="lower", interpolation="nearest", despine=Fals
 
     """
 
+    # Load colormap from palletable 
     if isinstance(cmap, str) and cmap in _CMAP_QUAL.keys():
-        cmap_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
-        try:
-            register_cmap(name=cmap, cmap=cmap_mpl)
-        # above line will raise ValueError in matplotlib>3.6 if cmap already registered
-        except ValueError:  # pragma: no cover
-            pass
+        cmap_qual_mpl = _CMAP_QUAL.get(cmap).mpl_colormap
+        if cmap not in mpl.colormaps.keys():
+            mpl.colormaps.register(name=cmap, cmap=cmap_qual_mpl)
+    
+    # Load extra colormap
+    if isinstance(cmap, str) and cmap in _CMAP_EXTRA.keys():
+        cmap_channel_mpl = _CMAP_EXTRA.get(cmap)
+        if cmap not in mpl.colormaps.keys():
+            mpl.colormaps.register(name=cmap, cmap=cmap_channel_mpl)
+        
 
     # change the axes spines
     # "not" is required because of the despine parameter name

@@ -1,5 +1,8 @@
 import inspect
 
+import matplotlib as mpl
+# import matplotlib.pyplot as plt
+
 from palettable.cartocolors.sequential import *
 from palettable.cmocean.sequential import *
 from palettable.colorbrewer.sequential import *
@@ -57,3 +60,23 @@ _CMAP_QUAL = {
     "sunset-dark": SunsetDark_7_r,
     "sunset": Sunset_7_r,
 }
+
+ 
+# For plotting image channels 
+_CMAP_EXTRA = {
+    "R": mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]),
+    "G": mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]),
+    "B": mpl.colors.LinearSegmentedColormap.from_list("B", ["#000000", "#0000FF"]),
+    "C": mpl.colors.LinearSegmentedColormap.from_list("C", ["#FFFFFF", "#00FFFF"]),
+    "M": mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]),
+    "Y": mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]),
+}
+
+# For image channels
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]))
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]))
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("B", ["#000000", "#0000FF"]))
+
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("C", ["#FFFFFF", "#00FFFF"]))
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]))
+# mpl.colormaps.register(mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]))
