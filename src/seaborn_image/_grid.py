@@ -485,6 +485,7 @@ class ImageGrid:
         _perc = self.perc
         _vmin = self.vmin
         _vmax = self.vmax
+        _norm = self.norm
         _dx = self.dx
         _units = self.units
         _dimension = self.dimension
@@ -536,6 +537,10 @@ class ImageGrid:
             if isinstance(self.perc, (list)):
                 self._check_len_wrt_n_images(self.perc)
                 _perc = self.perc[i]
+            
+            if isinstance(self.norm, (list)):
+                self._check_len_wrt_n_images(self.norm)
+                _norm = self.norm[i]
 
             if isinstance(self.dx, (list, tuple)):
                 self._check_len_wrt_n_images(self.dx)
@@ -572,7 +577,7 @@ class ImageGrid:
                 alpha=self.alpha,
                 origin=self.origin,
                 interpolation=self.interpolation,
-                norm=self.norm,
+                norm=_norm,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,

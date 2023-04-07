@@ -2,6 +2,7 @@ import pytest
 
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -384,6 +385,24 @@ class TestImageGrid:
 
         with pytest.raises(AssertionError):
             isns.ImageGrid(self.img_3d, cmap=["Reds"])
+            plt.close()
+    
+    def test_norm_list(self):
+        
+        norm_list1 = [colors.LogNorm(vmin=1e-4, vmax=1), colors.CenteredNorm(), colors.PowerNorm(gamma=0.5)]
+        isns.ImageGrid(self.img_list, norm=norm_list1)
+        plt.close()
+
+        norm_list2 = [colors.LogNorm(vmin=1e-4, vmax=1), None, None]
+        isns.ImageGrid(self.img_list, norm=norm_list2)
+        plt.close()
+
+        norm_list3 = [None, colors.CenteredNorm(), colors.PowerNorm(gamma=0.5)]
+        isns.ImageGrid(self.img_list, norm=norm_list3)
+        plt.close()
+
+        with pytest.raises(AssertionError):
+            isns.ImageGrid(self.img_3d, norm=[colors.LogNorm(vmin=1e-4, vmax=1)])
             plt.close()
 
     def test_robust(self):
