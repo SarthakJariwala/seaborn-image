@@ -67,10 +67,9 @@ class ImageGrid:
         Maximum data value that colormap covers, by default None
     interpolation : str, optional
         `matplotlib.pyplot.imshow` interpolation method used, by default None
-    norm : `matplotlib.colors.Normalize`, optional
+    norm : `matplotlib.colors.Normalize` or list of `matplotlib.colors.Normalize`, optional
         `matplotlib` Normalize instance used to scale scalar data before
         mapping to colors using cmap.
-        For the moment being the same normalization is used for all images in the grid.
     dx : float or list, optional
         Size per pixel of the image data. If scalebar
         is required, `dx` and `units` must be sepcified.
