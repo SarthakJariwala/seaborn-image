@@ -1,5 +1,7 @@
 import inspect
 
+import matplotlib as mpl
+
 from palettable.cartocolors.sequential import *
 from palettable.cmocean.sequential import *
 from palettable.colorbrewer.sequential import *
@@ -56,4 +58,15 @@ _CMAP_QUAL = {
     "teal-green": TealGrn_7_r,
     "sunset-dark": SunsetDark_7_r,
     "sunset": Sunset_7_r,
+}
+
+ 
+# Extra color maps for various purposes like showing RGB channels of an image
+_CMAP_EXTRA = {
+    "R": mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]),
+    "G": mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]),
+    "B": mpl.colors.LinearSegmentedColormap.from_list("B", ["#000000", "#0000FF"]),
+    "C": mpl.colors.LinearSegmentedColormap.from_list("C", ["#FFFFFF", "#00FFFF"]),
+    "M": mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]),
+    "Y": mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]),
 }

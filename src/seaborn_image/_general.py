@@ -7,7 +7,7 @@ from matplotlib.cm import get_cmap
 from matplotlib.colors import Colormap
 from skimage.color import rgb2gray
 
-from ._colormap import _CMAP_QUAL
+from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 from ._core import _SetupImage
 from .utils import is_documented_by
 
@@ -652,6 +652,8 @@ def imghist(
     else:
         if cmap in _CMAP_QUAL.keys():
             cm = _CMAP_QUAL.get(cmap).mpl_colormap
+        elif cmap in _CMAP_EXTRA.keys():
+            cm = _CMAP_EXTRA.get(cmap)
         else:
             cm = plt.cm.get_cmap(cmap)
 
