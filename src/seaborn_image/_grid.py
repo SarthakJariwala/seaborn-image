@@ -288,7 +288,7 @@ class ImageGrid:
         data,
         *,
         slices=None,
-        axis=-1,
+        axis=None,
         step=1,
         start=None,
         stop=None,
@@ -338,19 +338,29 @@ class ImageGrid:
                         len(map_func) if len(map_func) >= len(data) else len(data)
                     )
 
-        elif data.ndim > 3:
-            raise ValueError("image data can not have more than 3 dimensions")
+        elif data.ndim in [3,4]:
+            if data.ndim == 4 and data.shape[-1] not in [1, 3, 4]:
+                raise ValueError("The number of channels in the images must be 1, 3 or 4")
 
-        elif data.ndim == 3:
+            if axis is None:
+                if data.ndim == 3:
+                    axis = -1
+                elif data.ndim == 4:
+                    axis = 0
+            
+            if data.ndim == 3 and axis not in [0, 1, 2, -1]:
+                raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, or -1")
+            
+            if data.ndim == 4 and axis not in [0, 1, 2, 3, -1]:
+                raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, 3, or -1")
+
             if slices is None:
-                if axis not in [0, 1, 2, -1]:
-                    raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, or -1")
                 # slice the image array along specified axis;
                 # if start, stop and step are not provided, default is step=1
                 data = data[
                     (slice(None),) * (axis % data.ndim) + (slice(start, stop, step),)
                 ]
-                slices = np.arange(data.shape[axis])
+                slices = np.arange(data.shape[axis])            
 
             # if a single slice is provided and
             # it is not an interable
@@ -367,6 +377,9 @@ class ImageGrid:
                 raise ValueError(
                     "Can not map multiple functions to a 3D image. Please provide a single `map_func`"
                 )
+        
+        elif data.ndim > 4:
+            raise ValueError("image data can not have more than 4 dimensions")
 
         else:
             # if data dim is not >2,
@@ -499,9 +512,14 @@ class ImageGrid:
                 _d = self.data[i]
 
                 # check if the image has more than 2 dimensions
-                if _d.ndim > 2:
+                if _d.ndim > 3:
                     raise ValueError(
-                        "can not plot multiple 3D images. Supply an individual 3D image"
+                        "One of the images provided has more than 3 dimensions, verify that all the images are correctly formatted."
+                    )
+
+                if _d.ndim == 3 and _d.shape[-1] not in [1, 3, 4]:
+                    raise ValueError(
+                        "An image was provided that had more than 4 channels, verify that all the images are correctly formatted."
                     )
 
             elif self.data.ndim == 3:
@@ -511,6 +529,16 @@ class ImageGrid:
                     _d = self.data[:, self.slices[i], :]
                 elif self.axis == 2 or self.axis == -1:
                     _d = self.data[:, :, self.slices[i]]
+            
+            elif self.data.ndim == 4:
+                if self.axis == 0:
+                    _d = self.data[self.slices[i], :, :, :]
+                elif self.axis == 1:
+                    _d = self.data[:, self.slices[i], :, :]
+                elif self.axis == 2:
+                    _d = self.data[:, :, self.slices[i], :]
+                elif self.axis == 3 or self.axis == -1:
+                    _d = self.data[:, :, :, self.slices[i]]
 
             else:
                 # if a single 2D image is supplied

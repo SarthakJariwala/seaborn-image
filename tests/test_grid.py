@@ -20,9 +20,19 @@ cells = isns.load_image("cells")
 class TestImageGrid:
 
     img_3d = np.random.random(4 * 4 * 4).reshape((4, 4, 4))
+    img_4d = np.random.random(4 * 4 * 4 * 3).reshape((4, 4, 4, 3))
 
     data = np.random.random(2500).reshape((50, 50))
     img_list = [data, data, data]
+
+    data_3d = np.random.random(2500*3).reshape((50, 50, 3))
+    img_3d_list = [data_3d, data_3d, data_3d]
+
+    img_mixed_list = [data_3d, data, data_3d]
+
+    data_3d_bad = np.random.random(2500*6).reshape((50, 50, 6))
+    img_bad_list1 = [data, data_3d_bad, data_3d]
+    img_bad_list2 = [data, img_4d, data_3d]
 
     def test_none_data(self):
         with pytest.raises(ValueError):
@@ -30,7 +40,11 @@ class TestImageGrid:
 
     def test_higher_dim_data(self):
         with pytest.raises(ValueError):
-            isns.ImageGrid(np.random.random(50 * 50 * 4 * 3).reshape((50, 50, 4, 3)))
+            isns.ImageGrid(np.random.random(50 * 50 * 4 * 3 * 3).reshape((50, 50, 4, 3, 3)))
+    
+    def test_incorrect_channels(self):
+        with pytest.raises(ValueError):
+            isns.ImageGrid(np.random.random(6 * 50 * 50 * 5).reshape((6, 50, 50, 5)))
 
     def test_incorrect_axis_for_slicing(self):
         with pytest.raises(ValueError):
@@ -45,9 +59,28 @@ class TestImageGrid:
         np.testing.assert_array_equal(self.img_list, g.data)
         plt.close()
 
+        g = isns.ImageGrid(self.img_3d_list)
+        np.testing.assert_array_equal(self.img_3d_list, g.data)
+        plt.close()
+
+        g = isns.ImageGrid(self.img_mixed_list)
+        for idx, aux_img in enumerate(self.img_mixed_list):
+            np.testing.assert_array_equal(aux_img, g.data[idx])
+        plt.close()
+
         g = isns.ImageGrid(self.img_3d)
         np.testing.assert_array_equal(self.img_3d, g.data)
         plt.close()
+
+        g = isns.ImageGrid(self.img_4d)
+        np.testing.assert_array_equal(self.img_4d, g.data)
+        plt.close()
+
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_bad_list1)
+        
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_bad_list2)
 
     def test_self_fig(self):
         g = isns.ImageGrid(self.data)
@@ -66,8 +99,23 @@ class TestImageGrid:
             assert isinstance(ax, Axes)
         plt.close()
 
-        g2 = isns.ImageGrid(self.img_3d)
+        g2 = isns.ImageGrid(self.img_3d_list)
         for ax in g2.axes.flat:
+            assert isinstance(ax, Axes)
+        plt.close()
+
+        g3 = isns.ImageGrid(self.img_mixed_list)
+        for ax in g3.axes.flat:
+            assert isinstance(ax, Axes)
+        plt.close()
+
+        g4 = isns.ImageGrid(self.img_3d)
+        for ax in g4.axes.flat:
+            assert isinstance(ax, Axes)
+        plt.close()
+
+        g5 = isns.ImageGrid(self.img_4d)
+        for ax in g5.axes.flat:
             assert isinstance(ax, Axes)
         plt.close()
 
@@ -81,8 +129,20 @@ class TestImageGrid:
         assert g1.axes.shape == (2, 3)
         plt.close()
 
-        g2 = isns.ImageGrid(self.img_list)
-        assert g2.axes.shape == (1, 3)
+        g2 = isns.ImageGrid(self.img_4d)
+        assert g2.axes.shape == (2, 3)
+        plt.close()
+
+        g3 = isns.ImageGrid(self.img_list)
+        assert g3.axes.shape == (1, 3)
+        plt.close()
+
+        g4 = isns.ImageGrid(self.img_3d_list)
+        assert g4.axes.shape == (1, 3)
+        plt.close()
+
+        g5 = isns.ImageGrid(self.img_mixed_list)
+        assert g5.axes.shape == (1, 3)
         plt.close()
 
     def test_map_func(self):
@@ -329,6 +389,75 @@ class TestImageGrid:
             ax[0].images[0].get_array().data, self.img_3d[:, 2, :]
         )
         plt.close()
+    
+    def test_slices_4d(self):
+        # along axis=0
+        g = isns.ImageGrid(self.img_4d, slices=[0, 2])
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_4d[0, :, :, :]
+        )
+        np.testing.assert_array_equal(
+            ax[1].images[0].get_array().data, self.img_4d[2, :, :, :]
+        )
+        plt.close()
+
+        # along axis=1
+        g = isns.ImageGrid(self.img_4d, slices=2, axis=1)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_4d[:, 2, :, :]
+        )
+        plt.close()
+
+        # along axis=2
+        g = isns.ImageGrid(self.img_4d, slices=2, axis=2)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_4d[:, :, 2, :]
+        )
+        plt.close()
+
+        # along axis=-1
+        g = isns.ImageGrid(self.img_4d, slices=2, axis=-1)
+        ax = g.axes.flat
+        np.testing.assert_array_equal(
+            ax[0].images[0].get_array().data, self.img_4d[:, :, :, 2]
+        )
+        plt.close()
+    
+    def test_axis(self):
+        g = isns.ImageGrid(self.img_3d, axis=0)
+        ax = g.axes.flat
+        for i in range(self.img_3d.shape[0]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_3d[i, :, :]
+            )
+        plt.close()
+        
+        g = isns.ImageGrid(self.img_3d, axis=-1)
+        ax = g.axes.flat
+        for i in range(self.img_3d.shape[-1]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_3d[:, :, i]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_4d, axis=0)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[0]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[i, :, :, :]
+            )
+        plt.close()
+
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_3d, axis=3)
+            plt.close()
+        
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_4d, axis=4)
+            plt.close()
 
     def test_axis_w_step(self):
         g = isns.ImageGrid(self.img_3d, axis=0, step=2)

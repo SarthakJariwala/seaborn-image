@@ -66,7 +66,7 @@ _CMAP_EXTRA = {
     "R": mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]),
     "G": mpl.colors.LinearSegmentedColormap.from_list("G", ["#000000", "#00FF00"]),
     "B": mpl.colors.LinearSegmentedColormap.from_list("B", ["#000000", "#0000FF"]),
-    "C": mpl.colors.LinearSegmentedColormap.from_list("C", ["#FFFFFF", "#00FFFF"]),
-    "M": mpl.colors.LinearSegmentedColormap.from_list("M", ["#FFFFFF", "#FF00FF"]),
-    "Y": mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFFFF", "#FFFF00"]),
+    "C": mpl.colors.LinearSegmentedColormap.from_list("C", ["#00FFFF", "#FFFFFF"]),
+    "M": mpl.colors.LinearSegmentedColormap.from_list("M", ["#FF00FF", "#FFFFFF"]),
+    "Y": mpl.colors.LinearSegmentedColormap.from_list("Y", ["#FFFF00", "#FFFFFF"]),
 }
