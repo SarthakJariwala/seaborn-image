@@ -1,3 +1,4 @@
+import warnings
 import pytest
 
 import matplotlib
@@ -51,10 +52,11 @@ class TestImageGrid:
             isns.ImageGrid(self.img_3d, axis=3)
 
     def test_self_data(self):
-        g = isns.ImageGrid(self.data)
-        np.testing.assert_array_equal(self.data, g.data)
-        plt.close()
-
+        with pytest.warns(RuntimeWarning):
+            g = isns.ImageGrid(self.data)
+            np.testing.assert_array_equal(self.data, g.data)
+            plt.close()
+        
         g = isns.ImageGrid(self.img_list)
         np.testing.assert_array_equal(self.img_list, g.data)
         plt.close()
@@ -81,15 +83,19 @@ class TestImageGrid:
         
         with pytest.raises(ValueError):
             g = isns.ImageGrid(self.img_bad_list2)
+        
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(0)
+        
 
     def test_self_fig(self):
-        g = isns.ImageGrid(self.data)
+        g = isns.ImageGrid([self.data])
         assert isinstance(g.fig, Figure)
         plt.close()
 
     def test_self_axes(self):
 
-        g0 = isns.ImageGrid(self.data)
+        g0 = isns.ImageGrid([self.data])
         for ax in g0.axes.flat:
             assert isinstance(ax, Axes)
         plt.close()
@@ -121,7 +127,7 @@ class TestImageGrid:
 
     def test_axes_shape(self):
 
-        g0 = isns.ImageGrid(self.data)
+        g0 = isns.ImageGrid([self.data])
         assert g0.axes.shape == (1, 1)
         plt.close()
 
@@ -172,18 +178,20 @@ class TestImageGrid:
         np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pl))
         plt.close()
 
-        # Single 2D image with a single map_func
-        g = isns.ImageGrid(pol, map_func=gaussian)
-        ax = g.axes.flat
-        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
-        plt.close()
+        with pytest.warns(RuntimeWarning):
+            # Single 2D image with a single map_func
+            g = isns.ImageGrid(pol, map_func=gaussian)
+            ax = g.axes.flat
+            np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+            plt.close()
 
-        # Single 2D image with a list of map_func
-        g = isns.ImageGrid(pol, map_func=[gaussian, gaussian])
-        ax = g.axes.flat
-        np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
-        np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pol))
-        plt.close()
+        with pytest.warns(RuntimeWarning):
+            # Single 2D image with a list of map_func
+            g = isns.ImageGrid(pol, map_func=[gaussian, gaussian])
+            ax = g.axes.flat
+            np.testing.assert_array_equal(ax[0].images[0].get_array().data, gaussian(pol))
+            np.testing.assert_array_equal(ax[1].images[0].get_array().data, gaussian(pol))
+            plt.close()
 
         # List of 2D images with a list of map_func
         g = isns.ImageGrid([pol, pl], map_func=[gaussian, gaussian])
@@ -193,6 +201,9 @@ class TestImageGrid:
         np.testing.assert_array_equal(ax[2].images[0].get_array().data, gaussian(pol))
         np.testing.assert_array_equal(ax[3].images[0].get_array().data, gaussian(pl))
         plt.close()
+
+        with pytest.warns(RuntimeWarning):
+            g = isns.ImageGrid(pol, map_func=[gaussian, gaussian])
 
         # 3 Image with list of map_func
         with pytest.raises(ValueError):
@@ -228,28 +239,30 @@ class TestImageGrid:
         )
         plt.close()
 
-        # kwargs for single map_func for a single 2D image
-        g = isns.ImageGrid(pol, map_func=gaussian, map_func_kw={"sigma": 1.5})
-        ax = g.axes.flat
-        np.testing.assert_array_equal(
-            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
-        )
-        plt.close()
+        with pytest.warns(RuntimeWarning):
+            # kwargs for single map_func for a single 2D image
+            g = isns.ImageGrid(pol, map_func=gaussian, map_func_kw={"sigma": 1.5})
+            ax = g.axes.flat
+            np.testing.assert_array_equal(
+                ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+            )
+            plt.close()
 
         # kwargs for a list of map_func for a single 2D image
         # Also, test for any None elements in map_func_kw list
         map_func = [gaussian, ndi.median_filter, gaussian]
         map_func_kw = [{"sigma": 1.5}, {"size": 10}, None]
-        g = isns.ImageGrid(pol, map_func=map_func, map_func_kw=map_func_kw)
-        ax = g.axes.flat
-        np.testing.assert_array_equal(
-            ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
-        )
-        np.testing.assert_array_equal(
-            ax[1].images[0].get_array().data, ndi.median_filter(pol, size=10)
-        )
-        np.testing.assert_array_equal(ax[2].images[0].get_array().data, gaussian(pol))
-        plt.close()
+        with pytest.warns(RuntimeWarning):
+            g = isns.ImageGrid(pol, map_func=map_func, map_func_kw=map_func_kw)
+            ax = g.axes.flat
+            np.testing.assert_array_equal(
+                ax[0].images[0].get_array().data, gaussian(pol, sigma=1.5)
+            )
+            np.testing.assert_array_equal(
+                ax[1].images[0].get_array().data, ndi.median_filter(pol, size=10)
+            )
+            np.testing.assert_array_equal(ax[2].images[0].get_array().data, gaussian(pol))
+            plt.close()
 
         # List of 2D images with a list of map_func and list of map_func_kw
         g = isns.ImageGrid([pol, pl], map_func=map_func, map_func_kw=map_func_kw)
@@ -324,7 +337,7 @@ class TestImageGrid:
 
     def test_col_wrap(self):
 
-        g0 = isns.ImageGrid(self.data, col_wrap=3)
+        g0 = isns.ImageGrid([self.data], col_wrap=3)
         # since it is only 1 image;
         # col_wrap should revert to min no of images
         assert g0.axes.shape == (1, 1)
@@ -344,9 +357,10 @@ class TestImageGrid:
         map_func = [gaussian, ndi.median_filter, hessian]
         map_func_kw = [{"sigma": 1.5}, {"size": 10}, None]
 
-        g = isns.ImageGrid(pl, map_func=map_func, map_func_kw=map_func_kw)
-        assert g.axes.shape == (1, 3)
-        plt.close()
+        with pytest.warns(RuntimeWarning):
+            g = isns.ImageGrid(pl, map_func=map_func, map_func_kw=map_func_kw)
+            assert g.axes.shape == (1, 3)
+            plt.close()
 
         g = isns.ImageGrid([pl, pol], map_func=map_func, map_func_kw=map_func_kw)
         assert g.axes.shape == (2, 3)
@@ -427,11 +441,35 @@ class TestImageGrid:
         plt.close()
     
     def test_axis(self):
+        g = isns.ImageGrid(self.img_3d)
+        ax = g.axes.flat
+        for i in range(self.img_3d.shape[0]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_3d[:, :, i]
+            )
+        plt.close()
+        
         g = isns.ImageGrid(self.img_3d, axis=0)
         ax = g.axes.flat
         for i in range(self.img_3d.shape[0]):
             np.testing.assert_array_equal(
                 ax[i].images[0].get_array().data, self.img_3d[i, :, :]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_3d, axis=1)
+        ax = g.axes.flat
+        for i in range(self.img_3d.shape[1]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_3d[:, i, :]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_3d, axis=2)
+        ax = g.axes.flat
+        for i in range(self.img_3d.shape[2]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_3d[:, :, i]
             )
         plt.close()
         
@@ -443,6 +481,18 @@ class TestImageGrid:
             )
         plt.close()
 
+        with pytest.raises(ValueError):
+            g = isns.ImageGrid(self.img_3d, axis=3)
+            plt.close()
+
+        g = isns.ImageGrid(self.img_4d)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[0]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[i, :, :, :]
+            )
+        plt.close()
+
         g = isns.ImageGrid(self.img_4d, axis=0)
         ax = g.axes.flat
         for i in range(self.img_4d.shape[0]):
@@ -451,9 +501,37 @@ class TestImageGrid:
             )
         plt.close()
 
-        with pytest.raises(ValueError):
-            g = isns.ImageGrid(self.img_3d, axis=3)
-            plt.close()
+        g = isns.ImageGrid(self.img_4d, axis=1)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[1]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[:, i, :, :]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_4d, axis=2)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[2]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[:, :, i, :]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_4d, axis=3)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[3]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[:, :, :, i]
+            )
+        plt.close()
+
+        g = isns.ImageGrid(self.img_4d, axis=-1)
+        ax = g.axes.flat
+        for i in range(self.img_4d.shape[-1]):
+            np.testing.assert_array_equal(
+                ax[i].images[0].get_array().data, self.img_4d[:, :, :, i]
+            )
+        plt.close()
         
         with pytest.raises(ValueError):
             g = isns.ImageGrid(self.img_4d, axis=4)
@@ -550,7 +628,7 @@ class TestImageGrid:
         isns.ImageGrid(self.img_3d, robust=True)
         plt.close()
 
-        isns.ImageGrid(self.data, robust=True)
+        isns.ImageGrid([self.data], robust=True)
         plt.close()
 
         with pytest.raises(AssertionError):
@@ -675,7 +753,7 @@ class TestImageGrid:
 
     def test_figure_size(self):
 
-        g0 = isns.ImageGrid(self.data)
+        g0 = isns.ImageGrid([self.data])
         np.testing.assert_array_equal(g0.fig.get_size_inches(), (3, 3))
         plt.close()
 

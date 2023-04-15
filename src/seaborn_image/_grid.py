@@ -337,6 +337,27 @@ class ImageGrid:
                     col_wrap = (
                         len(map_func) if len(map_func) >= len(data) else len(data)
                     )
+        
+        elif not isinstance(data, np.ndarray):
+            raise ValueError("image data must be a list of images or a 3d or 4d array.")
+        
+        elif data.ndim == 2:
+            warnings.warn(
+                "The data inputed is a 2d array which contains a single image."
+                "It is recomended that you use `imgplot` instead of `ImageGrid`.",
+                RuntimeWarning,
+            )
+            _nimages = 1
+
+            # ---- 2D image with a list/tuple of map_func or individual map_func ------
+            # check if map_func is a list/tuple of callables
+            # and assign the new number of images
+            map_func_type = self._check_map_func(map_func, map_func_kw)
+            if map_func_type == "list/tuple":
+                _nimages = len(map_func)
+                # no of columns should now be len of map_func list
+                col_wrap = len(map_func) if col_wrap is None else col_wrap
+
 
         elif data.ndim in [3,4]:
             if data.ndim == 4 and data.shape[-1] not in [1, 3, 4]:
@@ -345,7 +366,7 @@ class ImageGrid:
             if axis is None:
                 if data.ndim == 3:
                     axis = -1
-                elif data.ndim == 4:
+                else:
                     axis = 0
             
             if data.ndim == 3 and axis not in [0, 1, 2, -1]:
@@ -378,21 +399,8 @@ class ImageGrid:
                     "Can not map multiple functions to a 3D image. Please provide a single `map_func`"
                 )
         
-        elif data.ndim > 4:
-            raise ValueError("image data can not have more than 4 dimensions")
-
         else:
-            # if data dim is not >2,
-            _nimages = 1
-
-            # ---- 2D image with a list/tuple of map_func or individual map_func ------
-            # check if map_func is a list/tuple of callables
-            # and assign the new number of images
-            map_func_type = self._check_map_func(map_func, map_func_kw)
-            if map_func_type == "list/tuple":
-                _nimages = len(map_func)
-                # no of columns should now be len of map_func list
-                col_wrap = len(map_func) if col_wrap is None else col_wrap
+            raise ValueError("Image data can not have more than 4 dimensions")
 
         # if no column wrap specified
         # set it to default 3
@@ -514,36 +522,38 @@ class ImageGrid:
                 # check if the image has more than 2 dimensions
                 if _d.ndim > 3:
                     raise ValueError(
-                        "One of the images provided has more than 3 dimensions, verify that all the images are correctly formatted."
+                        "One of the images provided has more than 3 dimensions."
+                        "verify that all the images are correctly formatted."
                     )
 
                 if _d.ndim == 3 and _d.shape[-1] not in [1, 3, 4]:
                     raise ValueError(
-                        "An image was provided that had more than 4 channels, verify that all the images are correctly formatted."
+                        "An image was provided that had more than 4 channels."
+                        "Verify that all the images are correctly formatted."
                     )
-
-            elif self.data.ndim == 3:
-                if self.axis == 0:
-                    _d = self.data[self.slices[i], :, :]
-                elif self.axis == 1:
-                    _d = self.data[:, self.slices[i], :]
-                elif self.axis == 2 or self.axis == -1:
-                    _d = self.data[:, :, self.slices[i]]
             
-            elif self.data.ndim == 4:
-                if self.axis == 0:
-                    _d = self.data[self.slices[i], :, :, :]
-                elif self.axis == 1:
-                    _d = self.data[:, self.slices[i], :, :]
-                elif self.axis == 2:
-                    _d = self.data[:, :, self.slices[i], :]
-                elif self.axis == 3 or self.axis == -1:
-                    _d = self.data[:, :, :, self.slices[i]]
-
-            else:
-                # if a single 2D image is supplied
-                # TODO issue a warning and direct the user to imgplot()
+            elif self.data.ndim == 2:
                 _d = self.data
+
+            # elif self.data.ndim in [3, 4]:
+            else:
+                # if self.axis == 0:
+                #     _d = self.data[self.slices[i], :, :]
+                # elif self.axis == 1:
+                #     _d = self.data[:, self.slices[i], :]
+                # else:
+                #     _d = self.data[:, :, self.slices[i]]
+                _d = self.data.take(indices = self.slices[i], axis=self.axis)
+            
+            # else:
+            #     if self.axis == 0:
+            #         _d = self.data[self.slices[i], :, :, :]
+            #     elif self.axis == 1:
+            #         _d = self.data[:, self.slices[i], :, :]
+            #     elif self.axis == 2:
+            #         _d = self.data[:, :, self.slices[i], :]
+            #     else:
+            #         _d = self.data[:, :, :, self.slices[i]]
 
             if isinstance(self.cmap, (list, tuple)):
                 self._check_len_wrt_n_images(self.cmap)
