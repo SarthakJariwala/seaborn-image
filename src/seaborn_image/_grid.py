@@ -4,6 +4,7 @@ from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
+from copy import copy
 
 from ._filters import filterplot
 from ._general import imgplot
@@ -21,13 +22,13 @@ class ImageGrid:
     Parameters
     ----------
     data :
-        3-D Image data (array-like) or list of 2-D image data. Supported array shapes are all
+        3-D or 4-D Image data (array-like), or list of 2-D or 3-D image data. Supported array shapes are all
         `matplotlib.pyplot.imshow` array shapes
     slices : int or list, optional
-        If `data` is 3-D, `slices` will index the specific slice from the last axis and only plot
+        If `data` is 3-D or 4-D, `slices` will index the specific slice from the last axis and only plot
         the resulting images. If None, it will plot all the slices from the last axis, by default None
     axis : int, optional
-        Axis along which the data will be sliced, by default -1
+        Axis along which the data will be sliced, by default -1 for 3-D arrays and 0 for 4-D arrays
     step : int, optional
         Step along the given axis, by default 1
     start : int, optional
@@ -122,15 +123,17 @@ class ImageGrid:
     ValueError
         If `data` is None
     ValueError
-        If `data` has more than 3 dimensions
+        If `data` has 1 dimension
     ValueError
-        If `data` contains a 3D image within a list of images
+        If `data` has more than 4 dimensions
+    ValueError
+        If `data` contains a 4D image within a list of images
     ValueError
         If `axis` is not 0, 1, 2 or -1
     TypeError
         If `map_func` is not a callable object or a list/tuple of callable objects
     ValueError
-        If `map_func` is a list/tuple of callable objects when `data` is 3D
+        If `map_func` is a list/tuple of callable objects when `data` is 3D or 4D
 
     Examples
     --------
@@ -317,6 +320,8 @@ class ImageGrid:
         showticks=False,
         despine=None,
     ):
+        data = copy(data)
+
         if data is None:
             raise ValueError("image data can not be None")
 
@@ -343,7 +348,7 @@ class ImageGrid:
         
         elif data.ndim == 2:
             warnings.warn(
-                "The data inputed is a 2d array which contains a single image."
+                "The data inputed is a 2d array which contains a single image. "
                 "It is recomended that you use `imgplot` instead of `ImageGrid`.",
                 RuntimeWarning,
             )
@@ -407,7 +412,7 @@ class ImageGrid:
         if col_wrap is None:
             col_wrap = 3
 
-            # don't create extra columns when there aren't enough images
+        # don't create extra columns when there aren't enough images
         if col_wrap > _nimages:
             col_wrap = _nimages
 
@@ -521,39 +526,16 @@ class ImageGrid:
 
                 # check if the image has more than 2 dimensions
                 if _d.ndim > 3:
-                    raise ValueError(
-                        "One of the images provided has more than 3 dimensions."
-                        "verify that all the images are correctly formatted."
-                    )
+                    raise ValueError(f"Image {i} in the list has more than 3 dimensions")
 
                 if _d.ndim == 3 and _d.shape[-1] not in [1, 3, 4]:
-                    raise ValueError(
-                        "An image was provided that had more than 4 channels."
-                        "Verify that all the images are correctly formatted."
-                    )
+                    raise ValueError(f"Image {i} in the list has more than 4 channels")
             
             elif self.data.ndim == 2:
                 _d = self.data
 
-            # elif self.data.ndim in [3, 4]:
             else:
-                # if self.axis == 0:
-                #     _d = self.data[self.slices[i], :, :]
-                # elif self.axis == 1:
-                #     _d = self.data[:, self.slices[i], :]
-                # else:
-                #     _d = self.data[:, :, self.slices[i]]
-                _d = self.data.take(indices = self.slices[i], axis=self.axis)
-            
-            # else:
-            #     if self.axis == 0:
-            #         _d = self.data[self.slices[i], :, :, :]
-            #     elif self.axis == 1:
-            #         _d = self.data[:, self.slices[i], :, :]
-            #     elif self.axis == 2:
-            #         _d = self.data[:, :, self.slices[i], :]
-            #     else:
-            #         _d = self.data[:, :, :, self.slices[i]]
+                _d = self.data.take(indices=self.slices[i], axis=self.axis)
 
             if isinstance(self.cmap, (list, tuple)):
                 self._check_len_wrt_n_images(self.cmap)
@@ -703,11 +685,21 @@ class ImageGrid:
         # if data is 3D or 2D and map_func is single callable
         else:
             if self._check_map_func(map_func, map_func_kw) == "callable":
-                # only pass on kwargs if not None
-                if map_func_kw is not None:
-                    self.data = map_func(self.data, **map_func_kw)
+                # if map_func_kw is None:
+                #     map_func_kw = {}
+                
+                if self.data.ndim in [2,3]:
+                    if map_func_kw is not None:
+                        self.data = map_func(self.data, **map_func_kw)
+                    else:
+                        self.data = map_func(self.data)
                 else:
-                    self.data = map_func(self.data)
+                    for idx, img_data in enumerate(self.data):
+                        if map_func_kw is not None:
+                            self.data[idx,:,:,:] = map_func(img_data, **map_func_kw)
+                        else:
+                            self.data[idx,:,:,:] = map_func(img_data)
+        
             # list of callables -- only for 2D image
             else:
                 _d = self.data
