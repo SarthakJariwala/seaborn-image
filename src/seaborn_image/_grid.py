@@ -342,10 +342,10 @@ class ImageGrid:
                     col_wrap = (
                         len(map_func) if len(map_func) >= len(data) else len(data)
                     )
-        
+
         elif not isinstance(data, np.ndarray):
             raise ValueError("image data must be a list of images or a 3d or 4d array.")
-        
+
         elif data.ndim == 2:
             warnings.warn(
                 "The data inputed is a 2d array which contains a single image. "
@@ -363,20 +363,21 @@ class ImageGrid:
                 # no of columns should now be len of map_func list
                 col_wrap = len(map_func) if col_wrap is None else col_wrap
 
-
-        elif data.ndim in [3,4]:
+        elif data.ndim in [3, 4]:
             if data.ndim == 4 and data.shape[-1] not in [1, 3, 4]:
-                raise ValueError("The number of channels in the images must be 1, 3 or 4")
+                raise ValueError(
+                    "The number of channels in the images must be 1, 3 or 4"
+                )
 
             if axis is None:
                 if data.ndim == 3:
                     axis = -1
                 else:
                     axis = 0
-            
+
             if data.ndim == 3 and axis not in [0, 1, 2, -1]:
                 raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, or -1")
-            
+
             if data.ndim == 4 and axis not in [0, 1, 2, 3, -1]:
                 raise ValueError("Incorrect 'axis'; must be either 0, 1, 2, 3, or -1")
 
@@ -386,7 +387,7 @@ class ImageGrid:
                 data = data[
                     (slice(None),) * (axis % data.ndim) + (slice(start, stop, step),)
                 ]
-                slices = np.arange(data.shape[axis])            
+                slices = np.arange(data.shape[axis])
 
             # if a single slice is provided and
             # it is not an interable
@@ -395,15 +396,15 @@ class ImageGrid:
 
             _nimages = len(slices)
 
-            # ---- 3D image with an individual map_func ----
+            # ---- 3D or 4D image with an individual map_func ----
             map_func_type = self._check_map_func(map_func, map_func_kw)
             # raise a ValueError if a list of map_func is provided for 3d image
             # TODO - support multiple map_func if "chaining"?
             if map_func_type == "list/tuple":
                 raise ValueError(
-                    "Can not map multiple functions to a 3D image. Please provide a single `map_func`"
+                    "Can not map multiple functions to 3D or 4D image. Please provide a single `map_func`"
                 )
-        
+
         else:
             raise ValueError("Image data can not have more than 4 dimensions")
 
@@ -526,11 +527,13 @@ class ImageGrid:
 
                 # check if the image has more than 2 dimensions
                 if _d.ndim > 3:
-                    raise ValueError(f"Image {i} in the list has more than 3 dimensions")
+                    raise ValueError(
+                        f"Image {i} in the list has more than 3 dimensions"
+                    )
 
                 if _d.ndim == 3 and _d.shape[-1] not in [1, 3, 4]:
                     raise ValueError(f"Image {i} in the list has more than 4 channels")
-            
+
             elif self.data.ndim == 2:
                 _d = self.data
 
@@ -556,7 +559,7 @@ class ImageGrid:
             if isinstance(self.perc, (list)):
                 self._check_len_wrt_n_images(self.perc)
                 _perc = self.perc[i]
-            
+
             if isinstance(self.norm, (list)):
                 self._check_len_wrt_n_images(self.norm)
                 _norm = self.norm[i]
@@ -657,7 +660,7 @@ class ImageGrid:
 
     def _map_func_to_data(self, map_func, map_func_kw):
         """Transform image data using the map_func callable object."""
-        # if data is a list or tuple of 2D images
+        # if data is a list or tuple of 2D or 3D images
         if isinstance(self.data, (list, tuple)):
             if self._check_map_func(map_func, map_func_kw) == "list/tuple":
                 self._adjust_param_list_len(map_func)
@@ -682,25 +685,15 @@ class ImageGrid:
                     else:
                         self.data[i] = map_func(self.data[i])
 
-        # if data is 3D or 2D and map_func is single callable
         else:
+            # if data is 4D, 3D or 2D and map_func is single callable
             if self._check_map_func(map_func, map_func_kw) == "callable":
-                # if map_func_kw is None:
-                #     map_func_kw = {}
-                
-                if self.data.ndim in [2,3]:
-                    if map_func_kw is not None:
-                        self.data = map_func(self.data, **map_func_kw)
-                    else:
-                        self.data = map_func(self.data)
+                if map_func_kw is not None:
+                    self.data = map_func(self.data, **map_func_kw)
                 else:
-                    for idx, img_data in enumerate(self.data):
-                        if map_func_kw is not None:
-                            self.data[idx,:,:,:] = map_func(img_data, **map_func_kw)
-                        else:
-                            self.data[idx,:,:,:] = map_func(img_data)
-        
-            # list of callables -- only for 2D image
+                    self.data = map_func(self.data)
+
+            # list of callables -- only for list of 2D or list of 3D images
             else:
                 _d = self.data
                 # only pass on kwargs if not None
@@ -1100,7 +1093,6 @@ class ParamGrid(object):
         despine=None,
         **kwargs,
     ):
-
         if data is None:
             raise ValueError("image data can not be None")
 
