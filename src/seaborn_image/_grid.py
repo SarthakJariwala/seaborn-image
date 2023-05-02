@@ -220,6 +220,22 @@ class ImageGrid:
 
         >>> g = isns.ImageGrid(cells, vmin=0, vmax=1, height=1, col_wrap=5)
 
+    Plot a list of 3-D images
+
+    .. plot::
+        :context: close-figs
+
+        >>> from skimage.data import astronaut, chelsea
+        >>> g = isns.ImageGrid([astronaut(), chelsea()], origin="upper")
+
+    Plot 4-D image data cube
+
+    .. plot::
+        :context: close-figs
+
+        >>> cifar = isns.load_image("cifar10")
+        >>> g = isns.ImageGrid(cifar, height=1, col_wrap=6)
+
     Map a function to the image data
 
     .. plot::
