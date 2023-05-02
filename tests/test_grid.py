@@ -1,6 +1,8 @@
 import warnings
 import pytest
 
+from copy import copy
+
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -183,6 +185,15 @@ class TestImageGrid:
                 )
 
         # List of 3D images with a single map_func
+        g2 = isns.ImageGrid(self.img_3d_list, map_func=gaussian)
+        ax = g2.axes.flat
+        for idx, val in enumerate(self.img_3d_list):
+            np.testing.assert_array_equal(
+                ax[idx].images[0].get_array().data, gaussian(val)
+            )
+        plt.close()
+
+        # List of 3D, 2D images with a single map_func
         g2 = isns.ImageGrid(self.img_mixed_list, map_func=gaussian)
         ax = g2.axes.flat
         for idx, val in enumerate(self.img_mixed_list):
@@ -353,6 +364,20 @@ class TestImageGrid:
             g = isns.ImageGrid(
                 [pol, pl], map_func=gaussian, map_func_kw=[{"sigma": 1.5}]
             )
+
+    def test_map_func_does_not_alter_original_array(self):
+        original_array = copy(self.data_3d)
+        # plot with map_func
+        _ = isns.ImageGrid(self.data_3d, map_func=gaussian)
+        plt.close()
+        # re-plot self.data and check if it is still original array
+        # and not modified by gaussian filter
+        g1 = isns.ImageGrid(self.data_3d)
+        for i, ax in enumerate(g1.axes.flat):
+            np.testing.assert_array_equal(
+                ax.images[0].get_array().data, original_array[:, :, i]
+            )
+        plt.close()
 
     def test_param_list_with_map_func(self):
         """

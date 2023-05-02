@@ -320,8 +320,6 @@ class ImageGrid:
         showticks=False,
         despine=None,
     ):
-        data = copy(data)
-
         if data is None:
             raise ValueError("image data can not be None")
 
@@ -331,7 +329,7 @@ class ImageGrid:
             # check the number of images to be plotted
             _nimages = len(data)
 
-            # --- List/Tuple of 2D images with a List/Tuple of map_func ---
+            # --- List/Tuple of 2D or 3D images with a List/Tuple of map_func ---
             # change the number of images on the grid accordingly
             map_func_type = self._check_map_func(map_func, map_func_kw)
             if map_func_type == "list/tuple":
@@ -660,6 +658,7 @@ class ImageGrid:
 
     def _map_func_to_data(self, map_func, map_func_kw):
         """Transform image data using the map_func callable object."""
+        self.data = copy(self.data)
         # if data is a list or tuple of 2D or 3D images
         if isinstance(self.data, (list, tuple)):
             if self._check_map_func(map_func, map_func_kw) == "list/tuple":
