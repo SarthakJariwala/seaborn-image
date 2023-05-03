@@ -36,7 +36,7 @@ def test_set_save_context(dpi):
     assert mpl.rcParams["savefig.bbox"] == "tight"
 
 
-@pytest.mark.parametrize("cmap", ["ice", "acton", "viridis", "afmhot"])
+@pytest.mark.parametrize("cmap", ["ice", "acton", "viridis", "afmhot", "R"])
 @pytest.mark.parametrize("origin", ["lower", "upper"])
 @pytest.mark.parametrize("interpolation", ["nearest", "bicubic"])
 def test_set_image(cmap, origin, interpolation):

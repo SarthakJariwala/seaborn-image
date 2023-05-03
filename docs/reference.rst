@@ -22,7 +22,7 @@ Figure level function to visualize image data distribution along with the image.
 :doc:`ImageGrid <api/ImageGrid>`
 --------------------------------
 
-Figure level function to visualize multi-dimensional images as well as collection of 2-D images.
+Figure level function to visualize multi-dimensional images as well as collection of 2-D/3-D images.
 
 
 :doc:`rgbplot <api/rgbplot>`

@@ -139,6 +139,15 @@ You can also specify the `axis` along which you want to `slice` your 3D image da
 
     g = isns.ImageGrid(cells, slices=[10, 20, 30, 40], axis=1)
 
+You can also plot a collection of 3D image data.
+
+.. code-block:: python
+
+    from skimage.data import astronaut, chelsea
+
+    g = isns.ImageGrid([astronaut(), chelsea()], origin="upper")
+
+
 
 This was a very short intro to `seaborn_image`. There are many other functions and options available in `seaborn_image`.
 For more information check out examples in :doc:`tutorial <tutorial>`, :doc:`api <reference>` and :doc:`gallery <auto_examples/index>`.

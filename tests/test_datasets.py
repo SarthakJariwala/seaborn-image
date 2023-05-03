@@ -51,6 +51,29 @@ def test_load_image_from_skimage():
     np.testing.assert_array_equal(img, test_img)
 
 
+def test_load_image_cifar10():
+    img = isns.load_image("cifar10")
+
+    fname = pooch.retrieve(
+        url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/cifar10.npy",
+        known_hash="c0a12085b3b82f4a6d1f95e609a40701648a137eb9ff1fb5751071f54cc8e05c",
+    )
+    test_img = np.load(fname)
+    np.testing.assert_array_equal(img, test_img)
+
+
+def test_load_image_cifar10_list():
+    img_list = isns.load_image("cifar10 list")
+
+    fname = pooch.retrieve(
+        url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/cifar10.npy",
+        known_hash="c0a12085b3b82f4a6d1f95e609a40701648a137eb9ff1fb5751071f54cc8e05c",
+    )
+    test_img = np.load(fname)
+    for idx, img in enumerate(img_list):
+        np.testing.assert_array_equal(img, test_img[idx])
+
+
 def test_load_image_error():
     with pytest.raises(ValueError):
         isns.load_image("coins")
