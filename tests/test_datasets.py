@@ -55,7 +55,7 @@ def test_load_image_cifar10():
     img = isns.load_image("cifar10")
 
     fname = pooch.retrieve(
-        url="https://github.com/eugenioLR/seaborn-image/raw/multiformat-images/data/cifar10.npy",
+        url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/cifar10.npy",
         known_hash="c0a12085b3b82f4a6d1f95e609a40701648a137eb9ff1fb5751071f54cc8e05c",
     )
     test_img = np.load(fname)
@@ -66,7 +66,7 @@ def test_load_image_cifar10_list():
     img_list = isns.load_image("cifar10 list")
 
     fname = pooch.retrieve(
-        url="https://github.com/eugenioLR/seaborn-image/raw/multiformat-images/data/cifar10.npy",
+        url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/cifar10.npy",
         known_hash="c0a12085b3b82f4a6d1f95e609a40701648a137eb9ff1fb5751071f54cc8e05c",
     )
     test_img = np.load(fname)

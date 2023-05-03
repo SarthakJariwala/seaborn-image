@@ -9,7 +9,7 @@ POOCH = pooch.create(
     # Use the default cache folder for the OS
     path=pooch.os_cache("seaborn-image"),
     # The remote data is on Github
-    base_url="https://github.com/eugenioLR/seaborn-image/raw/multiformat-images/data/",
+    base_url="https://github.com/SarthakJariwala/seaborn-image/raw/master/data/",
     # The registry specifies the files that can be fetched
     registry={
         # The registry is a dict with file names and their SHA256 hashes
@@ -66,11 +66,11 @@ def load_image(name):
 
     elif name == "retina-gray":
         img = color.rgb2gray(data.retina())[300:700, 700:900]
-    
+
     elif name == "cifar10":
         path = POOCH.fetch("cifar10.npy")
         img = np.load(path)
-    
+
     elif name == "cifar10 list":
         path = POOCH.fetch("cifar10.npy")
         img_array = np.load(path)
@@ -78,7 +78,7 @@ def load_image(name):
 
     else:
         raise ValueError(
-            f"No '{name}' image dataset. Available image datasets include: polymer, polymer outliers, fluorescence, cells"
+            f"No '{name}' image dataset. Available image datasets include: polymer, polymer outliers, fluorescence, cells, retina-gray, cifar10, cifar list"
         )
 
     return img

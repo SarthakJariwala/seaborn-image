@@ -5,6 +5,6 @@ List of 3D images
 
 import seaborn_image as isns
 
-cells = isns.load_image("cifar10 list")
+cifar_list = isns.load_image("cifar10 list")
 
-g = isns.ImageGrid(cells, cbar=False, height=1, col_wrap=10)
+g = isns.ImageGrid(cifar_list, cbar=False, height=1, col_wrap=10)
