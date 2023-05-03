@@ -1,6 +1,6 @@
 """
-Arrays of images with color
-========================
+List of 3D images
+=================
 """
 
 import seaborn_image as isns

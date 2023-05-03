@@ -1,10 +1,10 @@
 """
-Arrays of images with color
-========================
+4D image data 
+=============
 """
 
 import seaborn_image as isns
 
-cells = isns.load_image("cifar10")
+cifar = isns.load_image("cifar10")
 
-g = isns.ImageGrid(cells, cbar=False, height=1, col_wrap=10)
+g = isns.ImageGrid(cifar, cbar=False, height=1, col_wrap=10)

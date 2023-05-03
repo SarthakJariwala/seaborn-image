@@ -15,8 +15,8 @@ __all__ = ["ParamGrid", "ImageGrid", "rgbplot", "FilterGrid"]
 
 class ImageGrid:
     """
-    Figure level : plot a collection of 2-D images or 3-D image data
-    along a grid. This class also supports slicing of the 3-D image
+    Figure level : plot a collection of 2-D or 3-D images or 3-D or 4-D image data
+    along a grid. This class also supports slicing of the 3-D and 4-D image data
     along different axis with variable step sizes and start/end indexes.
 
     Parameters
