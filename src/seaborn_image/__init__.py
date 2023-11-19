@@ -1,7 +1,5 @@
-try:
-    from importlib.metadata import version, PackageNotFoundError  # type: ignore
-except ImportError:  # pragma: no cover
-    from importlib_metadata import version, PackageNotFoundError  # type: ignore
+from importlib.metadata import version, PackageNotFoundError  # type: ignore
+
 
 from ._context import *
 from ._general import *
