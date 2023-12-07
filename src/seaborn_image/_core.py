@@ -69,7 +69,7 @@ class _SetupImage(object):
         if self.ax is None:
             f, ax = plt.subplots()
         else:
-            f = plt.gcf()
+            f = self.ax.get_figure() or plt.gcf()
             ax = self.ax
 
         return f, ax
