@@ -113,6 +113,8 @@ class ImageGrid:
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
         Defaults to None.
+    extent : list, optional
+        Coordinates where to plot this image.
 
     Returns
     -------
@@ -335,6 +337,7 @@ class ImageGrid:
         cbar_ticks=None,
         showticks=False,
         despine=None,
+        extent=None,
     ):
         if data is None:
             raise ValueError("image data can not be None")
@@ -473,6 +476,7 @@ class ImageGrid:
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
         self.despine = despine
+        self.extent = extent
 
         self._nrow = nrow
         self._ncol = ncol
@@ -624,6 +628,7 @@ class ImageGrid:
                 cbar_ticks=self.cbar_ticks,
                 showticks=self.showticks,
                 despine=self.despine,
+                extent=self.extent,
                 describe=False,
             )
 
@@ -764,6 +769,7 @@ def rgbplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
+    extent=None
 ):
     """Split and plot the red, green and blue channels of an
     RGB image.
@@ -831,6 +837,8 @@ def rgbplot(
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
         Defaults to None.
+    extent : list, optional
+        Coordinates where to plot this image.
 
     Returns
     -------
@@ -915,6 +923,7 @@ def rgbplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
+        extent=extent
     )
 
     return g
@@ -1002,6 +1011,8 @@ class ParamGrid(object):
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes.
         Defaults to None.
+    extent : list, optional
+        Coordinates where to plot this image.
     **kwargs : Additional parameters as keyword arguments to be passed to the underlying filter specified.
 
     Returns
@@ -1106,6 +1117,7 @@ class ParamGrid(object):
         cbar_ticks=None,
         showticks=False,
         despine=None,
+        extent=None,
         **kwargs,
     ):
         if data is None:
@@ -1211,6 +1223,7 @@ class ParamGrid(object):
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
         self.despine = despine
+        self.extent = extent
 
         self._nrow = nrow
         self._ncol = ncol
@@ -1300,6 +1313,7 @@ class ParamGrid(object):
             cbar_ticks=self.cbar_ticks,
             showticks=self.showticks,
             despine=self.despine,
+            extent=self.extent,
             **func_kwargs,
         )
         return

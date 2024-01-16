@@ -52,6 +52,7 @@ def filterplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
+    extent=None,
     **kwargs,
 ):
     """
@@ -125,6 +126,8 @@ def filterplot(
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default None
+    extent : list, optional
+        Coordinates where to plot this image.
     **kwargs : optional
         Any additional parameters to be passed to the specific `filt` chosen.
         For instance, "sigma" or "size" or "mode" etc.
@@ -225,6 +228,7 @@ def filterplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
+        extent=extent
     )
 
     # Provide basic statistical results
