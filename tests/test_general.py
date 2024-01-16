@@ -114,6 +114,7 @@ def test_imgplot_gray_conversion_for_rgb():
 @pytest.mark.parametrize("gray", [True, False])
 @pytest.mark.parametrize("cmap", [None, "ice"])
 @pytest.mark.parametrize("data", [data, astronaut()])
+@pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
 def test_gray_cmap_interplay(data, gray, cmap):
     _ = isns.imgplot(data, cmap=cmap, gray=gray)
     plt.close("all")
