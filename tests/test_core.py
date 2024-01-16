@@ -167,6 +167,7 @@ def test_plot_w_all_inputs(
     showticks,
     despine,
     robust,
+    extent
 ):
     img_setup = isns._core._SetupImage(
         data,
