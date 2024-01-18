@@ -112,8 +112,10 @@ def imgplot(
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default None
-    extent : list, optional
-        Coordinates where to plot this image.
+    extent : floats (left, right, bottom, top), optional
+        The bounding box in data coordinates that the image will fill.
+        The image is stretched individually along x and y to fill the box.
+
 
     Returns
     -------
