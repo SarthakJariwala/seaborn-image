@@ -125,7 +125,7 @@ def test_imgplot_extent():
 @pytest.mark.parametrize("data", [data, astronaut()])
 @pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
 def test_gray_cmap_interplay(data, gray, cmap, extent):
-    _ = isns.imgplot(data, cmap=cmap, gray=gray)
+    _ = isns.imgplot(data, cmap=cmap, gray=gray, extent=extent)
     plt.close("all")
 
 
