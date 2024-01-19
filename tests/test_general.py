@@ -110,12 +110,22 @@ def test_imgplot_gray_conversion_for_rgb():
 
     np.testing.assert_array_equal(ax.images[0].get_array().data, rgb2gray(astronaut()))
 
+def test_imgplot_extent():
+    extent = (0,1,0,1)
+    ax = isns.imgplot(astronaut(), gray=True, extent=extent)
+    np.testing.assert_array_equal(ax.images[0].get_extent(), extent)
+
+    extent = (20, 30, 0, 10)
+    ax = isns.imgplot(astronaut(), gray=True, extent=extent)
+    np.testing.assert_array_equal(ax.images[0].get_extent(), extent)
+
 
 @pytest.mark.parametrize("gray", [True, False])
 @pytest.mark.parametrize("cmap", [None, "ice"])
 @pytest.mark.parametrize("data", [data, astronaut()])
-def test_gray_cmap_interplay(data, gray, cmap):
-    _ = isns.imgplot(data, cmap=cmap, gray=gray)
+@pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
+def test_gray_cmap_interplay(data, gray, cmap, extent):
+    _ = isns.imgplot(data, cmap=cmap, gray=gray, extent=extent)
     plt.close("all")
 
 

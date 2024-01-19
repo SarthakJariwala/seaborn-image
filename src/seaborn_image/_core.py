@@ -41,6 +41,7 @@ class _SetupImage(object):
         cbar_ticks=None,
         showticks=False,
         despine=None,
+        extent=None
     ):
 
         self.data = data
@@ -63,6 +64,7 @@ class _SetupImage(object):
         self.cbar_ticks = cbar_ticks
         self.showticks = showticks
         self.despine = despine
+        self.extent = extent
 
     def _setup_figure(self):
         """Wrapper to setup image with the desired parameters"""
@@ -135,6 +137,7 @@ class _SetupImage(object):
             alpha=self.alpha,
             interpolation=self.interpolation,
             norm=self.norm,
+            extent=self.extent
         )
 
         if self.dx:

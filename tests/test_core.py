@@ -154,6 +154,7 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("vmin", [None, 0])
 @pytest.mark.parametrize("vmax", [None, 1])
 @pytest.mark.parametrize("robust", [True, False])
+@pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
 def test_plot_w_all_inputs(
     cmap,
     vmin,
@@ -166,6 +167,7 @@ def test_plot_w_all_inputs(
     showticks,
     despine,
     robust,
+    extent
 ):
     img_setup = isns._core._SetupImage(
         data,
@@ -183,6 +185,7 @@ def test_plot_w_all_inputs(
         cbar_ticks=[],
         showticks=showticks,
         despine=despine,
+        extent=extent
     )
     f, ax, cax = img_setup.plot()
 

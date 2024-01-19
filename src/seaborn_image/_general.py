@@ -39,6 +39,7 @@ def imgplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
+    extent=None,
     **kwargs,
 ):
     """Plot data as a 2-D image with options to ignore outliers, add scalebar, colorbar, title.
@@ -111,6 +112,10 @@ def imgplot(
         Show image x-y axis ticks, by default False
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default None
+    extent : floats (left, right, bottom, top), optional
+        The bounding box in data coordinates that the image will fill.
+        The image is stretched individually along x and y to fill the box.
+
 
     Returns
     -------
@@ -340,6 +345,7 @@ def imgplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
+        extent=extent
     )
 
     f, ax, cax = img_plotter.plot()
