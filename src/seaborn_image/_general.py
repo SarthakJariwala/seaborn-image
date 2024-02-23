@@ -27,6 +27,8 @@ def imgplot(
     norm=None,
     robust=False,
     perc=(2, 98),
+    diverging=False,
+    vmaxabs=None,
     dx=None,
     units=None,
     dimension=None,
@@ -77,6 +79,11 @@ def imgplot(
         If `robust` is True, colormap range is calculated based
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values
+    diverging : bool, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
+    vmaxabs : float, optional
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -280,6 +287,10 @@ def imgplot(
     if robust is True:
         assert len(perc) == 2
         assert perc[0] < perc[1]  # order should be (min, max)
+    
+    if diverging:
+        if vmaxabs is not None:
+            assert vmaxabs > 0 
 
     if not isinstance(cbar, bool):
         raise TypeError
@@ -336,6 +347,8 @@ def imgplot(
         norm=norm,
         robust=robust,
         perc=perc,
+        diverging=diverging,
+        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -382,6 +395,8 @@ def imghist(
     interpolation=None,
     norm=None,
     robust=False,
+    diverging=False,
+    vmaxabs=None,
     perc=(2, 98),
     dx=None,
     units=None,
@@ -435,6 +450,11 @@ def imghist(
         If `robust` is True, colormap range is calculated based
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values
+    diverging : bool, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
+    vmaxabs : float, optional
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -592,6 +612,8 @@ def imghist(
         norm=norm,
         robust=robust,
         perc=perc,
+        diverging=diverging,
+        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,

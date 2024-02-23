@@ -41,6 +41,8 @@ def filterplot(
     interpolation=None,
     robust=False,
     perc=(2, 98),
+    diverging=False,
+    vmaxabs=None,
     dx=None,
     units=None,
     dimension=None,
@@ -96,6 +98,11 @@ def filterplot(
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
+    diverging : bool, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
+    vmaxabs : float, optional
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
     units : str, optional
         Units of `dx`, by default None
     dimension : str, optional
@@ -218,6 +225,8 @@ def filterplot(
         interpolation=interpolation,
         robust=robust,
         perc=perc,
+        diverging=diverging,
+        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,

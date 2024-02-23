@@ -57,6 +57,11 @@ class ImageGrid:
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values. Can be a list of tuples, if
         input data is a list of images
+    diverging : bool or list, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
+    vmaxabs : float or list, optional
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
     alpha : float or array-like, optional
         `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
         by default None
@@ -322,6 +327,8 @@ class ImageGrid:
         cmap=None,
         robust=False,
         perc=(2, 98),
+        diverging=False,
+        vmaxabs=None,
         alpha=None,
         origin=None,
         vmin=None,
@@ -461,6 +468,8 @@ class ImageGrid:
         self.cmap = cmap
         self.robust = robust
         self.perc = perc
+        self.diverging = diverging
+        self.vmaxabs = vmaxabs
         self.alpha = alpha
         self.origin = origin
         self.vmin = vmin
@@ -528,6 +537,8 @@ class ImageGrid:
         _cmap = self.cmap
         _robust = self.robust
         _perc = self.perc
+        _diverging = self.diverging
+        _vmaxabs = self.vmaxabs
         _vmin = self.vmin
         _vmax = self.vmax
         _norm = self.norm
@@ -566,6 +577,10 @@ class ImageGrid:
             if isinstance(self.robust, (list, tuple)):
                 self._check_len_wrt_n_images(self.robust)
                 _robust = self.robust[i]
+            
+            if isinstance(self.diverging, (list, tuple)):
+                self._check_len_wrt_n_images(self.diverging)
+                _diverging = self.diverging[i]
 
             if isinstance(self.vmin, (list, tuple)):
                 self._check_len_wrt_n_images(self.vmin)
@@ -574,6 +589,10 @@ class ImageGrid:
             if isinstance(self.vmax, (list, tuple)):
                 self._check_len_wrt_n_images(self.vmax)
                 _vmax = self.vmax[i]
+            
+            if isinstance(self.vmaxabs, (list, tuple)):
+                self._check_len_wrt_n_images(self.vmaxabs)
+                _vmaxabs = self.vmaxabs[i]
 
             if isinstance(self.perc, (list)):
                 self._check_len_wrt_n_images(self.perc)
@@ -613,6 +632,8 @@ class ImageGrid:
                 cmap=_cmap,
                 robust=_robust,
                 perc=_perc,
+                diverging=_diverging,
+                vmaxabs=_vmaxabs,
                 vmin=_vmin,
                 vmax=_vmax,
                 alpha=self.alpha,

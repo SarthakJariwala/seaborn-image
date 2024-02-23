@@ -72,6 +72,34 @@ def test_robust_param():
     plt.close()
 
 
+# TODO complete test
+def test_diverging_param():
+    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98))
+    # f, ax, cax = img_setup.plot()
+    # assert img_setup.vmin == np.nanpercentile(data, 2)
+    # assert img_setup.vmax == np.nanpercentile(data, 98)
+    # plt.close()
+
+    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0)
+    # f, ax, cax = img_setup.plot()
+    # assert img_setup.vmin == 0
+    # assert img_setup.vmax == np.nanpercentile(data, 98)
+    # plt.close()
+
+    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmax=1)
+    # f, ax, cax = img_setup.plot()
+    # assert img_setup.vmin == np.nanpercentile(data, 2)
+    # assert img_setup.vmax == 1
+    # plt.close()
+
+    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0, vmax=1)
+    # f, ax, cax = img_setup.plot()
+    # assert img_setup.vmin == 0
+    # assert img_setup.vmax == 1
+    # plt.close()
+    pass
+
+
 def test_log_scale_cbar():
     img_setup = isns._core._SetupImage(data, norm="cbar_log")
     f, ax, cax = img_setup.plot()
@@ -154,6 +182,8 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("vmin", [None, 0])
 @pytest.mark.parametrize("vmax", [None, 1])
 @pytest.mark.parametrize("robust", [True, False])
+@pytest.mark.parametrize("diverging", [True, False])
+@pytest.mark.parametrize("vmaxabs", [None, 1])
 @pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
 def test_plot_w_all_inputs(
     cmap,
@@ -167,6 +197,8 @@ def test_plot_w_all_inputs(
     showticks,
     despine,
     robust,
+    diverging,
+    vmaxabs,
     extent
 ):
     img_setup = isns._core._SetupImage(
@@ -176,6 +208,8 @@ def test_plot_w_all_inputs(
         vmax=None,
         robust=robust,
         perc=(2, 98),
+        diverging=diverging,
+        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,
