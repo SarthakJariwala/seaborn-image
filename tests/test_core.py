@@ -72,32 +72,35 @@ def test_robust_param():
     plt.close()
 
 
-# TODO complete test
 def test_diverging_param():
-    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98))
-    # f, ax, cax = img_setup.plot()
-    # assert img_setup.vmin == np.nanpercentile(data, 2)
-    # assert img_setup.vmax == np.nanpercentile(data, 98)
-    # plt.close()
+    img_setup = isns._core._SetupImage(data, diverging=True)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == np.abs(data).max()
+    plt.close()
 
-    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0)
-    # f, ax, cax = img_setup.plot()
-    # assert img_setup.vmin == 0
-    # assert img_setup.vmax == np.nanpercentile(data, 98)
-    # plt.close()
+    img_setup = isns._core._SetupImage(data, diverging=True, vmax=1)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == np.abs(data).max()
+    plt.close()
 
-    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmax=1)
-    # f, ax, cax = img_setup.plot()
-    # assert img_setup.vmin == np.nanpercentile(data, 2)
-    # assert img_setup.vmax == 1
-    # plt.close()
+    vmin = -3
+    vmax = 2.75
+    img_setup = isns._core._SetupImage(data, diverging=True, vmin=vmin, vmax=vmax)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == max(abs(vmin), abs(vmax))
+    assert img_setup.vmin == -max(abs(vmin), abs(vmax))
+    plt.close()
 
-    # img_setup = isns._core._SetupImage(data, robust=True, perc=(2, 98), vmin=0, vmax=1)
-    # f, ax, cax = img_setup.plot()
-    # assert img_setup.vmin == 0
-    # assert img_setup.vmax == 1
-    # plt.close()
-    pass
+    vmaxabs = 2
+    img_setup = isns._core._SetupImage(data, diverging=True, vmaxabs=vmaxabs)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == vmaxabs
+    assert img_setup.vmin == -vmaxabs
+    plt.close()
 
 
 def test_log_scale_cbar():

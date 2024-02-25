@@ -35,6 +35,11 @@ def test_robust_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, robust="True")
 
+def test_diverging_value():
+    with pytest.raises(AssertionError):
+        isns.imgplot(data, diverging=True, vmaxabs=-1)
+        plt.close()
+
 
 def test_vmaxabs():
     with pytest.raises(AssertionError):
@@ -246,30 +251,29 @@ def test_imghist_robust_hist_cmap():
     plt.close()
 
 
-# TODO complete test
 def test_imghist_diverging_hist_cmap():
     # """Check if the min/max patch color in histogram matches
-    # the min/max colors in the colorbar after robust"""
+    # the min/max colors in the colorbar after diverging"""
 
-    # polymer = isns.load_image("polymer")
+    polymer = isns.load_image("polymer")
+    polymer_norm = polymer - polymer.mean()
 
-    # f = isns.imghist(polymer, robust=True, perc=(0.5, 50))
+    f = isns.imghist(polymer_norm, diverging=True)
 
-    # _min = np.nanpercentile(polymer, 0.5)
-    # _max = np.nanpercentile(polymer, 50)
+    _min = -np.abs(polymer_norm).max()
+    _max = np.abs(polymer_norm).max()
 
     # # check the max patch facecolor and check it against the image cmap max
-    # np.testing.assert_array_equal(
-    #     f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
-    # )
+    np.testing.assert_array_equal(
+        f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
+    )
 
     # # check the min patch facecolor and check it against the image cmap min
-    # np.testing.assert_array_equal(
-    #     f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
-    # )
+    np.testing.assert_array_equal(
+        f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
+    )
 
-    # plt.close()
-    pass
+    plt.close()
 
 @pytest.mark.parametrize("cmap", [None, "acton"])
 @pytest.mark.parametrize("bins", [None, 100])

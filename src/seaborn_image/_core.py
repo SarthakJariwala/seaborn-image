@@ -57,6 +57,7 @@ class _SetupImage(object):
         self.norm = norm
         self.robust = robust
         self.diverging = diverging
+        self.vmaxabs = vmaxabs
         self.perc = perc
         self.dx = dx
         self.units = units
@@ -128,7 +129,7 @@ class _SetupImage(object):
         if self.diverging: 
             # Force vmin to have the same absolute value as vmax so that 0 is in the middle.
 
-            if self.vmaxabs is not None: 
+            if self.vmaxabs is None: 
                 if self.vmin is None or self.vmax is None:
                     vmaxabs = np.abs(self.data).max()
                 else:
