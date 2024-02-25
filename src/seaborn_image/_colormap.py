@@ -60,7 +60,7 @@ _CMAP_QUAL = {
     "sunset": Sunset_7_r,
 }
 
- 
+
 # Extra color maps for various purposes like showing RGB channels of an image
 _CMAP_EXTRA = {
     "R": mpl.colors.LinearSegmentedColormap.from_list("R", ["#000000", "#FF0000"]),

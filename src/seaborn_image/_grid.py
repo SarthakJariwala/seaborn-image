@@ -61,7 +61,7 @@ class ImageGrid:
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
     vmaxabs : float or list, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     alpha : float or array-like, optional
         `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
         by default None
@@ -577,7 +577,7 @@ class ImageGrid:
             if isinstance(self.robust, (list, tuple)):
                 self._check_len_wrt_n_images(self.robust)
                 _robust = self.robust[i]
-            
+
             if isinstance(self.diverging, (list, tuple)):
                 self._check_len_wrt_n_images(self.diverging)
                 _diverging = self.diverging[i]
@@ -589,7 +589,7 @@ class ImageGrid:
             if isinstance(self.vmax, (list, tuple)):
                 self._check_len_wrt_n_images(self.vmax)
                 _vmax = self.vmax[i]
-            
+
             if isinstance(self.vmaxabs, (list, tuple)):
                 self._check_len_wrt_n_images(self.vmaxabs)
                 _vmaxabs = self.vmaxabs[i]
@@ -791,7 +791,7 @@ def rgbplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
-    extent=None
+    extent=None,
 ):
     """Split and plot the red, green and blue channels of an
     RGB image.
@@ -946,7 +946,7 @@ def rgbplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        extent=extent
+        extent=extent,
     )
 
     return g

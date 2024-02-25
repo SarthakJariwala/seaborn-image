@@ -83,7 +83,7 @@ def imgplot(
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
     vmaxabs : float, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -287,10 +287,10 @@ def imgplot(
     if robust is True:
         assert len(perc) == 2
         assert perc[0] < perc[1]  # order should be (min, max)
-    
+
     if diverging:
         if vmaxabs is not None:
-            assert vmaxabs > 0 
+            assert vmaxabs > 0
 
     if not isinstance(cbar, bool):
         raise TypeError
@@ -358,7 +358,7 @@ def imgplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        extent=extent
+        extent=extent,
     )
 
     f, ax, cax = img_plotter.plot()
@@ -454,7 +454,7 @@ def imghist(
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
     vmaxabs : float, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs. 
+        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None

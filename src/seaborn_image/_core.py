@@ -43,7 +43,7 @@ class _SetupImage(object):
         cbar_ticks=None,
         showticks=False,
         despine=None,
-        extent=None
+        extent=None,
     ):
 
         self.data = data
@@ -110,7 +110,7 @@ class _SetupImage(object):
 
         if isinstance(self.cmap, str) and self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
-        
+
         if isinstance(self.cmap, str) and self.cmap in _CMAP_EXTRA.keys():
             self.cmap = _CMAP_EXTRA.get(self.cmap)
 
@@ -123,13 +123,13 @@ class _SetupImage(object):
                 self.vmin = np.nanpercentile(self.data, self.perc[0])
             if self.vmax is None:
                 # remember that vmax was None and now set to new value
-                max_robust = True 
+                max_robust = True
                 self.vmax = np.nanpercentile(self.data, self.perc[1])
-        
-        if self.diverging: 
+
+        if self.diverging:
             # Force vmin to have the same absolute value as vmax so that 0 is in the middle.
 
-            if self.vmaxabs is None: 
+            if self.vmaxabs is None:
                 if self.vmin is None or self.vmax is None:
                     vmaxabs = np.abs(self.data).max()
                 else:
@@ -138,7 +138,7 @@ class _SetupImage(object):
                 vmaxabs = self.vmaxabs
 
             self.vmin = -vmaxabs
-            self.vmax = vmaxabs            
+            self.vmax = vmaxabs
 
         if self.norm == "cbar_log":
             self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)
@@ -153,7 +153,7 @@ class _SetupImage(object):
             alpha=self.alpha,
             interpolation=self.interpolation,
             norm=self.norm,
-            extent=self.extent
+            extent=self.extent,
         )
 
         if self.dx:

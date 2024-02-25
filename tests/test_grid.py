@@ -716,7 +716,7 @@ class TestImageGrid:
         with pytest.raises(AssertionError):
             isns.ImageGrid(self.img_3d, perc=[(2, 98), (1, 99)])
             plt.close()
-    
+
     def test_diverging(self):
         isns.ImageGrid(self.img_list, diverging=True)
         plt.close()

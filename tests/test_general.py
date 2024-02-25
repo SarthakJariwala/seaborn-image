@@ -35,6 +35,7 @@ def test_robust_type():
     with pytest.raises(TypeError):
         isns.imgplot(data, robust="True")
 
+
 def test_diverging_value():
     with pytest.raises(AssertionError):
         isns.imgplot(data, diverging=True, vmaxabs=-1)
@@ -120,8 +121,9 @@ def test_imgplot_gray_conversion_for_rgb():
 
     np.testing.assert_array_equal(ax.images[0].get_array().data, rgb2gray(astronaut()))
 
+
 def test_imgplot_extent():
-    extent = (0,1,0,1)
+    extent = (0, 1, 0, 1)
     ax = isns.imgplot(astronaut(), gray=True, extent=extent)
     np.testing.assert_array_equal(ax.images[0].get_extent(), extent)
 
@@ -133,7 +135,7 @@ def test_imgplot_extent():
 @pytest.mark.parametrize("gray", [True, False])
 @pytest.mark.parametrize("cmap", [None, "ice"])
 @pytest.mark.parametrize("data", [data, astronaut()])
-@pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
+@pytest.mark.parametrize("extent", [(0, 1, 0, 1), (20, 30, 0, 10)])
 def test_gray_cmap_interplay(data, gray, cmap, extent):
     _ = isns.imgplot(data, cmap=cmap, gray=gray, extent=extent)
     plt.close("all")
@@ -274,6 +276,7 @@ def test_imghist_diverging_hist_cmap():
     )
 
     plt.close()
+
 
 @pytest.mark.parametrize("cmap", [None, "acton"])
 @pytest.mark.parametrize("bins", [None, 100])
