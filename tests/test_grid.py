@@ -721,10 +721,10 @@ class TestImageGrid:
         isns.ImageGrid(self.img_list, diverging=True)
         plt.close()
 
-        isns.ImageGrid(self.img_list, diverging=True, vmaxabs=[1, 2, 1])
+        isns.ImageGrid(self.img_list, diverging=True, vmax=[1, 2, 1])
         plt.close()
 
-        isns.ImageGrid(self.img_list, diverging=[True, False, True], vmaxabs=[1, 2, 1])
+        isns.ImageGrid(self.img_list, diverging=[True, False, True], vmax=[1, 2, 1])
         plt.close()
 
         isns.ImageGrid(self.img_3d, diverging=True)
@@ -735,10 +735,6 @@ class TestImageGrid:
 
         with pytest.raises(AssertionError):
             isns.ImageGrid(self.img_3d, diverging=[True, False])
-            plt.close()
-
-        with pytest.raises(AssertionError):
-            isns.ImageGrid(self.img_3d, vmaxabs=[1, 2])
             plt.close()
 
     def test_scalebar_list(self):

@@ -60,8 +60,6 @@ class ImageGrid:
     diverging : bool or list, optional
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
-    vmaxabs : float or list, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     alpha : float or array-like, optional
         `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
         by default None
@@ -328,7 +326,6 @@ class ImageGrid:
         robust=False,
         perc=(2, 98),
         diverging=False,
-        vmaxabs=None,
         alpha=None,
         origin=None,
         vmin=None,
@@ -469,7 +466,6 @@ class ImageGrid:
         self.robust = robust
         self.perc = perc
         self.diverging = diverging
-        self.vmaxabs = vmaxabs
         self.alpha = alpha
         self.origin = origin
         self.vmin = vmin
@@ -538,7 +534,6 @@ class ImageGrid:
         _robust = self.robust
         _perc = self.perc
         _diverging = self.diverging
-        _vmaxabs = self.vmaxabs
         _vmin = self.vmin
         _vmax = self.vmax
         _norm = self.norm
@@ -590,10 +585,6 @@ class ImageGrid:
                 self._check_len_wrt_n_images(self.vmax)
                 _vmax = self.vmax[i]
 
-            if isinstance(self.vmaxabs, (list, tuple)):
-                self._check_len_wrt_n_images(self.vmaxabs)
-                _vmaxabs = self.vmaxabs[i]
-
             if isinstance(self.perc, (list)):
                 self._check_len_wrt_n_images(self.perc)
                 _perc = self.perc[i]
@@ -633,7 +624,6 @@ class ImageGrid:
                 robust=_robust,
                 perc=_perc,
                 diverging=_diverging,
-                vmaxabs=_vmaxabs,
                 vmin=_vmin,
                 vmax=_vmax,
                 alpha=self.alpha,

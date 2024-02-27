@@ -79,27 +79,25 @@ def test_diverging_param():
     assert img_setup.vmax == np.abs(data).max()
     plt.close()
 
-    img_setup = isns._core._SetupImage(data, diverging=True, vmax=1)
+    vmax = 2.75
+    img_setup = isns._core._SetupImage(data, diverging=True, vmax=vmax)
     f, ax, cax = img_setup.plot()
-    assert img_setup.vmin == -img_setup.vmax
-    assert img_setup.vmax == np.abs(data).max()
+    assert img_setup.vmax == vmax
+    assert img_setup.vmin == -vmax
     plt.close()
 
     vmin = -3
-    vmax = 2.75
+    img_setup = isns._core._SetupImage(data, diverging=True, vmin=vmin)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmax == -vmin
+    assert img_setup.vmin == vmin
+    plt.close()
+
     img_setup = isns._core._SetupImage(data, diverging=True, vmin=vmin, vmax=vmax)
     f, ax, cax = img_setup.plot()
     assert img_setup.vmin == -img_setup.vmax
     assert img_setup.vmax == max(abs(vmin), abs(vmax))
     assert img_setup.vmin == -max(abs(vmin), abs(vmax))
-    plt.close()
-
-    vmaxabs = 2
-    img_setup = isns._core._SetupImage(data, diverging=True, vmaxabs=vmaxabs)
-    f, ax, cax = img_setup.plot()
-    assert img_setup.vmin == -img_setup.vmax
-    assert img_setup.vmax == vmaxabs
-    assert img_setup.vmin == -vmaxabs
     plt.close()
 
 
@@ -186,7 +184,6 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("vmax", [None, 1])
 @pytest.mark.parametrize("robust", [True, False])
 @pytest.mark.parametrize("diverging", [True, False])
-@pytest.mark.parametrize("vmaxabs", [None, 1])
 @pytest.mark.parametrize("extent", [(0, 1, 0, 1), (20, 30, 0, 10)])
 def test_plot_w_all_inputs(
     cmap,
@@ -201,7 +198,6 @@ def test_plot_w_all_inputs(
     despine,
     robust,
     diverging,
-    vmaxabs,
     extent,
 ):
     img_setup = isns._core._SetupImage(
@@ -212,7 +208,6 @@ def test_plot_w_all_inputs(
         robust=robust,
         perc=(2, 98),
         diverging=diverging,
-        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,

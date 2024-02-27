@@ -28,7 +28,6 @@ def imgplot(
     robust=False,
     perc=(2, 98),
     diverging=False,
-    vmaxabs=None,
     dx=None,
     units=None,
     dimension=None,
@@ -82,8 +81,6 @@ def imgplot(
     diverging : bool, optional
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
-    vmaxabs : float, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -289,8 +286,11 @@ def imgplot(
         assert perc[0] < perc[1]  # order should be (min, max)
 
     if diverging:
-        if vmaxabs is not None:
-            assert vmaxabs > 0
+        if vmax is not None:
+            assert vmax > 0
+
+        if vmin is not None:
+            assert vmin < 0
 
     if not isinstance(cbar, bool):
         raise TypeError
@@ -348,7 +348,6 @@ def imgplot(
         robust=robust,
         perc=perc,
         diverging=diverging,
-        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -395,9 +394,8 @@ def imghist(
     interpolation=None,
     norm=None,
     robust=False,
-    diverging=False,
-    vmaxabs=None,
     perc=(2, 98),
+    diverging=False,
     dx=None,
     units=None,
     dimension=None,
@@ -453,8 +451,6 @@ def imghist(
     diverging : bool, optional
         If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
         color maps show 0 at the middle.
-    vmaxabs : float, optional
-        If `diverging` is True, sets vmax to vmaxabs and vmin to -vmaxabs.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -613,7 +609,6 @@ def imghist(
         robust=robust,
         perc=perc,
         diverging=diverging,
-        vmaxabs=vmaxabs,
         dx=dx,
         units=units,
         dimension=dimension,

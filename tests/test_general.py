@@ -38,13 +38,12 @@ def test_robust_type():
 
 def test_diverging_value():
     with pytest.raises(AssertionError):
-        isns.imgplot(data, diverging=True, vmaxabs=-1)
+        isns.imgplot(data, diverging=True, vmax=-1)
         plt.close()
 
-
-def test_vmaxabs():
     with pytest.raises(AssertionError):
-        isns.imgplot(data, diverging=True, vmaxabs=-1)
+        isns.imgplot(data, diverging=True, vmin=1)
+        plt.close()
 
 
 def test_map_func_type():

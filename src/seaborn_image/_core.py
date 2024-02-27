@@ -33,7 +33,6 @@ class _SetupImage(object):
         robust=False,
         perc=None,
         diverging=False,
-        vmaxabs=None,
         dx=None,
         units=None,
         dimension=None,
@@ -57,7 +56,6 @@ class _SetupImage(object):
         self.norm = norm
         self.robust = robust
         self.diverging = diverging
-        self.vmaxabs = vmaxabs
         self.perc = perc
         self.dx = dx
         self.units = units
@@ -129,16 +127,16 @@ class _SetupImage(object):
         if self.diverging:
             # Force vmin to have the same absolute value as vmax so that 0 is in the middle.
 
-            if self.vmaxabs is None:
-                if self.vmin is None or self.vmax is None:
-                    vmaxabs = np.abs(self.data).max()
-                else:
-                    vmaxabs = max(abs(self.vmin), abs(self.vmax))
+            if self.vmax is None and self.vmin is None:
+                self.vmax = np.abs(self.data).max()
+                self.vmin = -np.abs(self.data).max()
+            elif self.vmax is None:
+                self.vmax = abs(self.vmin)
+            elif self.vmin is None:
+                self.vmin = -abs(self.vmax)
             else:
-                vmaxabs = self.vmaxabs
-
-            self.vmin = -vmaxabs
-            self.vmax = vmaxabs
+                self.vmax = max(abs(self.vmin), abs(self.vmax))
+                self.vmin = -max(abs(self.vmin), abs(self.vmax))
 
         if self.norm == "cbar_log":
             self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)
