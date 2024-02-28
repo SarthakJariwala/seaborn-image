@@ -129,14 +129,14 @@ class _SetupImage(object):
 
             if self.vmax is None and self.vmin is None:
                 self.vmax = np.abs(self.data).max()
-                self.vmin = -np.abs(self.data).max()
+                self.vmin = -self.vmax
             elif self.vmax is None:
                 self.vmax = abs(self.vmin)
             elif self.vmin is None:
                 self.vmin = -abs(self.vmax)
             else:
                 self.vmax = max(abs(self.vmin), abs(self.vmax))
-                self.vmin = -max(abs(self.vmin), abs(self.vmax))
+                self.vmin = -self.vmax
 
         if self.norm == "cbar_log":
             self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)

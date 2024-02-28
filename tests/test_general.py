@@ -253,8 +253,8 @@ def test_imghist_robust_hist_cmap():
 
 
 def test_imghist_diverging_hist_cmap():
-    # """Check if the min/max patch color in histogram matches
-    # the min/max colors in the colorbar after diverging"""
+    """Check if the min/max patch color in histogram matches
+    the min/max colors in the colorbar after diverging"""
 
     polymer = isns.load_image("polymer")
     polymer_norm = polymer - polymer.mean()
@@ -264,12 +264,12 @@ def test_imghist_diverging_hist_cmap():
     _min = -np.abs(polymer_norm).max()
     _max = np.abs(polymer_norm).max()
 
-    # # check the max patch facecolor and check it against the image cmap max
+    # check the max patch facecolor and check it against the image cmap max
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
     )
 
-    # # check the min patch facecolor and check it against the image cmap min
+    # check the min patch facecolor and check it against the image cmap min
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
     )

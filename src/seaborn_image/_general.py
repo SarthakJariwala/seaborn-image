@@ -208,6 +208,14 @@ def imgplot(
 
         >>> isns.imgplot(img_out, robust=True, perc=(0.5,99.5))
 
+    Rescale colormap using the `diverging` parameter
+
+    .. plot::
+        :context: close-figs
+
+        >>> img_standard = img - img.mean()
+        >>> isns.imgplot(img_standard, diverging=True, cmap="seismic")
+
     Map a function to transform input image
 
     .. plot::
@@ -287,10 +295,10 @@ def imgplot(
 
     if diverging:
         if vmax is not None:
-            assert vmax > 0
+            assert vmax > 0, "vmax must be greater than 0 when diverging=True"
 
         if vmin is not None:
-            assert vmin < 0
+            assert vmin < 0, "vmin must be lower than 0 when diverging=True"
 
     if not isinstance(cbar, bool):
         raise TypeError
