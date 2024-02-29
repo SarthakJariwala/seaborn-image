@@ -72,6 +72,35 @@ def test_robust_param():
     plt.close()
 
 
+def test_diverging_param():
+    img_setup = isns._core._SetupImage(data, diverging=True)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == np.abs(data).max()
+    plt.close()
+
+    vmax = 2.75
+    img_setup = isns._core._SetupImage(data, diverging=True, vmax=vmax)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmax == vmax
+    assert img_setup.vmin == -vmax
+    plt.close()
+
+    vmin = -3
+    img_setup = isns._core._SetupImage(data, diverging=True, vmin=vmin)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmax == -vmin
+    assert img_setup.vmin == vmin
+    plt.close()
+
+    img_setup = isns._core._SetupImage(data, diverging=True, vmin=vmin, vmax=vmax)
+    f, ax, cax = img_setup.plot()
+    assert img_setup.vmin == -img_setup.vmax
+    assert img_setup.vmax == max(abs(vmin), abs(vmax))
+    assert img_setup.vmin == -max(abs(vmin), abs(vmax))
+    plt.close()
+
+
 def test_log_scale_cbar():
     img_setup = isns._core._SetupImage(data, norm="cbar_log")
     f, ax, cax = img_setup.plot()
@@ -154,7 +183,8 @@ def test_data_plotted_is_same_as_input():
 @pytest.mark.parametrize("vmin", [None, 0])
 @pytest.mark.parametrize("vmax", [None, 1])
 @pytest.mark.parametrize("robust", [True, False])
-@pytest.mark.parametrize("extent", [(0,1,0,1), (20, 30, 0, 10)])
+@pytest.mark.parametrize("diverging", [True, False])
+@pytest.mark.parametrize("extent", [(0, 1, 0, 1), (20, 30, 0, 10)])
 def test_plot_w_all_inputs(
     cmap,
     vmin,
@@ -167,7 +197,8 @@ def test_plot_w_all_inputs(
     showticks,
     despine,
     robust,
-    extent
+    diverging,
+    extent,
 ):
     img_setup = isns._core._SetupImage(
         data,
@@ -176,6 +207,7 @@ def test_plot_w_all_inputs(
         vmax=None,
         robust=robust,
         perc=(2, 98),
+        diverging=diverging,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -185,7 +217,7 @@ def test_plot_w_all_inputs(
         cbar_ticks=[],
         showticks=showticks,
         despine=despine,
-        extent=extent
+        extent=extent,
     )
     f, ax, cax = img_setup.plot()
 

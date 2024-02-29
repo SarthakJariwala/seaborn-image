@@ -57,6 +57,9 @@ class ImageGrid:
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values. Can be a list of tuples, if
         input data is a list of images
+    diverging : bool or list, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
     alpha : float or array-like, optional
         `matplotlib.pyplot.imshow` alpha blending value from 0 (transparent) to 1 (opaque),
         by default None
@@ -322,6 +325,7 @@ class ImageGrid:
         cmap=None,
         robust=False,
         perc=(2, 98),
+        diverging=False,
         alpha=None,
         origin=None,
         vmin=None,
@@ -461,6 +465,7 @@ class ImageGrid:
         self.cmap = cmap
         self.robust = robust
         self.perc = perc
+        self.diverging = diverging
         self.alpha = alpha
         self.origin = origin
         self.vmin = vmin
@@ -528,6 +533,7 @@ class ImageGrid:
         _cmap = self.cmap
         _robust = self.robust
         _perc = self.perc
+        _diverging = self.diverging
         _vmin = self.vmin
         _vmax = self.vmax
         _norm = self.norm
@@ -566,6 +572,10 @@ class ImageGrid:
             if isinstance(self.robust, (list, tuple)):
                 self._check_len_wrt_n_images(self.robust)
                 _robust = self.robust[i]
+
+            if isinstance(self.diverging, (list, tuple)):
+                self._check_len_wrt_n_images(self.diverging)
+                _diverging = self.diverging[i]
 
             if isinstance(self.vmin, (list, tuple)):
                 self._check_len_wrt_n_images(self.vmin)
@@ -613,6 +623,7 @@ class ImageGrid:
                 cmap=_cmap,
                 robust=_robust,
                 perc=_perc,
+                diverging=_diverging,
                 vmin=_vmin,
                 vmax=_vmax,
                 alpha=self.alpha,
@@ -770,7 +781,7 @@ def rgbplot(
     cbar_ticks=None,
     showticks=False,
     despine=None,
-    extent=None
+    extent=None,
 ):
     """Split and plot the red, green and blue channels of an
     RGB image.
@@ -925,7 +936,7 @@ def rgbplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        extent=extent
+        extent=extent,
     )
 
     return g

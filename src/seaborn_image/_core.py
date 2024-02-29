@@ -32,6 +32,7 @@ class _SetupImage(object):
         norm=None,
         robust=False,
         perc=None,
+        diverging=False,
         dx=None,
         units=None,
         dimension=None,
@@ -41,7 +42,7 @@ class _SetupImage(object):
         cbar_ticks=None,
         showticks=False,
         despine=None,
-        extent=None
+        extent=None,
     ):
 
         self.data = data
@@ -54,6 +55,7 @@ class _SetupImage(object):
         self.interpolation = interpolation
         self.norm = norm
         self.robust = robust
+        self.diverging = diverging
         self.perc = perc
         self.dx = dx
         self.units = units
@@ -106,7 +108,7 @@ class _SetupImage(object):
 
         if isinstance(self.cmap, str) and self.cmap in _CMAP_QUAL.keys():
             self.cmap = _CMAP_QUAL.get(self.cmap).mpl_colormap
-        
+
         if isinstance(self.cmap, str) and self.cmap in _CMAP_EXTRA.keys():
             self.cmap = _CMAP_EXTRA.get(self.cmap)
 
@@ -114,15 +116,27 @@ class _SetupImage(object):
             min_robust = False
             max_robust = False
             if self.vmin is None:
-                min_robust = (
-                    True  # remember that vmin was None and now set to new value
-                )
+                # remember that vmin was None and now set to new value
+                min_robust = True
                 self.vmin = np.nanpercentile(self.data, self.perc[0])
             if self.vmax is None:
-                max_robust = (
-                    True  # remember that vmax was None and now set to new value
-                )
+                # remember that vmax was None and now set to new value
+                max_robust = True
                 self.vmax = np.nanpercentile(self.data, self.perc[1])
+
+        if self.diverging:
+            # Force vmin to have the same absolute value as vmax so that 0 is in the middle.
+
+            if self.vmax is None and self.vmin is None:
+                self.vmax = np.abs(self.data).max()
+                self.vmin = -self.vmax
+            elif self.vmax is None:
+                self.vmax = abs(self.vmin)
+            elif self.vmin is None:
+                self.vmin = -abs(self.vmax)
+            else:
+                self.vmax = max(abs(self.vmin), abs(self.vmax))
+                self.vmin = -self.vmax
 
         if self.norm == "cbar_log":
             self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)
@@ -137,7 +151,7 @@ class _SetupImage(object):
             alpha=self.alpha,
             interpolation=self.interpolation,
             norm=self.norm,
-            extent=self.extent
+            extent=self.extent,
         )
 
         if self.dx:

@@ -27,6 +27,7 @@ def imgplot(
     norm=None,
     robust=False,
     perc=(2, 98),
+    diverging=False,
     dx=None,
     units=None,
     dimension=None,
@@ -77,6 +78,9 @@ def imgplot(
         If `robust` is True, colormap range is calculated based
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values
+    diverging : bool, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -204,6 +208,14 @@ def imgplot(
 
         >>> isns.imgplot(img_out, robust=True, perc=(0.5,99.5))
 
+    Rescale colormap using the `diverging` parameter
+
+    .. plot::
+        :context: close-figs
+
+        >>> img_standard = img - img.mean()
+        >>> isns.imgplot(img_standard, diverging=True, cmap="seismic")
+
     Map a function to transform input image
 
     .. plot::
@@ -281,6 +293,13 @@ def imgplot(
         assert len(perc) == 2
         assert perc[0] < perc[1]  # order should be (min, max)
 
+    if diverging:
+        if vmax is not None:
+            assert vmax > 0, "vmax must be greater than 0 when diverging=True"
+
+        if vmin is not None:
+            assert vmin < 0, "vmin must be lower than 0 when diverging=True"
+
     if not isinstance(cbar, bool):
         raise TypeError
 
@@ -336,6 +355,7 @@ def imgplot(
         norm=norm,
         robust=robust,
         perc=perc,
+        diverging=diverging,
         dx=dx,
         units=units,
         dimension=dimension,
@@ -345,7 +365,7 @@ def imgplot(
         cbar_ticks=cbar_ticks,
         showticks=showticks,
         despine=despine,
-        extent=extent
+        extent=extent,
     )
 
     f, ax, cax = img_plotter.plot()
@@ -383,6 +403,7 @@ def imghist(
     norm=None,
     robust=False,
     perc=(2, 98),
+    diverging=False,
     dx=None,
     units=None,
     dimension=None,
@@ -435,6 +456,9 @@ def imghist(
         If `robust` is True, colormap range is calculated based
         on the percentiles specified instead of the extremes, by default (2, 98) -
         2nd and 98th percentiles for min and max values
+    diverging : bool, optional
+        If True, vmax and vmin are adjusted so they have the same absolute value, making the diverging
+        color maps show 0 at the middle.
     dx : float, optional
         Size per pixel of the image data. Specifying `dx` and `units` adds a scalebar
         to the image, by default None
@@ -592,6 +616,7 @@ def imghist(
         norm=norm,
         robust=robust,
         perc=perc,
+        diverging=diverging,
         dx=dx,
         units=units,
         dimension=dimension,
