@@ -290,7 +290,8 @@ class ImageGrid:
         ...             [pol, pl, retina],
         ...             map_func=[gaussian, median, hessian],
         ...             dx=[15, 100, None],
-        ...             units="nm")
+        ...             units="nm",
+        ...             aspect=1)
 
     Change colorbar orientation
 
