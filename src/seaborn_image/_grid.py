@@ -240,7 +240,7 @@ class ImageGrid:
         :context: close-figs
 
         >>> cifar = isns.load_image("cifar10")
-        >>> g = isns.ImageGrid(cifar, height=1, col_wrap=6)
+        >>> g = isns.ImageGrid(cifar, height=1, col_wrap=6, origin="lower")
 
     Map a function to the image data
 
