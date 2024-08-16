@@ -22,7 +22,7 @@ except ImportError:
 
 
 package = "seaborn_image"
-python_versions = ["3.10", "3.9", "3.8"]
+python_versions = ["3.11", "3.10", "3.9", "3.8"]
 nox.needs_version = ">= 2021.6.6"
 locations = "src", "tests", "noxfile.py", "docs/conf.py", "examples"
 nox.options.sessions = "tests", "xdoctest"
