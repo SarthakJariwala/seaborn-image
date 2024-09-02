@@ -367,13 +367,8 @@ class ImageGrid:
                     )
 
             if aspect == "auto":
-                aspect = 1e10
-
-                # Select minimum aspect ratio among all the images
-                for img in data:
-                    aspect_aux = img.shape[1] / img.shape[0]
-                    if aspect_aux < aspect:
-                        aspect = aspect_aux
+                aspect_ratios = [img.shape[1] / img.shape[0] for img in data]
+                aspect = min(aspect_ratios)
 
         elif not isinstance(data, np.ndarray):
             raise ValueError("image data must be a list of images or a 3d or 4d array.")
@@ -433,7 +428,7 @@ class ImageGrid:
 
             if aspect == "auto":
                 # Select axis where width and height are
-                height_idx, width_idx = [i for i in range(data.ndim) if i != axis][:2]
+                height_idx, width_idx = [i for i in range(data.ndim) if i != (axis % data.ndim)][:2]
 
                 aspect = data.shape[width_idx] / data.shape[height_idx]
 
@@ -1192,10 +1187,10 @@ class ParamGrid(object):
             ncol = col_wrap
             nrow = int(np.ceil(len(kwargs[f"{col}"]) / col_wrap))
 
-        # Calculate the base figure size
         if aspect == "auto":
             aspect = data.shape[1]/data.shape[0]
-        
+
+        # Calculate the base figure size
         figsize = (ncol * height * aspect, nrow * height)
 
         fig = plt.figure(figsize=figsize)
