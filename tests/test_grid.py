@@ -871,7 +871,28 @@ class TestImageGrid:
         )
         np.testing.assert_array_equal(g4.fig.get_size_inches(), (3 * 2 * 1.5, 2 * 2))
         plt.close()
+    
+    def test_auto_aspect(self):
+        imgsize0 = (10, 10)
+        g0 = isns.ImageGrid([np.zeros(imgsize0) for i in range(10)], aspect='auto')
+        assert np.isclose(imgsize0[1]/imgsize0[0], g0.aspect)
+        plt.close()
 
+        imgsize1 = (10, 5)
+        g1 = isns.ImageGrid([np.zeros(imgsize1) for i in range(10)], aspect='auto')
+        assert np.isclose(imgsize1[1]/imgsize1[0], g1.aspect)
+        plt.close()
+        
+        imgsize2 = (5, 10)
+        g2 = isns.ImageGrid([np.zeros(imgsize2) for i in range(10)], aspect='auto')
+        assert np.isclose(imgsize2[1]/imgsize2[0], g2.aspect)
+        plt.close()
+
+        imglist = [np.zeros(imgsize0) for i in range(4)] + [np.zeros(imgsize1) for i in range(4)] + [np.zeros(imgsize2) for i in range(4)]
+        g3 = isns.ImageGrid(imglist, aspect='auto')
+        assert np.isclose(min([imgsize0[1]/imgsize0[0], imgsize1[1]/imgsize1[0], imgsize2[1]/imgsize2[0]]), g3.aspect)
+        plt.close()
+        
     def test_vmin_vmax(self):
         g = isns.ImageGrid(cells, vmin=0.5, vmax=0.75)
         for ax in g.axes.ravel():

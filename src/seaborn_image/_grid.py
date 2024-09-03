@@ -43,8 +43,8 @@ class ImageGrid:
         Number of columns to display. Defaults to None.
     height : int or float, optional
         Size of the individual images. Defaults to 3.
-    aspect : int or float, optional
-        Aspect ratio of individual images. Defaults to 1.
+    aspect : int, float or 'auto', optional
+        Aspect ratio of individual images, when set to 'auto', it calculates the aspect ratio of the images passed. Defaults to 'auto'.
     cmap : str or `matplotlib.colors.Colormap` or list, optional
         Image colormap. If input data is a list of images,
         `cmap` can be a list of colormaps. Defaults to None.
@@ -290,7 +290,8 @@ class ImageGrid:
         ...             [pol, pl, retina],
         ...             map_func=[gaussian, median, hessian],
         ...             dx=[15, 100, None],
-        ...             units="nm")
+        ...             units="nm",
+        ...             aspect=1)
 
     Change colorbar orientation
 
@@ -321,7 +322,7 @@ class ImageGrid:
         map_func_kw=None,
         col_wrap=None,
         height=3,
-        aspect=1,
+        aspect="auto",
         cmap=None,
         robust=False,
         perc=(2, 98),
@@ -365,6 +366,10 @@ class ImageGrid:
                         len(map_func) if len(map_func) >= len(data) else len(data)
                     )
 
+            if aspect == "auto":
+                aspect_ratios = [img.shape[1] / img.shape[0] for img in data]
+                aspect = min(aspect_ratios)
+
         elif not isinstance(data, np.ndarray):
             raise ValueError("image data must be a list of images or a 3d or 4d array.")
 
@@ -384,6 +389,9 @@ class ImageGrid:
                 _nimages = len(map_func)
                 # no of columns should now be len of map_func list
                 col_wrap = len(map_func) if col_wrap is None else col_wrap
+
+            if aspect == "auto":
+                aspect = data.shape[1] / data.shape[0]
 
         elif data.ndim in [3, 4]:
             if data.ndim == 4 and data.shape[-1] not in [1, 3, 4]:
@@ -417,6 +425,12 @@ class ImageGrid:
                 slices = [slices]
 
             _nimages = len(slices)
+
+            if aspect == "auto":
+                # Select axis where width and height are
+                height_idx, width_idx = [i for i in range(data.ndim) if i != (axis % data.ndim)][:2]
+
+                aspect = data.shape[width_idx] / data.shape[height_idx]
 
             # ---- 3D or 4D image with an individual map_func ----
             map_func_type = self._check_map_func(map_func, map_func_kw)
@@ -765,7 +779,7 @@ def rgbplot(
     *,
     col_wrap=3,
     height=3,
-    aspect=1,
+    aspect="auto",
     cmap=None,
     alpha=None,
     origin=None,
@@ -794,8 +808,8 @@ def rgbplot(
         Number of columns to display. Defaults to 3.
     height : int or float, optional
         Size of the individual images. Defaults to 3.
-    aspect : int or float, optional
-        Aspect ratio of individual images. Defaults to 1.
+    aspect : int, float or 'auto', optional
+        Aspect ratio of individual images, when set to 'auto', it calculates the aspect ratio of the images passed. Defaults to 'auto'.
     cmap : str or `matplotlib.colors.Colormap` or list, optional
         Image colormap or a list of colormaps. Defaults to None.
     alpha : float or array-like, optional
@@ -975,8 +989,8 @@ class ParamGrid(object):
         is not None and `row` is None. Defaults to None.
     height : int or float, optional
         Size of the individual images. Defaults to 3.
-    aspect : int or float, optional
-        Aspect ratio of individual images. Defaults to 1.
+    aspect : int, float or 'auto', optional
+        Aspect ratio of individual images, when set to 'auto', it calculates the aspect ratio of the images passed. Defaults to 'auto'.
     cmap : str or `matplotlib.colors.Colormap`, optional
         Image colormap. Defaults to None.
     alpha : float or array-like, optional
@@ -1113,7 +1127,7 @@ class ParamGrid(object):
         col=None,
         col_wrap=None,
         height=3,
-        aspect=1,
+        aspect="auto",
         cmap=None,
         alpha=None,
         origin=None,
@@ -1172,6 +1186,9 @@ class ParamGrid(object):
             # recompute the grid shape if col_wrap is specified
             ncol = col_wrap
             nrow = int(np.ceil(len(kwargs[f"{col}"]) / col_wrap))
+
+        if aspect == "auto":
+            aspect = data.shape[1]/data.shape[0]
 
         # Calculate the base figure size
         figsize = (ncol * height * aspect, nrow * height)
