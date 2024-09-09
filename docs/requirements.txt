@@ -1,5 +1,5 @@
 ipykernel==6.25.2
 nbsphinx==0.9.5
 pydata-sphinx-theme==0.15.4
-sphinx==7.1.2
+sphinx==7.4.7
 sphinx-gallery==0.17.1
