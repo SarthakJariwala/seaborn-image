@@ -1,6 +1,22 @@
 Reference
 =========
 
+.. toctree::
+   :hidden:
+
+   api/imgplot
+   api/imshow
+   api/imghist
+   api/ImageGrid
+   api/rgbplot
+   api/filterplot
+   api/fftplot
+   api/ParamGrid
+   api/datasets
+   api/_context
+   api/utils
+   api/FilterGrid
+
 :doc:`imgplot <api/imgplot>`
 ----------------------------
 
