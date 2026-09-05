@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "seaborn-image"
-version = "0.10.0"
+version = "0.10.1"
 description = "Attractive, descriptive and effective image visualization with seaborn-like API built on top of matplotlib"
 readme = "README.md"
 license = "MIT"
