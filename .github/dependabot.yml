@@ -11,11 +11,6 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
   - package-ecosystem: pip
-    directory: "/.github/workflows"
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 10
-  - package-ecosystem: pip
     directory: "/docs"
     schedule:
       interval: weekly
