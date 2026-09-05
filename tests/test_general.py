@@ -209,6 +209,14 @@ def test_imghist_return():
     plt.close("all")
 
 
+def test_imghist_matplotlib_cmap_name():
+    f = isns.imghist(data, cmap="inferno")
+
+    assert f.axes[0].images[0].cmap.name == "inferno"
+
+    plt.close("all")
+
+
 def test_imghist_figsize():
     # check default
     f = isns.imghist(data)

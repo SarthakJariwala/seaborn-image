@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as ss
-from matplotlib import gridspec
+from matplotlib import colormaps, gridspec
 from matplotlib.axes import Axes
-from matplotlib.cm import get_cmap
 from matplotlib.colors import Colormap
 from skimage.color import rgb2gray
 
@@ -679,14 +678,14 @@ def imghist(
     ax2.set_frame_on(False)
 
     if cmap is None:
-        cm = get_cmap()
+        cm = colormaps.get_cmap(None)
     else:
         if cmap in _CMAP_QUAL.keys():
             cm = _CMAP_QUAL.get(cmap).mpl_colormap
         elif cmap in _CMAP_EXTRA.keys():
             cm = _CMAP_EXTRA.get(cmap)
         else:
-            cm = plt.cm.get_cmap(cmap)
+            cm = colormaps.get_cmap(cmap)
 
     bin_centers = bins[:-1] + bins[1:]
 
