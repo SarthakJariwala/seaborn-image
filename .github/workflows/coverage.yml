@@ -10,7 +10,6 @@ jobs:
         python-version: "3.12"
         enable-cache: true
     - run: uv sync --locked --no-default-groups --group test
-    - run: uv run coverage run --parallel -m pytest
-    - run: uv run coverage combine
+    - run: uv run coverage run -m pytest
     - run: uv run coverage report
     - run: uv run python -m xdoctest --modname=seaborn_image --command=all

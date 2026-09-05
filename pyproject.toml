@@ -60,3 +60,6 @@ dev = [
 
 [tool.uv]
 default-groups = ["dev"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/seaborn_image"]
