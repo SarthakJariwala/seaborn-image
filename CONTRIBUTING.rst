@@ -42,49 +42,43 @@ Request features on the `Issue Tracker`_.
 How to set up your development environment
 ------------------------------------------
 
-You need Python 3.6+ and the following tools:
-
-- Poetry_
-- Nox_
+You need Python 3.10+ and uv_.
 
 Install the package with development requirements:
 
 .. code:: console
 
-   $ poetry install
+   $ uv sync
 
-You can now run an interactive Python session,
-or the command-line interface:
+You can now run an interactive Python session:
 
 .. code:: console
 
-   $ poetry run python
+   $ uv run python
 
-.. _Poetry: https://python-poetry.org/
-.. _Nox: https://nox.thea.codes/
+.. _uv: https://docs.astral.sh/uv/
 
 
 How to test the project
 -----------------------
 
-Run the full test suite:
+Run the test suite:
 
 .. code:: console
 
-   $ nox
+   $ uv run pytest
 
-List the available Nox sessions:
-
-.. code:: console
-
-   $ nox --list-sessions
-
-You can also run a specific Nox session.
-For example, invoke the unit test suite like this:
+Run the doctests:
 
 .. code:: console
 
-   $ nox --session=tests
+   $ uv run python -m xdoctest --modname=seaborn_image --command=all
+
+To run tests on another Python version:
+
+.. code:: console
+
+   $ uv run --python 3.13 pytest
 
 Unit tests are located in the ``tests`` directory,
 and are written using the pytest_ testing framework.
@@ -99,7 +93,7 @@ Open a `pull request`_ to submit changes to this project.
 
 Your pull request needs to meet the following guidelines for acceptance:
 
-- The Nox test suite must pass without errors.
+- The test suite must pass without errors.
 - Include unit tests. Code coverage should not decrease.
 - If your changes add functionality, update the documentation accordingly.
 

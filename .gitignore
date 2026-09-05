@@ -13,7 +13,6 @@ __pycache__/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
-.nox/
 
 # Project files
 .ropeproject

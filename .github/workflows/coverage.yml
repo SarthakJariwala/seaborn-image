@@ -5,14 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5.2.0
+    - uses: astral-sh/setup-uv@v10.0.1
       with:
-        python-version: '3.12'
-        architecture: x64
-    - run: pip install --constraint=.github/workflows/constraints.txt pip
-    - run: pip install --constraint=.github/workflows/constraints.txt nox
-    - run: pip install --constraint=.github/workflows/constraints.txt poetry
-    - run: python -m pip install --constraint=.github/workflows/constraints.txt nox-poetry
-    - run: nox --python=3.10 --sessions tests coverage xdoctest 
-      env:
-        CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+        python-version: "3.12"
+        enable-cache: true
+    - run: uv sync --locked --no-default-groups --group test
+    - run: uv run coverage run -m pytest
+    - run: uv run coverage report
+    - run: uv run python -m xdoctest --modname=seaborn_image --command=all
