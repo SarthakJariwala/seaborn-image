@@ -4,11 +4,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib_scalebar.scalebar import ScaleBar
 from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
+from mpl_toolkits.axes_grid1.axes_divider import AxesDivider
 
 from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
-from .utils import despine, scientific_ticks
+from .utils import despine
 
-# dimensions for scalebar
+
+def _get_axes_divider(ax):
+    loc = ax.get_axes_locator()
+    owner = getattr(getattr(loc, "get_subplotspec", None), "__self__", None)
+    if isinstance(owner, AxesDivider):
+        return owner
+    return make_axes_locatable(ax)
+
+
 _DIMENSIONS = {
     "si": "si-length",
     "si-reciprocal": "si-length-reciprocal",
@@ -69,7 +78,6 @@ class _SetupImage(object):
         self.extent = extent
 
     def _setup_figure(self):
-        """Wrapper to setup image with the desired parameters"""
         if self.ax is None:
             f, ax = plt.subplots()
         else:
@@ -79,8 +87,6 @@ class _SetupImage(object):
         return f, ax
 
     def _setup_scalebar(self, ax):
-        """Setup scalebar for the image"""
-
         if self.dx:
             dx = self.dx
             if self.units:
@@ -116,17 +122,13 @@ class _SetupImage(object):
             min_robust = False
             max_robust = False
             if self.vmin is None:
-                # remember that vmin was None and now set to new value
                 min_robust = True
                 self.vmin = np.nanpercentile(self.data, self.perc[0])
             if self.vmax is None:
-                # remember that vmax was None and now set to new value
                 max_robust = True
                 self.vmax = np.nanpercentile(self.data, self.perc[1])
 
         if self.diverging:
-            # Force vmin to have the same absolute value as vmax so that 0 is in the middle.
-
             if self.vmax is None and self.vmin is None:
                 self.vmax = np.abs(self.data).max()
                 self.vmin = -self.vmax
@@ -141,7 +143,6 @@ class _SetupImage(object):
         if self.norm == "cbar_log":
             self.norm = colors.LogNorm(vmin=self.vmin, vmax=self.vmax)
 
-        # TODO move everything other than data to kwargs
         _map = ax.imshow(
             self.data,
             cmap=self.cmap,
@@ -158,7 +159,7 @@ class _SetupImage(object):
             self._setup_scalebar(ax)
 
         if self.cbar:
-            divider = make_axes_locatable(ax)
+            divider = _get_axes_divider(ax)
 
             if self.orientation in ["vertical", "v"]:
                 self.orientation = "vertical"  # plt.colorbar doesn't take 'v'
@@ -177,7 +178,6 @@ class _SetupImage(object):
                     "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
                 )
 
-            # extend specific colorbar regions if robust is True
             if self.robust:
                 if min_robust and max_robust:
                     cb = f.colorbar(
@@ -195,8 +195,6 @@ class _SetupImage(object):
                 cb = f.colorbar(_map, cax=cax, orientation=self.orientation)
 
             if self.despine is None:
-                # if depsine is None, use global settings
-                # if all image axes spines are despined, cbar should also be despined
                 if (
                     mpl.rcParams["axes.spines.top"] is False
                     and mpl.rcParams["axes.spines.bottom"] is False
@@ -206,27 +204,21 @@ class _SetupImage(object):
                     self.despine = True
 
             if self.despine is True:
-                cb.outline.set_visible(False)  # remove colorbar outline border
+                cb.outline.set_visible(False)
             else:
-                self.despine = (
-                    False  # NOTE this is only being set inside self.cbar block
-                )
+                self.despine = False
 
-            # display only 3 tick marks on colorbar
             if self.orientation in ["vertical"]:
                 cax.yaxis.set_major_locator(plt.MaxNLocator(3))
                 cax.tick_params(
                     axis="y", width=0, length=0, which="both"
-                )  # remove major and minor ytick
+                )
 
             if self.orientation in ["horizontal"]:
                 cax.xaxis.set_major_locator(plt.MaxNLocator(3))
                 cax.tick_params(
                     axis="x", width=0, length=0, which="both"
-                )  # remove major and minor xticks
-
-            # TODO add option for scientific ticks as part of inbuilt functions
-            # scientific_ticks(ax=cax)
+                )
 
             if self.cbar_ticks is not None:
                 cb.set_ticks(self.cbar_ticks)
@@ -242,17 +234,11 @@ class _SetupImage(object):
             ax.set_xticks([])
             ax.set_ylabel("")
             ax.set_xlabel("")
-            # ax.get_yaxis().set_visible(False)
-            # ax.get_xaxis().set_visible(False)
 
-        # This block is for handling local despine state
-        # If the state doesn't match the global state,
-        # local despine state will be preferred
         if self.despine:
             despine(ax=ax, which="all")
 
-        elif self.despine is False:  # if despine is False
-            # TODO implement a respine function (?)
+        elif self.despine is False:
             for spine in ["top", "bottom", "right", "left"]:
                 ax.spines[spine].set_visible(True)
 

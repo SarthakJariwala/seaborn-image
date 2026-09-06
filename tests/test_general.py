@@ -94,10 +94,8 @@ def test_imgplot_return(data):
     f = plt.gcf()
 
     assert isinstance(ax, Axes)
-    if (
-        data.ndim == 3
-    ):  # if data dim is 3 it cbar will be set to False, and cax will be None
-        pass  # no colorbar axes in this case
+    if data.ndim == 3:
+        pass
     else:
         assert isinstance(f.axes[1], Axes)
 
@@ -108,14 +106,10 @@ def test_imgplot_return(data):
 def test_imgplot_data_is_same_as_input(data):
     ax = isns.imgplot(data)
 
-    # check if data iput is what was plotted
     np.testing.assert_array_equal(ax.images[0].get_array().data, data)
 
 
 def test_imgplot_gray_conversion_for_rgb():
-    """Check if the plotted data is grayscale when input is RGB image
-    and gray is True.
-    """
     ax = isns.imgplot(astronaut(), gray=True)
 
     np.testing.assert_array_equal(ax.images[0].get_array().data, rgb2gray(astronaut()))
@@ -154,7 +148,6 @@ def test_map_func():
         ax.images[0].get_array().data, adjust_gamma(cells, gamma=0.5)
     )
 
-    # imshow with kwargs to test if they are passed on to imgplot
     ax = isns.imshow(cells, map_func=adjust_gamma, gamma=0.5)
 
     np.testing.assert_array_equal(
@@ -163,15 +156,12 @@ def test_map_func():
 
 
 def test_cbar_log_and_norm():
-    # special case of log-norm
     _ = isns.imgplot(data, cbar_log=True)
     plt.close()
 
-    # when only norm is specified
     _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm())
     plt.close()
 
-    # norm takes preference
     _ = isns.imgplot(data, norm=matplotlib.colors.LogNorm(), cbar_log=True)
     plt.close()
 
@@ -218,28 +208,88 @@ def test_imghist_matplotlib_cmap_name():
 
 
 def test_imghist_figsize():
-    # check default
     f = isns.imghist(data)
     np.testing.assert_array_equal(f.get_size_inches(), (5 * 1.75, 5))
     plt.close()
 
-    # check user specified
     f = isns.imghist(data, height=6, aspect=1.5)
     np.testing.assert_array_equal(f.get_size_inches(), (6 * 1.5, 6))
     plt.close()
 
 
+def _assert_hist_aligned_with_image(f, orientation):
+    f.canvas.draw()
+    img_pos = f.axes[0].get_position()
+    cbar_pos = f.axes[1].get_position()
+    hist_pos = f.axes[2].get_position()
+    if orientation in ["v", "vertical"]:
+        assert hist_pos.height == pytest.approx(img_pos.height, rel=1e-3)
+        assert hist_pos.y0 == pytest.approx(img_pos.y0, rel=1e-3)
+        assert hist_pos.height == pytest.approx(cbar_pos.height, rel=1e-3)
+        assert hist_pos.y0 == pytest.approx(cbar_pos.y0, rel=1e-3)
+    else:
+        assert hist_pos.width == pytest.approx(img_pos.width, rel=1e-3)
+        assert hist_pos.x0 == pytest.approx(img_pos.x0, rel=1e-3)
+        assert hist_pos.width == pytest.approx(cbar_pos.width, rel=1e-3)
+        assert hist_pos.x0 == pytest.approx(cbar_pos.x0, rel=1e-3)
+
+
+@pytest.mark.parametrize("aspect", [1.0, 1.75, 2.5])
+@pytest.mark.parametrize("orientation", ["v", "h"])
+@pytest.mark.parametrize(
+    "img",
+    [
+        np.random.random((50, 50)),
+        np.random.random((40, 80)),
+        np.random.random((80, 40)),
+    ],
+)
+def test_imghist_histogram_matches_image_extent(aspect, orientation, img):
+    f = isns.imghist(img, aspect=aspect, orientation=orientation)
+    _assert_hist_aligned_with_image(f, orientation)
+    plt.close(f)
+
+
+def test_imghist_cbar_false():
+    f = isns.imghist(data, cbar=False)
+    assert isinstance(f, Figure)
+    assert len(f.axes) == 2
+    f.canvas.draw()
+    img_pos = f.axes[0].get_position()
+    hist_pos = f.axes[1].get_position()
+    assert hist_pos.height == pytest.approx(img_pos.height, rel=1e-3)
+    assert hist_pos.y0 == pytest.approx(img_pos.y0, rel=1e-3)
+    plt.close(f)
+
+
+@pytest.mark.parametrize("orientation", ["v", "h"])
+def test_imghist_cbar_label_does_not_overlap_histogram(orientation):
+    f = isns.imghist(
+        data,
+        dx=15,
+        units="nm",
+        cbar_label="Height (nm)",
+        orientation=orientation,
+    )
+    f.canvas.draw()
+    renderer = f.canvas.get_renderer()
+    cbar_tight = f.axes[1].get_tightbbox(renderer)
+    hist_bb = f.axes[2].get_window_extent(renderer)
+    if orientation == "v":
+        assert hist_bb.x0 - cbar_tight.x1 >= 10
+    else:
+        assert cbar_tight.y0 - hist_bb.y1 >= 10
+    _assert_hist_aligned_with_image(f, orientation)
+    plt.close(f)
+
+
 def test_imghist_data_is_same_as_input():
     f = isns.imghist(data)
 
-    # check if data iput is what was plotted
     np.testing.assert_array_equal(f.axes[0].images[0].get_array().data, data)
 
 
 def test_imghist_robust_hist_cmap():
-    """Check if the min/max patch color in histogram matches
-    the min/max colors in the colorbar after robust"""
-
     polymer = isns.load_image("polymer")
 
     f = isns.imghist(polymer, robust=True, perc=(0.5, 50))
@@ -247,12 +297,10 @@ def test_imghist_robust_hist_cmap():
     _min = np.nanpercentile(polymer, 0.5)
     _max = np.nanpercentile(polymer, 50)
 
-    # check the max patch facecolor and check it against the image cmap max
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
     )
 
-    # check the min patch facecolor and check it against the image cmap min
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
     )
@@ -261,9 +309,6 @@ def test_imghist_robust_hist_cmap():
 
 
 def test_imghist_diverging_hist_cmap():
-    """Check if the min/max patch color in histogram matches
-    the min/max colors in the colorbar after diverging"""
-
     polymer = isns.load_image("polymer")
     polymer_norm = polymer - polymer.mean()
 
@@ -272,12 +317,10 @@ def test_imghist_diverging_hist_cmap():
     _min = -np.abs(polymer_norm).max()
     _max = np.abs(polymer_norm).max()
 
-    # check the max patch facecolor and check it against the image cmap max
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_max), f.axes[-1].patches[-1].get_facecolor()
     )
 
-    # check the min patch facecolor and check it against the image cmap min
     np.testing.assert_array_equal(
         f.axes[0].images[0].cmap(_min), f.axes[-1].patches[0].get_facecolor()
     )
