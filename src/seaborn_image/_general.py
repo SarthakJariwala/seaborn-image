@@ -636,7 +636,8 @@ def imghist(
         **kwargs,
     )
 
-    cax = f.axes[1] if cbar and len(f.axes) > 1 else None
+    colorbar = ax1.images[0].colorbar if ax1.images else None
+    cax = None if colorbar is None else colorbar.ax
 
     _log = False
     if cbar_log is True:

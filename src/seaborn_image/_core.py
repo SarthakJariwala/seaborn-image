@@ -4,17 +4,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib_scalebar.scalebar import ScaleBar
 from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
+from mpl_toolkits.axes_grid1.axes_divider import AxesDivider
 
 from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 from .utils import despine
 
 
 def _get_axes_divider(ax):
-    divider = getattr(ax, "_si_divider", None)
-    if divider is None:
-        divider = make_axes_locatable(ax)
-        ax._si_divider = divider
-    return divider
+    loc = ax.get_axes_locator()
+    owner = getattr(getattr(loc, "get_subplotspec", None), "__self__", None)
+    if isinstance(owner, AxesDivider):
+        return owner
+    return make_axes_locatable(ax)
 
 
 _DIMENSIONS = {
