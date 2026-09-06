@@ -8,6 +8,20 @@ from mpl_toolkits.axes_grid1 import axes_size, make_axes_locatable
 from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 from .utils import despine, scientific_ticks
 
+
+def _get_axes_divider(ax):
+    """Return the AxesDivider used to pack extra axes beside *ax*.
+
+    ``imgplot`` attaches a divider when a colorbar is drawn. ``imghist``
+    reuses that same divider so the histogram stays aligned with the image.
+    """
+    divider = getattr(ax, "_si_divider", None)
+    if divider is None:
+        divider = make_axes_locatable(ax)
+        ax._si_divider = divider
+    return divider
+
+
 # dimensions for scalebar
 _DIMENSIONS = {
     "si": "si-length",
@@ -158,7 +172,7 @@ class _SetupImage(object):
             self._setup_scalebar(ax)
 
         if self.cbar:
-            divider = make_axes_locatable(ax)
+            divider = _get_axes_divider(ax)
 
             if self.orientation in ["vertical", "v"]:
                 self.orientation = "vertical"  # plt.colorbar doesn't take 'v'

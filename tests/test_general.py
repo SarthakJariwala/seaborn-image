@@ -229,6 +229,53 @@ def test_imghist_figsize():
     plt.close()
 
 
+def _assert_hist_aligned_with_image(f, orientation):
+    """Histogram must match the image along the shared axis (issue #386)."""
+    f.canvas.draw()
+    img_pos = f.axes[0].get_position()
+    cbar_pos = f.axes[1].get_position()
+    hist_pos = f.axes[2].get_position()
+    if orientation in ["v", "vertical"]:
+        assert hist_pos.height == pytest.approx(img_pos.height, rel=1e-3)
+        assert hist_pos.y0 == pytest.approx(img_pos.y0, rel=1e-3)
+        assert hist_pos.height == pytest.approx(cbar_pos.height, rel=1e-3)
+        assert hist_pos.y0 == pytest.approx(cbar_pos.y0, rel=1e-3)
+    else:
+        assert hist_pos.width == pytest.approx(img_pos.width, rel=1e-3)
+        assert hist_pos.x0 == pytest.approx(img_pos.x0, rel=1e-3)
+        assert hist_pos.width == pytest.approx(cbar_pos.width, rel=1e-3)
+        assert hist_pos.x0 == pytest.approx(cbar_pos.x0, rel=1e-3)
+
+
+@pytest.mark.parametrize("aspect", [1.0, 1.75, 2.5])
+@pytest.mark.parametrize("orientation", ["v", "h"])
+@pytest.mark.parametrize(
+    "img",
+    [
+        np.random.random((50, 50)),
+        np.random.random((40, 80)),
+        np.random.random((80, 40)),
+    ],
+)
+def test_imghist_histogram_matches_image_extent(aspect, orientation, img):
+    """aspect must not make the histogram taller/wider than the image (issue #386)."""
+    f = isns.imghist(img, aspect=aspect, orientation=orientation)
+    _assert_hist_aligned_with_image(f, orientation)
+    plt.close(f)
+
+
+def test_imghist_cbar_false():
+    f = isns.imghist(data, cbar=False)
+    assert isinstance(f, Figure)
+    assert len(f.axes) == 2
+    f.canvas.draw()
+    img_pos = f.axes[0].get_position()
+    hist_pos = f.axes[1].get_position()
+    assert hist_pos.height == pytest.approx(img_pos.height, rel=1e-3)
+    assert hist_pos.y0 == pytest.approx(img_pos.y0, rel=1e-3)
+    plt.close(f)
+
+
 def test_imghist_data_is_same_as_input():
     f = isns.imghist(data)
 

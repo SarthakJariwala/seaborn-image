@@ -1,14 +1,21 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as ss
-from matplotlib import colormaps, gridspec
+from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
+from mpl_toolkits.axes_grid1 import axes_size
 from skimage.color import rgb2gray
 
 from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
-from ._core import _SetupImage
+from ._core import _SetupImage, _get_axes_divider
 from .utils import is_documented_by
+
+# Histogram thickness as a fraction of the image's shared-axis length.
+# The histogram is appended to the same AxesDivider as the colorbar so it
+# stays aligned with the image regardless of figure `aspect` (issue #386).
+_IMGHIST_SIZE_ASPECT = 0.3
+_IMGHIST_PAD_FRACTION = 0.5
 
 __all__ = ["imgplot", "imghist", "imshow"]
 
@@ -494,9 +501,14 @@ def imghist(
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default None
     height : int or float, optional
-        Size of the individual images, by default 5.
+        Height of the figure in inches, by default 5.
     aspect : int or float, optional
-        Aspect ratio of individual images, by default 1.75.
+        Figure aspect used to set the figsize. For a vertical histogram,
+        figsize is ``(height * aspect, height)``; for a horizontal histogram,
+        figsize is ``(height, height * aspect)``. Defaults to 1.75 so a square
+        image has room for the colorbar and histogram. The histogram is always
+        sized to match the image along the shared axis (height for a vertical
+        histogram, width for a horizontal one), independent of this value.
 
     Returns
     -------
@@ -589,19 +601,17 @@ def imghist(
     if orientation in ["v", "vertical"]:
         orientation = "vertical"  # matplotlib doesn't support 'v'
         f = plt.figure(figsize=(height * aspect, height))
-        gs = gridspec.GridSpec(1, 2, width_ratios=[height - 1, 1], figure=f)
 
     elif orientation in ["h", "horizontal"]:
         orientation = "horizontal"  # matplotlib doesn't support 'h'
         f = plt.figure(figsize=(height, height * aspect))
-        gs = gridspec.GridSpec(2, 1, height_ratios=[height - 1, 1], figure=f)
 
     else:
         raise ValueError(
             "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
         )
 
-    ax1 = f.add_subplot(gs[0])
+    ax1 = f.add_subplot(111)
 
     ax1 = imgplot(
         data,
@@ -631,8 +641,8 @@ def imghist(
         **kwargs,
     )
 
-    # get colorbar axes
-    cax = f.axes[1]
+    # Colorbar axes, if present. RGB handling in imgplot can force cbar=False.
+    cax = f.axes[1] if cbar and len(f.axes) > 1 else None
 
     _log = False
     if cbar_log is True:
@@ -649,27 +659,31 @@ def imghist(
     else:
         data_robust = data
 
+    # Append the histogram to the image's AxesDivider so it tracks the
+    # image (and colorbar) size after imshow applies an equal aspect ratio.
+    divider = _get_axes_divider(ax1)
+
     if orientation == "vertical":
-        ax2 = f.add_subplot(gs[1], sharey=cax)
+        hist_size = axes_size.AxesY(ax1, aspect=_IMGHIST_SIZE_ASPECT)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size)
+        share_kw = {"sharey": cax} if cax is not None else {}
+        ax2 = divider.append_axes("right", size=hist_size, pad=pad, **share_kw)
+        hist_orientation = "horizontal"
 
-        n, bins, patches = ax2.hist(
-            data_robust.ravel(),
-            bins=bins,
-            density=True,
-            orientation="horizontal",
-            log=_log,
-        )
+    else:
+        hist_size = axes_size.AxesX(ax1, aspect=_IMGHIST_SIZE_ASPECT)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size)
+        share_kw = {"sharex": cax} if cax is not None else {}
+        ax2 = divider.append_axes("bottom", size=hist_size, pad=pad, **share_kw)
+        hist_orientation = "vertical"
 
-    elif orientation == "horizontal":
-        ax2 = f.add_subplot(gs[1], sharex=cax)
-
-        n, bins, patches = ax2.hist(
-            data_robust.ravel(),
-            bins=bins,
-            density=True,
-            orientation="vertical",
-            log=_log,
-        )
+    n, bins, patches = ax2.hist(
+        data_robust.ravel(),
+        bins=bins,
+        density=True,
+        orientation=hist_orientation,
+        log=_log,
+    )
 
     if not showticks:
         ax2.get_xaxis().set_visible(False)
