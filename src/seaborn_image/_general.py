@@ -11,9 +11,6 @@ from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
 from ._core import _SetupImage, _get_axes_divider
 from .utils import is_documented_by
 
-# Histogram thickness as a fraction of the image's shared-axis length.
-# The histogram is appended to the same AxesDivider as the colorbar so it
-# stays aligned with the image regardless of figure `aspect` (issue #386).
 _IMGHIST_SIZE_ASPECT = 0.3
 _IMGHIST_PAD_FRACTION = 0.5
 
@@ -297,7 +294,7 @@ def imgplot(
 
     if robust is True:
         assert len(perc) == 2
-        assert perc[0] < perc[1]  # order should be (min, max)
+        assert perc[0] < perc[1]
 
     if diverging:
         if vmax is not None:
@@ -329,12 +326,12 @@ def imgplot(
 
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
-            cbar = False  # set cbar to False if RGB image
-            robust = False  # set robust to False if RGB image
-            if gray is True:  # if gray is True, convert to grayscale
+            cbar = False
+            robust = False
+            if gray is True:
                 data = rgb2gray(data)
 
-    if gray is True and cmap is None:  # set colormap to gray only if cmap is None
+    if gray is True and cmap is None:
         cmap = "gray"
 
     if norm is None and cbar_log is True:
@@ -396,7 +393,6 @@ def imshow(data, **kwargs):
     return ax
 
 
-# TODO implement a imgdist function with more distributions (?)
 def imghist(
     data,
     cmap=None,
@@ -584,7 +580,6 @@ def imghist(
         >>> isns.imghist(img, cmap="ice")
     """
 
-    # NOTE this may be supported in the future
     if data.ndim > 2:
         raise ValueError(
             "Currently, `imghist` does not support images with more than 2 dimensions"
@@ -641,16 +636,12 @@ def imghist(
         **kwargs,
     )
 
-    # Colorbar axes, if present. RGB handling in imgplot can force cbar=False.
     cax = f.axes[1] if cbar and len(f.axes) > 1 else None
 
     _log = False
     if cbar_log is True:
         _log = True
 
-    # if robust is True, then the histogram only needs to account for the data
-    # that are within the limits of the colorbar axis
-    # This will be the same as percentile value used to set the colorbar min and max
     if robust:
         _data_min = np.nanpercentile(data, perc[0])
         _data_max = np.nanpercentile(data, perc[1])
@@ -659,20 +650,20 @@ def imghist(
     else:
         data_robust = data
 
-    # Append the histogram to the image's AxesDivider so it tracks the
-    # image (and colorbar) size after imshow applies an equal aspect ratio.
     divider = _get_axes_divider(ax1)
+
+    extra_pad = axes_size.Fixed(0)
 
     if orientation == "vertical":
         hist_size = axes_size.AxesY(ax1, aspect=_IMGHIST_SIZE_ASPECT)
-        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size) + extra_pad
         share_kw = {"sharey": cax} if cax is not None else {}
         ax2 = divider.append_axes("right", size=hist_size, pad=pad, **share_kw)
         hist_orientation = "horizontal"
 
     else:
         hist_size = axes_size.AxesX(ax1, aspect=_IMGHIST_SIZE_ASPECT)
-        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size) + extra_pad
         share_kw = {"sharex": cax} if cax is not None else {}
         ax2 = divider.append_axes("bottom", size=hist_size, pad=pad, **share_kw)
         hist_orientation = "vertical"
@@ -703,15 +694,34 @@ def imghist(
 
     bin_centers = bins[:-1] + bins[1:]
 
-    # convert to logscale
     if cbar_log is True:
         bin_centers = np.log(bin_centers)
 
-    # scale values to interval [0,1]
     col = bin_centers - np.min(bin_centers)
     col /= np.max(col)
 
     for c, p in zip(col, patches):
         plt.setp(p, "facecolor", cm(c))
 
+    if cax is not None:
+        extra_pad.fixed_size = _cbar_overflow_inches(f, cax, orientation)
+        f.canvas.draw()
+
     return f
+
+
+def _cbar_overflow_inches(f, cax, orientation):
+    f.canvas.draw()
+    renderer = f.canvas.get_renderer()
+    tight = cax.get_tightbbox(renderer)
+    if tight is None:
+        return 0.0
+    bbox = cax.get_window_extent(renderer)
+    dpi = renderer.points_to_pixels(72)
+    if not dpi:
+        return 0.0
+    if orientation == "vertical":
+        overflow = max(0.0, tight.x1 - bbox.x1)
+    else:
+        overflow = max(0.0, bbox.y0 - tight.y0)
+    return overflow / dpi
