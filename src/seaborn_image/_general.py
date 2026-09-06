@@ -1,14 +1,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as ss
-from matplotlib import colormaps, gridspec
+from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
+from mpl_toolkits.axes_grid1 import axes_size
 from skimage.color import rgb2gray
 
 from ._colormap import _CMAP_QUAL, _CMAP_EXTRA
-from ._core import _SetupImage
+from ._core import _SetupImage, _get_axes_divider
 from .utils import is_documented_by
+
+_IMGHIST_SIZE_ASPECT = 0.3
+_IMGHIST_PAD_FRACTION = 0.5
 
 __all__ = ["imgplot", "imghist", "imshow"]
 
@@ -290,7 +294,7 @@ def imgplot(
 
     if robust is True:
         assert len(perc) == 2
-        assert perc[0] < perc[1]  # order should be (min, max)
+        assert perc[0] < perc[1]
 
     if diverging:
         if vmax is not None:
@@ -322,12 +326,12 @@ def imgplot(
 
     if isinstance(data, np.ndarray):
         if data.ndim == 3:
-            cbar = False  # set cbar to False if RGB image
-            robust = False  # set robust to False if RGB image
-            if gray is True:  # if gray is True, convert to grayscale
+            cbar = False
+            robust = False
+            if gray is True:
                 data = rgb2gray(data)
 
-    if gray is True and cmap is None:  # set colormap to gray only if cmap is None
+    if gray is True and cmap is None:
         cmap = "gray"
 
     if norm is None and cbar_log is True:
@@ -389,7 +393,6 @@ def imshow(data, **kwargs):
     return ax
 
 
-# TODO implement a imgdist function with more distributions (?)
 def imghist(
     data,
     cmap=None,
@@ -494,9 +497,14 @@ def imghist(
     despine : bool, optional
         Remove axes spines from image axes as well as colorbar axes, by default None
     height : int or float, optional
-        Size of the individual images, by default 5.
+        Height of the figure in inches, by default 5.
     aspect : int or float, optional
-        Aspect ratio of individual images, by default 1.75.
+        Figure aspect used to set the figsize. For a vertical histogram,
+        figsize is ``(height * aspect, height)``; for a horizontal histogram,
+        figsize is ``(height, height * aspect)``. Defaults to 1.75 so a square
+        image has room for the colorbar and histogram. The histogram is always
+        sized to match the image along the shared axis (height for a vertical
+        histogram, width for a horizontal one), independent of this value.
 
     Returns
     -------
@@ -572,7 +580,6 @@ def imghist(
         >>> isns.imghist(img, cmap="ice")
     """
 
-    # NOTE this may be supported in the future
     if data.ndim > 2:
         raise ValueError(
             "Currently, `imghist` does not support images with more than 2 dimensions"
@@ -589,19 +596,17 @@ def imghist(
     if orientation in ["v", "vertical"]:
         orientation = "vertical"  # matplotlib doesn't support 'v'
         f = plt.figure(figsize=(height * aspect, height))
-        gs = gridspec.GridSpec(1, 2, width_ratios=[height - 1, 1], figure=f)
 
     elif orientation in ["h", "horizontal"]:
         orientation = "horizontal"  # matplotlib doesn't support 'h'
         f = plt.figure(figsize=(height, height * aspect))
-        gs = gridspec.GridSpec(2, 1, height_ratios=[height - 1, 1], figure=f)
 
     else:
         raise ValueError(
             "'orientation' must be either : 'horizontal' or 'h' / 'vertical' or 'v'"
         )
 
-    ax1 = f.add_subplot(gs[0])
+    ax1 = f.add_subplot(111)
 
     ax1 = imgplot(
         data,
@@ -631,16 +636,13 @@ def imghist(
         **kwargs,
     )
 
-    # get colorbar axes
-    cax = f.axes[1]
+    colorbar = ax1.images[0].colorbar if ax1.images else None
+    cax = None if colorbar is None else colorbar.ax
 
     _log = False
     if cbar_log is True:
         _log = True
 
-    # if robust is True, then the histogram only needs to account for the data
-    # that are within the limits of the colorbar axis
-    # This will be the same as percentile value used to set the colorbar min and max
     if robust:
         _data_min = np.nanpercentile(data, perc[0])
         _data_max = np.nanpercentile(data, perc[1])
@@ -649,27 +651,31 @@ def imghist(
     else:
         data_robust = data
 
+    divider = _get_axes_divider(ax1)
+
+    extra_pad = axes_size.Fixed(0)
+
     if orientation == "vertical":
-        ax2 = f.add_subplot(gs[1], sharey=cax)
+        hist_size = axes_size.AxesY(ax1, aspect=_IMGHIST_SIZE_ASPECT)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size) + extra_pad
+        share_kw = {"sharey": cax} if cax is not None else {}
+        ax2 = divider.append_axes("right", size=hist_size, pad=pad, **share_kw)
+        hist_orientation = "horizontal"
 
-        n, bins, patches = ax2.hist(
-            data_robust.ravel(),
-            bins=bins,
-            density=True,
-            orientation="horizontal",
-            log=_log,
-        )
+    else:
+        hist_size = axes_size.AxesX(ax1, aspect=_IMGHIST_SIZE_ASPECT)
+        pad = axes_size.Fraction(_IMGHIST_PAD_FRACTION, hist_size) + extra_pad
+        share_kw = {"sharex": cax} if cax is not None else {}
+        ax2 = divider.append_axes("bottom", size=hist_size, pad=pad, **share_kw)
+        hist_orientation = "vertical"
 
-    elif orientation == "horizontal":
-        ax2 = f.add_subplot(gs[1], sharex=cax)
-
-        n, bins, patches = ax2.hist(
-            data_robust.ravel(),
-            bins=bins,
-            density=True,
-            orientation="vertical",
-            log=_log,
-        )
+    n, bins, patches = ax2.hist(
+        data_robust.ravel(),
+        bins=bins,
+        density=True,
+        orientation=hist_orientation,
+        log=_log,
+    )
 
     if not showticks:
         ax2.get_xaxis().set_visible(False)
@@ -689,15 +695,34 @@ def imghist(
 
     bin_centers = bins[:-1] + bins[1:]
 
-    # convert to logscale
     if cbar_log is True:
         bin_centers = np.log(bin_centers)
 
-    # scale values to interval [0,1]
     col = bin_centers - np.min(bin_centers)
     col /= np.max(col)
 
     for c, p in zip(col, patches):
         plt.setp(p, "facecolor", cm(c))
 
+    if cax is not None:
+        extra_pad.fixed_size = _cbar_overflow_inches(f, cax, orientation)
+        f.canvas.draw()
+
     return f
+
+
+def _cbar_overflow_inches(f, cax, orientation):
+    f.canvas.draw()
+    renderer = f.canvas.get_renderer()
+    tight = cax.get_tightbbox(renderer)
+    if tight is None:
+        return 0.0
+    bbox = cax.get_window_extent(renderer)
+    dpi = renderer.points_to_pixels(72)
+    if not dpi:
+        return 0.0
+    if orientation == "vertical":
+        overflow = max(0.0, tight.x1 - bbox.x1)
+    else:
+        overflow = max(0.0, bbox.y0 - tight.y0)
+    return overflow / dpi
