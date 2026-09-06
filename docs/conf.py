@@ -37,7 +37,7 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc={'figure.dpi': 96}",
 ]
 
-nbsphinx_prompt_width = 0
+nbsphinx_prompt_width = "0"
 nbsphinx_allow_errors = True
 nbsphinx_execute = "always"
 nbsphinx_kernel_name = "python3"
@@ -56,9 +56,19 @@ master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build", "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "_build",
+    "**.ipynb_checkpoints",
+    "auto_examples/*.ipynb",
+    "auto_examples/*.py",
+    "auto_examples/*.py.md5",
+    "auto_examples/*.codeobj.json",
+    "auto_examples/*.zip",
+    "sg_execution_times.rst",
+]
 
-# The reST default role (used for this markup: `text`) to use for all documents.
+# Nested numpy option lists in the library docstrings trip docutils.
+suppress_warnings = ["docutils"]
 # default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
@@ -92,7 +102,6 @@ html_theme = "pydata_sphinx_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "source_link_position": "footer",
     "icon_links": [
         {
             "name": "GitHub",

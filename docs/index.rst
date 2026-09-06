@@ -162,6 +162,8 @@ Contents
    Gallery <auto_examples/index>
    API Reference <reference>
    Tutorial <tutorial>
+   How to <how_to>
+   Authors <authors>
    License <license>
    Changelog <https://github.com/SarthakJariwala/seaborn-image/releases>
 

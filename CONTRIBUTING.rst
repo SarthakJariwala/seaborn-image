@@ -86,6 +86,31 @@ and are written using the pytest_ testing framework.
 .. _pytest: https://pytest.readthedocs.io/
 
 
+How to build the documentation
+------------------------------
+
+Install pandoc_ on your system. On Debian or Ubuntu:
+
+.. code:: console
+
+   $ sudo apt-get install pandoc
+
+Install the package with the ``docs`` dependency group, then build HTML.
+CI uses Python 3.12 for this build:
+
+.. code:: console
+
+   $ uv sync --locked --no-default-groups --group docs
+   $ uv run --no-sync sphinx-build -W -b html docs docs/_build/html
+
+Open ``docs/_build/html/index.html`` in a browser.
+
+If you already ran ``uv sync``, the default ``dev`` group includes docs.
+Skip the sync line and run ``sphinx-build`` only.
+
+.. _pandoc: https://pandoc.org/installing.html
+
+
 How to submit changes
 ---------------------
 

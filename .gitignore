@@ -43,6 +43,7 @@ sdist/*
 docs/_rst/*
 docs/_build/*
 docs/auto_examples/*
+docs/sg_execution_times.rst
 docs/Tutorial/.ipynb_checkpoints/*
 cover/*
 MANIFEST
