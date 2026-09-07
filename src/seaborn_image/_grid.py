@@ -45,6 +45,16 @@ class ImageGrid:
         Size of the individual images. Defaults to 3.
     aspect : int, float or 'auto', optional
         Aspect ratio of individual images, when set to 'auto', it calculates the aspect ratio of the images passed. Defaults to 'auto'.
+    gap : float or None, optional
+        Space between images in inches. None preserves automatic layout. A
+        nonnegative value creates a montage without outer margins; 0 makes
+        images touch. Requires cbar=False, showticks=False, and matching
+        displayed image proportions. Uses height and the plotted proportions
+        instead of aspect to size the figure. Spacing applies at the initial
+        figure size; resizing or subsequent layout calls may change it.
+        Explicit spacing disables automatic figure layout, overriding the
+        corresponding Matplotlib rcParams.
+        Use fig.savefig(..., pad_inches=0) to omit export padding as well.
     cmap : str or `matplotlib.colors.Colormap` or list, optional
         Image colormap. If input data is a list of images,
         `cmap` can be a list of colormaps. Defaults to None.
@@ -323,6 +333,7 @@ class ImageGrid:
         col_wrap=None,
         height=3,
         aspect="auto",
+        gap=None,
         cmap=None,
         robust=False,
         perc=(2, 98),
@@ -347,6 +358,14 @@ class ImageGrid:
     ):
         if data is None:
             raise ValueError("image data can not be None")
+
+        if gap is not None:
+            if not isinstance(gap, (int, float, np.integer, np.floating)):
+                raise ValueError("gap must be a finite nonnegative number or None")
+            if not np.isfinite(gap) or gap < 0:
+                raise ValueError("gap must be a finite nonnegative number or None")
+            if np.any(cbar) or showticks:
+                raise ValueError("gap requires cbar=False and showticks=False")
 
         if isinstance(
             data, (list, tuple)
@@ -460,7 +479,7 @@ class ImageGrid:
         # Calculate the base figure size
         figsize = (ncol * height * aspect, nrow * height)
 
-        fig = plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize, layout="none" if gap is not None else None)
         axes = fig.subplots(nrow, ncol, squeeze=False)
 
         # Public API
@@ -475,6 +494,7 @@ class ImageGrid:
         self.col_wrap = col_wrap
         self.height = height
         self.aspect = aspect
+        self.gap = gap
 
         self.cmap = cmap
         self.robust = robust
@@ -770,8 +790,38 @@ class ImageGrid:
                 despine(ax=rem_ax[i])  # remove axes spines for the extra generated axes
 
     def _finalize_grid(self):
-        """Finalize grid with tight layout."""
-        self.fig.tight_layout()
+        """Apply automatic layout or explicit image spacing."""
+        if self.gap is None:
+            self.fig.tight_layout()
+            return
+
+        # Use plotted limits, not input shapes: extent and map_func can change
+        # the geometry. Equal slots cannot tightly tile differing proportions.
+        axes = list(self.axes.flat)[: self._nimages]
+        ratios = [
+            (
+                1 / (ax.get_data_ratio() * ax.get_aspect())
+                if ax.get_aspect() != "auto"
+                else self.aspect
+            )
+            for ax in axes
+        ]
+        if not np.allclose(ratios, ratios[0], rtol=1e-10, atol=0):
+            plt.close(self.fig)
+            raise ValueError("gap requires matching displayed image proportions")
+        width = self.height * ratios[0]
+        self.fig.set_size_inches(
+            self._ncol * width + (self._ncol - 1) * self.gap,
+            self._nrow * self.height + (self._nrow - 1) * self.gap,
+        )
+        self.fig.subplots_adjust(
+            left=0,
+            right=1,
+            bottom=0,
+            top=1,
+            wspace=self.gap / width,
+            hspace=self.gap / self.height,
+        )
 
 
 def rgbplot(

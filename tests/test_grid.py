@@ -1158,6 +1158,140 @@ class TestParamGrid(object):
         plt.close()
 
 
+@pytest.mark.parametrize("shape", [(20, 20), (20, 40), (40, 20)])
+@pytest.mark.parametrize("gap", [0, 0.15])
+@pytest.mark.parametrize("count,wrap", [(6, 3), (5, 3), (3, 1), (1, 1)])
+def test_image_grid_gap(shape, gap, count, wrap):
+    g = isns.ImageGrid(
+        [np.ones(shape)] * count,
+        cbar=False,
+        gap=gap,
+        col_wrap=wrap,
+    )
+    try:
+        g.fig.canvas.draw()
+        boxes = [ax.get_window_extent() for ax in g.axes.flat][:count]
+        for i, box in enumerate(boxes):
+            assert box.width / box.height == pytest.approx(shape[1] / shape[0])
+            if i % wrap:
+                assert box.x0 - boxes[i - 1].x1 == pytest.approx(
+                    gap * g.fig.dpi,
+                    abs=1e-8,
+                )
+            if i >= wrap:
+                assert boxes[i - wrap].y0 - box.y1 == pytest.approx(
+                    gap * g.fig.dpi,
+                    abs=1e-8,
+                )
+        assert boxes[0].x0 == pytest.approx(0, abs=1e-8)
+        assert boxes[0].y1 == pytest.approx(g.fig.bbox.height)
+    finally:
+        plt.close(g.fig)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"extent": (0, 80, 0, 20)},
+        {"map_func": lambda image: image[:, :10]},
+    ],
+)
+def test_image_grid_gap_uses_plotted_geometry(kwargs):
+    g = isns.ImageGrid(
+        [np.ones((20, 40))] * 4,
+        cbar=False,
+        gap=0,
+        col_wrap=2,
+        **kwargs,
+    )
+    try:
+        g.fig.canvas.draw()
+        a, b, c, _ = [ax.get_window_extent() for ax in g.axes.flat]
+        assert b.x0 - a.x1 == pytest.approx(0, abs=1e-8)
+        assert a.y0 - c.y1 == pytest.approx(0, abs=1e-8)
+    finally:
+        plt.close(g.fig)
+
+
+@pytest.mark.parametrize("gap", [-1, np.nan, np.inf, "auto", [0], 1j])
+def test_image_grid_invalid_gap(gap):
+    with pytest.raises(ValueError, match="gap must be"):
+        isns.ImageGrid([np.ones((20, 40))], cbar=False, gap=gap)
+
+
+@pytest.mark.parametrize("kwargs", [{}, {"cbar": False, "showticks": True}])
+def test_image_grid_gap_rejects_decorations(kwargs):
+    with pytest.raises(ValueError, match="gap requires cbar=False"):
+        isns.ImageGrid([np.ones((20, 40))], gap=0, **kwargs)
+
+
+def test_image_grid_gap_rejects_mixed_proportions():
+    figures = plt.get_fignums()
+    with pytest.raises(ValueError, match="matching displayed image proportions"):
+        isns.ImageGrid([np.ones((20, 40)), np.ones((40, 20))], cbar=False, gap=0)
+    assert plt.get_fignums() == figures
+
+
+@pytest.mark.parametrize(
+    "auto,constrained", [(True, False), (False, True), (True, True)]
+)
+@pytest.mark.parametrize("gap", [0, 0.15])
+def test_image_grid_gap_overrides_layout_defaults(auto, constrained, gap):
+    settings = {
+        "figure.autolayout": auto,
+        "figure.constrained_layout.use": constrained,
+    }
+    with matplotlib.rc_context(settings), warnings.catch_warnings():
+        warnings.simplefilter("error")
+        g = isns.ImageGrid(
+            [np.ones((20, 40))] * 5,
+            height=1,
+            col_wrap=3,
+            cbar=False,
+            gap=gap,
+        )
+        try:
+            assert g.fig.get_layout_engine() is None
+            np.testing.assert_allclose(g.fig.get_size_inches(), (6 + 2 * gap, 2 + gap))
+            for _ in range(2):
+                g.fig.canvas.draw()
+                a, b, c, d, e = [ax.get_window_extent() for ax in g.axes.flat][:5]
+                assert b.x0 - a.x1 == pytest.approx(gap * g.fig.dpi, abs=1e-8)
+                assert a.y0 - d.y1 == pytest.approx(gap * g.fig.dpi, abs=1e-8)
+                assert a.x0 == pytest.approx(0, abs=1e-8)
+                assert e.y0 == pytest.approx(0, abs=1e-8)
+                assert c.x1 == pytest.approx(g.fig.bbox.width)
+                assert a.y1 == pytest.approx(g.fig.bbox.height)
+            for key, value in settings.items():
+                assert matplotlib.rcParams[key] == value
+        finally:
+            plt.close(g.fig)
+
+
+@pytest.mark.parametrize(
+    "auto,constrained", [(True, False), (False, True), (True, True)]
+)
+@pytest.mark.parametrize("kwargs", [{}, {"gap": None}])
+def test_image_grid_default_retains_layout(auto, constrained, kwargs, monkeypatch):
+    engines = []
+    tight_layout = Figure.tight_layout
+
+    def record_layout(fig, *args, **kw):
+        engines.append(type(fig.get_layout_engine()).__name__)
+        return tight_layout(fig, *args, **kw)
+
+    monkeypatch.setattr(Figure, "tight_layout", record_layout)
+    with matplotlib.rc_context(
+        {
+            "figure.autolayout": auto,
+            "figure.constrained_layout.use": constrained,
+        }
+    ):
+        g = isns.ImageGrid([np.ones((20, 40))] * 2, cbar=False, **kwargs)
+        plt.close(g.fig)
+    assert engines == ["TightLayoutEngine" if auto else "ConstrainedLayoutEngine"]
+
+
 def test_FilterGrid_deprecation_warning():
     with pytest.warns(UserWarning, match="FilterGrid is depracted"):
         _ = isns.FilterGrid(
