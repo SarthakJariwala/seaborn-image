@@ -3,6 +3,7 @@ import warnings
 from typing import Iterable
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm, Normalize
 import numpy as np
 from copy import copy
 
@@ -48,7 +49,7 @@ class ImageGrid:
     gap : float or None, optional
         Space between images in inches. None preserves automatic layout. A
         nonnegative value creates a montage without outer margins; 0 makes
-        images touch. Requires cbar=False, showticks=False, and matching
+        images touch. Requires cbar=False or 'shared', showticks=False, and matching
         displayed image proportions. Uses height and the plotted proportions
         instead of aspect to size the figure. Spacing applies at the initial
         figure size; resizing or subsequent layout calls may change it.
@@ -103,10 +104,17 @@ class ImageGrid:
             - "pixel" : scale bar showing px, kpx, Mpx, etc.
         Can be a list of str, if input data is a list of images.
         Defaults to None.
-    cbar : bool or list, optional
+    cbar : bool, list or 'shared', optional
         Specify if a colorbar is required or not.
         Can be a list of bools, if input data is a list of images.
-        Defaults to True.
+        Defaults to True. 'shared' creates one colorbar for all scalar images,
+        using one colormap and normalization over the selected, transformed
+        images. Automatic limits use all finite, unmasked values; robust=True
+        uses pooled percentiles. Per-image color settings and RGB/RGBA images
+        are not supported in shared mode. A supplied Normalize is autoscaled
+        over all images and cannot be combined with vmin/vmax, robust or
+        diverging. Shared colorbars work with or without explicit gap spacing.
+        The resulting colorbar and axes are available as colorbar and cbar_ax.
     orientation : str, optional
         Specify the orientaion of colorbar.
         Option include :
@@ -359,13 +367,46 @@ class ImageGrid:
         if data is None:
             raise ValueError("image data can not be None")
 
+        shared = isinstance(cbar, str) and cbar == "shared"
+        if isinstance(cbar, str) and not shared:
+            raise ValueError("cbar must be a bool, a list of bools, or 'shared'")
+        if shared:
+            for name, value in dict(
+                cmap=cmap,
+                norm=norm,
+                vmin=vmin,
+                vmax=vmax,
+                robust=robust,
+                diverging=diverging,
+                cbar_log=cbar_log,
+                cbar_label=cbar_label,
+            ).items():
+                if isinstance(value, (list, tuple, np.ndarray)):
+                    raise ValueError(f"shared colorbar requires a single {name}")
+            if np.shape(perc) != (2,):
+                raise ValueError("shared colorbar requires one percentile pair")
+            if norm is not None and (
+                not isinstance(norm, Normalize)
+                or vmin is not None
+                or vmax is not None
+                or robust
+                or diverging
+            ):
+                raise ValueError(
+                    "shared norm must be a Normalize without vmin/vmax, robust or diverging"
+                )
+            if orientation not in ("v", "vertical", "h", "horizontal"):
+                raise ValueError(
+                    "orientation must be vertical ('v') or horizontal ('h')"
+                )
+
         if gap is not None:
             if not isinstance(gap, (int, float, np.integer, np.floating)):
                 raise ValueError("gap must be a finite nonnegative number or None")
             if not np.isfinite(gap) or gap < 0:
                 raise ValueError("gap must be a finite nonnegative number or None")
-            if np.any(cbar) or showticks:
-                raise ValueError("gap requires cbar=False and showticks=False")
+            if (not shared and np.any(cbar)) or showticks:
+                raise ValueError("gap requires cbar=False or 'shared' and showticks=False")
 
         if isinstance(
             data, (list, tuple)
@@ -510,6 +551,9 @@ class ImageGrid:
         self.units = units
         self.dimension = dimension
         self.cbar = cbar
+        self._shared_cbar = shared
+        self.colorbar = None
+        self.cbar_ax = None
         self.orientation = orientation
         self.cbar_log = cbar_log
         self.cbar_label = cbar_label
@@ -527,8 +571,20 @@ class ImageGrid:
             self._map_func_to_data(map_func, map_func_kw)
 
         self._map_img_to_grid()
+        if self._shared_cbar:
+            try:
+                self._normalize_shared_images()
+            except ValueError:
+                plt.close(self.fig)
+                raise
         self._cleanup_extra_axes()
         self._finalize_grid()
+        if self._shared_cbar:
+            try:
+                self._add_shared_colorbar()
+            except ValueError:
+                plt.close(self.fig)
+                raise
 
     def _check_map_func(self, map_func, map_func_kw):
         "Check if `map_func` passed is a list/tuple of callables or individual callable"
@@ -599,6 +655,10 @@ class ImageGrid:
             else:
                 _d = self.data.take(indices=self.slices[i], axis=self.axis)
 
+            if self._shared_cbar and _d.ndim == 3 and _d.shape[-1] in (3, 4):
+                plt.close(self.fig)
+                raise ValueError("shared colorbar requires scalar images, not RGB/RGBA")
+
             if isinstance(self.cmap, (list, tuple)):
                 self._check_len_wrt_n_images(self.cmap)
                 _cmap = self.cmap[i]
@@ -655,21 +715,21 @@ class ImageGrid:
                 _d,
                 ax=ax,
                 cmap=_cmap,
-                robust=_robust,
+                robust=False if self._shared_cbar else _robust,
                 perc=_perc,
-                diverging=_diverging,
-                vmin=_vmin,
-                vmax=_vmax,
+                diverging=False if self._shared_cbar else _diverging,
+                vmin=None if self._shared_cbar else _vmin,
+                vmax=None if self._shared_cbar else _vmax,
                 alpha=self.alpha,
                 origin=self.origin,
                 interpolation=self.interpolation,
-                norm=_norm,
+                norm=None if self._shared_cbar else _norm,
                 dx=_dx,
                 units=_units,
                 dimension=_dimension,
-                cbar=_cbar,
+                cbar=False if self._shared_cbar else _cbar,
                 orientation=self.orientation,
-                cbar_log=_cbar_log,
+                cbar_log=False if self._shared_cbar else _cbar_log,
                 cbar_label=_cbar_label,
                 cbar_ticks=self.cbar_ticks,
                 showticks=self.showticks,
@@ -678,10 +738,116 @@ class ImageGrid:
                 describe=False,
             )
 
-        # FIXME - for common colorbar
-        # if self.cbar and self.vmin is not None and self.vmax is not None:
-        #     print("here")
-        #     self.fig.colorbar(_im.images[0], ax=list(self.axes.ravel()), orientation=self.orientation)
+    def _normalize_shared_images(self):
+        """Resolve one mapping from the scalar arrays actually plotted."""
+        images = [ax.images[0] for ax in list(self.axes.flat)[: self._nimages]]
+        values = np.ma.concatenate(
+            [im.get_array().ravel() for im in images]
+        ).compressed()
+        values = values[np.isfinite(values)]
+        if not values.size:
+            raise ValueError("shared colorbar requires finite, unmasked data")
+        norm = self.norm
+        if norm is None:
+            low, high = self.vmin, self.vmax
+            if self.robust:
+                limits = np.percentile(values, self.perc)
+                low = limits[0] if low is None else low
+                high = limits[1] if high is None else high
+            if self.diverging:
+                if low is None and high is None:
+                    bound = np.abs(values).max()
+                elif low is None:
+                    bound = abs(high)
+                elif high is None:
+                    bound = abs(low)
+                else:
+                    bound = max(abs(low), abs(high))
+                low, high = -bound, bound
+            norm = (LogNorm if self.cbar_log else Normalize)(vmin=low, vmax=high)
+        norm.autoscale_None(values)
+        if isinstance(norm, LogNorm) and (norm.vmin <= 0 or norm.vmax <= 0):
+            raise ValueError(
+                "shared logarithmic colorbar requires positive limits and data"
+            )
+        for image in images:
+            image.set_norm(norm)
+            image.set_cmap(images[0].get_cmap())
+
+    def _pad_figure(self, left=0, right=0, bottom=0, top=0):
+        """Grow the canvas while retaining axes sizes and spacing in inches."""
+        width, height = self.fig.get_size_inches()
+        new_width, new_height = width + left + right, height + bottom + top
+        positions = [ax.get_position(original=True).bounds for ax in self.fig.axes]
+        self.fig.set_size_inches(new_width, new_height)
+        for ax, (x, y, w, h) in zip(self.fig.axes, positions):
+            ax.set_position(
+                (
+                    (x * width + left) / new_width,
+                    (y * height + bottom) / new_height,
+                    w * width / new_width,
+                    h * height / new_height,
+                )
+            )
+
+    def _add_shared_colorbar(self):
+        """Place a colorbar outside the grid without stealing image space."""
+        axes = list(self.axes.flat)[: self._nimages]
+        boxes = [ax.get_position() for ax in axes]
+        width, height = self.fig.get_size_inches()
+        horizontal = self.orientation in ("h", "horizontal")
+        if horizontal:
+            x = min(box.x0 for box in boxes) * width
+            span = (max(box.x1 for box in boxes) - min(box.x0 for box in boxes)) * width
+            self._pad_figure(bottom=0.3)
+            rect = (x / width, 0, span / width, 0.15 / (height + 0.3))
+        else:
+            y = min(box.y0 for box in boxes) * height
+            span = (
+                max(box.y1 for box in boxes) - min(box.y0 for box in boxes)
+            ) * height
+            self._pad_figure(right=0.3)
+            rect = (
+                (width + 0.15) / (width + 0.3),
+                y / height,
+                0.15 / (width + 0.3),
+                span / height,
+            )
+        self.cbar_ax = self.fig.add_axes(rect)
+        image = axes[0].images[0]
+        extend = "neither"
+        if self.robust:
+            extend = (
+                "both"
+                if self.vmin is None and self.vmax is None
+                else (
+                    "min"
+                    if self.vmin is None
+                    else "max" if self.vmax is None else "neither"
+                )
+            )
+        self.colorbar = self.fig.colorbar(
+            image,
+            cax=self.cbar_ax,
+            orientation="horizontal" if horizontal else "vertical",
+            extend=extend,
+        )
+        if self.cbar_ticks is not None:
+            self.colorbar.set_ticks(self.cbar_ticks)
+        if self.cbar_label is not None:
+            self.colorbar.set_label(self.cbar_label)
+        if self.despine is not False:
+            self.colorbar.outline.set_visible(False)
+        # Include tick labels and axis labels in the canvas, not just the bar.
+        self.fig.canvas.draw()
+        box = self.cbar_ax.get_tightbbox()
+        width, height = self.fig.get_size_inches()
+        self._pad_figure(
+            left=max(0, -box.x0 / self.fig.dpi),
+            right=max(0, box.x1 / self.fig.dpi - width),
+            bottom=max(0, -box.y0 / self.fig.dpi),
+            top=max(0, box.y1 / self.fig.dpi - height),
+        )
 
     def _check_len_wrt_n_images(self, param_list):
         """If a specific parameter is supplied as a list/tuple, check that the

@@ -1292,6 +1292,161 @@ def test_image_grid_default_retains_layout(auto, constrained, kwargs, monkeypatc
     assert engines == ["TightLayoutEngine" if auto else "ConstrainedLayoutEngine"]
 
 
+@pytest.mark.parametrize("gap", [None, 0, 0.1])
+@pytest.mark.parametrize("orientation", ["v", "h"])
+def test_shared_colorbar_preserves_image_geometry(gap, orientation):
+    data = [np.arange(800).reshape(20, 40) + i * 100 for i in range(5)]
+    plain = isns.ImageGrid(data, cbar=False, gap=gap, height=1, col_wrap=3)
+    g = isns.ImageGrid(
+        data,
+        cbar="shared",
+        gap=gap,
+        height=1,
+        col_wrap=3,
+        orientation=orientation,
+        cbar_label="Intensity",
+        cbar_ticks=[0, 600, 1200],
+    )
+    try:
+        plain.fig.canvas.draw()
+        for _ in range(2):
+            g.fig.canvas.draw()
+            boxes = np.array([ax.get_window_extent().bounds for ax in g.axes.flat])
+            original = np.array(
+                [ax.get_window_extent().bounds for ax in plain.axes.flat]
+            )
+            # All axes receive the same translation; no sizes or gaps change.
+            np.testing.assert_allclose(boxes[:, 2:], original[:, 2:], atol=1e-8)
+            np.testing.assert_allclose(
+                boxes[:, :2] - boxes[0, :2],
+                original[:, :2] - original[0, :2],
+                atol=1e-8,
+            )
+        images = [ax.images[0] for ax in list(g.axes.flat)[:5]]
+        assert all(im.norm is images[0].norm for im in images)
+        assert all(im.get_cmap() is images[0].get_cmap() for im in images)
+        assert images[0].get_clim() == (0, 1199)
+        np.testing.assert_allclose(images[0].to_rgba(500), images[-1].to_rgba(500))
+        assert len(g.fig.axes) == g.axes.size + 1
+        assert g.colorbar.ax is g.cbar_ax
+        np.testing.assert_array_equal(g.colorbar.get_ticks(), [0, 600, 1200])
+        box = g.cbar_ax.get_tightbbox(g.fig.canvas.get_renderer())
+        assert box.x0 >= -1e-8 and box.y0 >= -1e-8
+        assert box.x1 <= g.fig.bbox.width + 1e-8
+        assert box.y1 <= g.fig.bbox.height + 1e-8
+    finally:
+        plt.close(plain.fig)
+        plt.close(g.fig)
+
+
+@pytest.mark.parametrize(
+    "kwargs,expected",
+    [
+        ({}, (1, 100)),
+        ({"vmin": 0, "vmax": 200}, (0, 200)),
+        ({"vmin": 0}, (0, 100)),
+        ({"robust": True, "perc": (25, 75)}, (1, 25.75)),
+        ({"diverging": True}, (-100, 100)),
+        ({"diverging": True, "vmax": 50}, (-50, 50)),
+        ({"cbar_log": True}, (1, 100)),
+        ({"norm": colors.Normalize(vmin=0)}, (0, 100)),
+    ],
+)
+def test_shared_colorbar_normalization(kwargs, expected):
+    g = isns.ImageGrid([np.ones((1, 3)), np.array([[100.0]])], cbar="shared", **kwargs)
+    try:
+        image = g.axes.flat[0].images[0]
+        assert image.get_clim() == expected
+        if "norm" in kwargs:
+            assert image.norm is kwargs["norm"]
+        if kwargs.get("cbar_log"):
+            assert isinstance(image.norm, colors.LogNorm)
+        if kwargs.get("robust"):
+            assert g.colorbar.extend == "both"
+    finally:
+        plt.close(g.fig)
+
+
+def test_shared_colorbar_selected_transformed_data():
+    data = np.stack([np.full((4, 4), n) for n in (1, 2, 999)], axis=-1)
+    g = isns.ImageGrid(data, slices=[0, 1], map_func=lambda x: x * 10, cbar="shared")
+    try:
+        assert g.colorbar.mappable.get_clim() == (10, 20)
+    finally:
+        plt.close(g.fig)
+
+
+def test_shared_colorbar_ignores_masked_and_nonfinite_values():
+    data = [
+        np.ma.array([[1, 999]], mask=[[False, True]]),
+        np.array([[2, np.nan, np.inf]]),
+    ]
+    g = isns.ImageGrid(data, cbar="shared")
+    try:
+        assert g.colorbar.mappable.get_clim() == (1, 2)
+    finally:
+        plt.close(g.fig)
+
+
+@pytest.mark.parametrize(
+    "kwargs,match",
+    [
+        ({"cmap": ["gray", "viridis"]}, "single cmap"),
+        ({"vmin": [0, 1]}, "single vmin"),
+        ({"norm": colors.Normalize(), "vmin": 0}, "shared norm"),
+        ({"norm": colors.Normalize(), "robust": True}, "shared norm"),
+        ({"perc": [(2, 98), (2, 98)]}, "percentile pair"),
+        ({"orientation": "bad"}, "orientation"),
+    ],
+)
+def test_shared_colorbar_rejects_conflicting_settings(kwargs, match):
+    with pytest.raises(ValueError, match=match):
+        isns.ImageGrid([np.ones((4, 4))] * 2, cbar="shared", **kwargs)
+
+
+@pytest.mark.parametrize(
+    "data,match",
+    [
+        ([np.ones((4, 4, 3))], "scalar images"),
+        ([np.ones((4, 4, 4))], "scalar images"),
+        ([np.full((4, 4), np.nan)], "finite, unmasked"),
+    ],
+)
+def test_shared_colorbar_rejects_unsupported_images(data, match):
+    figures = plt.get_fignums()
+    with pytest.raises(ValueError, match=match):
+        isns.ImageGrid(data, cbar="shared")
+    assert plt.get_fignums() == figures
+
+
+@pytest.mark.parametrize("gap", [None, 0])
+@pytest.mark.parametrize(
+    "setting", ["figure.autolayout", "figure.constrained_layout.use"]
+)
+def test_shared_colorbar_with_layout_defaults(gap, setting):
+    with matplotlib.rc_context({setting: True}):
+        g = isns.ImageGrid(
+            [np.arange(8).reshape(2, 4)] * 4, gap=gap, cbar="shared", col_wrap=2
+        )
+        try:
+            for _ in range(2):
+                g.fig.canvas.draw()
+                a, b, c, _ = [ax.get_window_extent() for ax in g.axes.flat]
+                if gap == 0:
+                    assert b.x0 - a.x1 == pytest.approx(0, abs=1e-8)
+                    assert a.y0 - c.y1 == pytest.approx(0, abs=1e-8)
+                assert g.cbar_ax.get_window_extent().x0 > b.x1
+        finally:
+            plt.close(g.fig)
+
+
+def test_shared_colorbar_invalid_log_data_closes_figure():
+    figures = plt.get_fignums()
+    with pytest.raises(ValueError, match="positive limits and data"):
+        isns.ImageGrid([np.full((4, 4), -1)], cbar="shared", cbar_log=True)
+    assert plt.get_fignums() == figures
+
+
 def test_FilterGrid_deprecation_warning():
     with pytest.warns(UserWarning, match="FilterGrid is depracted"):
         _ = isns.FilterGrid(
