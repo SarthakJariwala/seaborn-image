@@ -5,6 +5,18 @@ How to...?
     :local:
 
 
+Control image grid spacing and colorbars
+---------------------------------------
+
+* :ref:`Remove whitespace between images <image-grid-gap>` with ``gap=0``,
+  or choose an exact positive spacing in inches.
+* :ref:`Use one colorbar for the whole grid <image-grid-shared-colorbar>`
+  with ``cbar="shared"``, with or without touching images.
+* :ref:`Save without extra export padding <image-grid-export>`.
+
+See :doc:`image_grid_layout` for runnable examples and limitations.
+
+
 Visualize distribution
 ----------------------
 
