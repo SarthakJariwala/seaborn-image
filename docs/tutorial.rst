@@ -44,6 +44,7 @@ Working with a Collection of Images
    :maxdepth: 2
 
    Collection of images <Tutorial/Image Collection.ipynb>
+   ImageGrid spacing and shared colorbars <image_grid_layout>
 
 
 Exploring Relationships between Parameters

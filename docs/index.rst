@@ -132,6 +132,9 @@ Image data is not always 2D and for those image data there is `ImageGrid`.
     g = isns.ImageGrid(cells)
 
 
+To remove space between images or compare them with one color scale, see
+:doc:`image_grid_layout` for examples using ``gap=0`` and ``cbar="shared"``.
+
 You can also specify the specific `slices` of the 3D data that you want to visualize.
 You can also specify the `axis` along which you want to `slice` your 3D image data for visualization.
 
