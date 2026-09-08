@@ -151,6 +151,12 @@ def filterplot(
     TypeError
         if `describe` is not a `bool`
 
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image without applying a filter.
+    seaborn_image.ParamGrid : Compare filter parameters across a grid of images.
+    seaborn_image.fftplot : Visualize the Fourier transform of an image.
+
     Examples
     --------
 
@@ -300,6 +306,11 @@ def fftplot(
     ------
     ValueError
         If input image is RGB image
+
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image in the spatial domain.
+    seaborn_image.filterplot : Apply a filter and plot the result.
 
     Examples
     --------

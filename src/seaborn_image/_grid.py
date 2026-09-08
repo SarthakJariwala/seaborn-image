@@ -159,6 +159,12 @@ class ImageGrid:
     ValueError
         If `map_func` is a list/tuple of callable objects when `data` is 3D or 4D
 
+    See Also
+    --------
+    seaborn_image.imgplot : Plot a single image on an axes.
+    seaborn_image.rgbplot : Split an RGB image into a grid of color channels.
+    seaborn_image.ParamGrid : Compare function parameters across a grid of images.
+
     Examples
     --------
 
@@ -1094,6 +1100,11 @@ def rgbplot(
     ValueError
         If `data` channels are not 3
 
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an RGB image without splitting its channels.
+    seaborn_image.ImageGrid : Plot a collection of images or slices in a grid.
+
     Examples
     --------
 
@@ -1274,6 +1285,11 @@ class ParamGrid(object):
         If `col` is specified without passing the parameter as a keyword argument
     ValueError
         If `col_wrap` is specified when `row` is not `None`
+
+    See Also
+    --------
+    seaborn_image.filterplot : Apply a filter with one set of parameters.
+    seaborn_image.ImageGrid : Plot a collection of images or slices in a grid.
 
     Examples
     --------
@@ -1588,7 +1604,12 @@ class ParamGrid(object):
 
 
 class FilterGrid:
-    """Deprecated - use `ParamGrid` instead."""
+    """Deprecated - use `ParamGrid` instead.
+
+    See Also
+    --------
+    seaborn_image.ParamGrid : Compare function parameters across a grid of images.
+    """
 
     def __init__(self, *args, **kwargs):
         warnings.warn(
