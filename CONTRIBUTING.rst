@@ -137,6 +137,27 @@ This will allow a chance to talk it over and validate your approach.
 .. _pre-commit: https://pre-commit.com/
 
 
+How to publish a release
+------------------------
+
+Create and publish a GitHub Release with a version tag such as ``v0.11.0``
+or ``0.11.0`` (prereleases such as ``v0.11.0rc1`` also work).
+Use a valid Python package version that has not already been published to PyPI.
+Creating a tag alone or saving a draft release does not publish the package.
+
+The package version is dynamic: ``hatch-vcs`` derives it from Git tags rather
+than a hard-coded value in ``pyproject.toml``. The release workflow checks out
+the tag with full history, verifies that the installed version matches it,
+runs the tests, and builds and publishes the wheel and source distribution.
+No manual version bump or automated version commit is required.
+
+Development builds between tags receive a development version. Use a Git
+checkout with tags and full history (run ``git fetch --unshallow --tags`` if
+your clone is shallow). Source distributions published to PyPI retain their
+version and can be built without Git; GitHub source ZIP downloads are not a
+substitute for those distributions.
+
+
 Credits
 -------
 

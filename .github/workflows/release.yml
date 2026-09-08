@@ -7,11 +7,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.release.tag_name }}
+        fetch-depth: 0
     - uses: astral-sh/setup-uv@v10.0.1
       with:
         python-version: "3.12"
         enable-cache: true
     - run: uv sync --locked --no-default-groups --group test
+    - name: Verify package version matches release tag
+      env:
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+      run: |
+        uv run --no-sync python - <<'PY'
+        import os
+        from importlib.metadata import version
+        from packaging.version import Version
+
+        expected = Version(os.environ["RELEASE_TAG"])
+        actual = Version(version("seaborn-image"))
+        if actual != expected:
+            raise SystemExit(f"Package version {actual} does not match release tag {expected}")
+        PY
     - run: uv run pytest
     - run: uv run python -m xdoctest --modname=seaborn_image --command=all
     - run: uv build
