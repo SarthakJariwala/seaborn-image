@@ -5,6 +5,7 @@ from ._context import *
 from ._general import *
 from ._filters import *
 from ._grid import *
+from ._pipeline import *
 from .utils import *
 from ._datasets import *
 

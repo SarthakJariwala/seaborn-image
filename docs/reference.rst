@@ -10,6 +10,7 @@ Reference
    api/ImageGrid
    api/rgbplot
    api/filterplot
+   api/pipelineplot
    api/fftplot
    api/ParamGrid
    api/datasets
@@ -51,6 +52,13 @@ Figure level function to visualize RGB channels in a RGB image.
 ----------------------------------
 
 Axes level function to apply image filters and visualize them.
+
+
+:doc:`pipelineplot <api/pipelineplot>`
+------------------------------------
+
+Apply named processing steps sequentially, visualize each stage, and retain
+the resulting arrays in ``pipeline.images``.
 
 
 :doc:`fftplot <api/fftplot>`
