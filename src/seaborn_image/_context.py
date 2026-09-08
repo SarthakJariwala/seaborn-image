@@ -34,6 +34,12 @@ def set_context(mode="paper", fontfamily="sans-serif", fontweight="normal", rc=N
     rc : dict, optional
         Additional `matplotlib.rcParams` to be passed to matplotlib, by default None.
 
+    See Also
+    --------
+    seaborn_image.set_image : Set defaults for image rendering.
+    seaborn_image.set_save_context : Set the resolution of saved figures.
+    seaborn_image.reset_defaults : Restore Matplotlib defaults.
+
     Examples
     --------
         >>> import seaborn_image as isns
@@ -79,6 +85,11 @@ def set_save_context(dpi=300):
     dpi : int, optional
         Image dpi for saving, by default 300.
 
+    See Also
+    --------
+    seaborn_image.set_context : Set fonts and plotting context.
+    seaborn_image.reset_defaults : Restore Matplotlib defaults.
+
     Examples
     --------
         >>> import seaborn_image as isns
@@ -90,6 +101,13 @@ def set_save_context(dpi=300):
 def reset_defaults():
     """
     Reset rcParams to matplotlib defaults
+
+    See Also
+    --------
+    seaborn_image.set_context : Set fonts and plotting context.
+    seaborn_image.set_image : Set defaults for image rendering.
+    seaborn_image.set_scalebar : Set default scalebar properties.
+    seaborn_image.set_save_context : Set the resolution of saved figures.
 
     Examples
     --------
@@ -113,6 +131,12 @@ def set_image(cmap="deep", origin="upper", interpolation="nearest", despine=Fals
         Image interpolation - same as in `matplotlib.pyplot.imshow`, by default "nearest".
     despine : bool, optional
         Despine image and colorbar axes, by default False.
+
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image using the rendering defaults.
+    seaborn_image.despine : Remove spines from existing axes or figures.
+    seaborn_image.reset_defaults : Restore Matplotlib defaults.
 
     Examples
     --------
@@ -187,6 +211,12 @@ def set_scalebar(
             the scalebar artist, by default 0.
         rc : dict, optional
             Dictionary of scalebar properties to be set, by default None.
+
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image with a scalebar using dx and units.
+    seaborn_image.set_image : Set defaults for image rendering.
+    seaborn_image.reset_defaults : Restore Matplotlib defaults.
 
     Examples
     --------

@@ -25,6 +25,11 @@ def scientific_ticks(ax, which="y"):
     ValueError
         If `which` is not one of ['y', 'x', 'both']
 
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image with an optional colorbar.
+    seaborn_image.imghist : Plot an image alongside its intensity histogram.
+
     Examples
     --------
 
@@ -89,6 +94,11 @@ def despine(fig=None, ax=None, which="all"):
         ["all", "top", "bottom", "right", "left"]
     TypeError
         If `which` is not a str or list
+
+    See Also
+    --------
+    seaborn_image.set_image : Set default spine visibility for new plots.
+    seaborn_image.imgplot : Plot an image with an option to remove spines.
 
     Examples
     --------

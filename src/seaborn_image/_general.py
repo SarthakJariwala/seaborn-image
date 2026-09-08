@@ -154,6 +154,13 @@ def imgplot(
     AssertionError
         if the first element of `perc` is greater than the second
 
+    See Also
+    --------
+    seaborn_image.imghist : Plot an image alongside its intensity histogram.
+    seaborn_image.ImageGrid : Plot a collection of images or slices in a grid.
+    seaborn_image.rgbplot : Plot the red, green, and blue channels separately.
+    seaborn_image.filterplot : Apply a filter and plot the result.
+
     Examples
     --------
 
@@ -515,6 +522,12 @@ def imghist(
     ------
     TypeError
         if `bins` is not a positive integer
+
+    See Also
+    --------
+    seaborn_image.imgplot : Plot an image without a histogram.
+    seaborn_image.ImageGrid : Plot a collection of images or slices in a grid.
+    seaborn_image.scientific_ticks : Format axis ticks in scientific notation.
 
     Examples
     --------

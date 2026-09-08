@@ -39,6 +39,11 @@ def load_image(name):
     `numpy.ndarray`
         Image data as a `numpy` array
 
+    See Also
+    --------
+    seaborn_image.imgplot : Plot a loaded image.
+    seaborn_image.ImageGrid : Plot a loaded image collection or multidimensional data.
+
     Examples
     --------
     >>> import seaborn_image as isns
